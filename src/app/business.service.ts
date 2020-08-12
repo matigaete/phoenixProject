@@ -22,7 +22,7 @@ export class BusinessService {
   }
   
 //-Listas desplegables--------------------------//
-  public getAcciones() : Ilista[] {
+  public getMantenedores() : Ilista[] {
     return [{
         id : 1,
         nombre : 'Productos',  
@@ -36,6 +36,20 @@ export class BusinessService {
         nombre : '',
         path : 'find',
     }*/
+    ]
+  }
+  
+  public getAcciones() : Ilista[] {
+    return [{
+        id : 1,
+        nombre : 'Agregar', 
+    }, {
+        id : 2,
+        nombre : 'Modificar', 
+    }, {
+        id : 3,
+        nombre : 'Consultar', 
+    }
     ]
   }
   
