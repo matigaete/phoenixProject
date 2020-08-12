@@ -1,1 +1,13 @@
-<p>create works!</p>
+<form>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">{{nombre}}</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlSelect1">{{categoria}}</label>
+    <select class="form-control" id="exampleFormControlSelect1"> 
+      <option *ngFor="let c of categorias">{{c.nombre}}</option>
+    </select>
+  </div>
+  <button type="button" class="btn btn-light">Primary</button>
+</form>
