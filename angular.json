@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "phoenixProject"
+    }
+  },
+  "defaultProject": "phoenixProject",
+  "cli": {
+    "analytics": "45a2603e-0693-4a25-b829-d830f75a455c"
+  }
 }
