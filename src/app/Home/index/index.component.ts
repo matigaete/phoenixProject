@@ -2,8 +2,12 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-index',
-  templateUrl: './index.component.html',
-  styleUrls: ['./index.component.css']
+  template: `<app-header></app-header>
+			 <div class="container">
+   			 <router-outlet></router-outlet>
+			 </div>
+			 <app-footer></app-footer>`,
+  styles:[``]
 })
 export class IndexComponent implements OnInit {
 

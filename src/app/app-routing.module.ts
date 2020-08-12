@@ -6,7 +6,7 @@ import { IndexProductosComponent } from './Mantenedores/Productos/index-producto
 
 const routes: Routes = [
   { path: 'index-productos', component: IndexProductosComponent },    
-  { path: 'create', component: CreateComponent },    
+  { path: 'create', component: CreateComponent }, 
   //{ path: 'about', loadChildren: () => import('./about/about.module').then(m => m.AboutModule) },   
   //{ path: '**', component: ErrorComponent },
 ];

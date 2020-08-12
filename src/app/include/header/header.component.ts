@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.acciones = this.businessService.getAcciones();
+    this.acciones = this.businessService.getMantenedores();
   }
   
   public redirect( path ) {
