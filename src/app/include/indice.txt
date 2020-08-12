@@ -1,0 +1,20 @@
+app.component
+
+include
+		header
+		footer
+			mapa
+			carrusel
+Home
+		Banners
+		Formulario
+		Espacio 1
+		Espacio 2
+		Mapa
+
+Mantenedores
+		Productos
+			Crear
+			Buscar
+			Modificar
+		Servicios
