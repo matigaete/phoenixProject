@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { BusinessService } from '../../business.service';
+import { Ilista } from '../../Interfaces/ilista';
 
 @Component({
   selector: 'app-header',
@@ -8,52 +10,42 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   
-  titulo : string = 'PhoenixProject';
-  inicio : string = 'Inicio';
-  action : string = 'Mantenedores';
-  acciones : IAcciones[]; 
-  //name;
+  private inicio : string;
+  private action : string; 
+  public acciones : Ilista[]; 
   
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private businessService: BusinessService,
     ) { 
+    
+    this.inicio = businessService.getInicio();
+    this.action = businessService.getAction(); 
     
   }
 
-  ngOnInit(): void {
-    this.acciones = this.getAcciones();
-    /*this.route.queryParams.subscribe(params => {
-    this.name = params['name'];
-  });*/
+  public ngOnInit(): void {
+    this.acciones = this.businessService.getAcciones();
   }
   
-  redirect( path ) {
+  public redirect( path ) {
       this.router.navigate([path]);
   }
   
-  getAcciones() : IAcciones[] {
-    return [{
-        id : 1,
-        nombre : 'Productos',  
-        path : 'create',
-    }, {
-        id : 2,
-        nombre : '',
-        path : 'update',
-    }, {
-        id : 3,
-        nombre : '',
-        path : 'find',
-      }
-    ]
+  public setAction(action : string) : void{
+      this.action = action;
   }
-}
-
-interface IAcciones{
-    id : number;
-    nombre : string;
-    path ?: string;
-    component ?: string;
-    redirectTo ?: string;
+  
+  public setInicio(inicio : string) : void {
+      this.inicio = inicio;
+  }
+  
+  public getAction() : string {
+      return this.action;
+  }
+  
+  public getInicio() : string {
+      return this.inicio;
+  }
 }

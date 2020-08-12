@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { BusinessService } from '../../../business.service';
+import { Ilista } from '../../../Interfaces/ilista';
 
 @Component({
   selector: 'app-create',
@@ -6,32 +8,42 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./create.component.css']
 })
 export class CreateComponent implements OnInit {
-  nombre : string = 'Nombre del producto';
-  categoria : string = 'Categoría del producto';
-  categorias : ICategorias[];
-  constructor() { 
+  private nombre : string;
+  private categoria : string; 
+  private aceptar : string; 
+  public categorias : Ilista[]; 
+  
+  constructor( private businessService: BusinessService ) { 
+    this.nombre    = businessService.getNombre();
+    this.categoria = businessService.getCategoria();
+    this.aceptar   = businessService.getAceptar(); 
   }
 
-  ngOnInit(): void {
-    this.categorias = this.getCategorias();
+  public ngOnInit(): void { 
+    this.categorias = this.businessService.getCategorias();
   }
   
-  getCategorias() : ICategorias[] {
-      return [{
-          id : 1,
-          nombre : 'Maquina', 
-      },
-      {
-          id : 2,
-          nombre : 'Herramienta',
-      }
-      ]
+  public setNombre(nombre : string) : void {
+      this.nombre = nombre;
   }
   
-
-}
-
-interface ICategorias{
-    id : number;
-    nombre : string;
+  public setCategoria(categoria : string) : void{
+      this.categoria = categoria;
+  }
+  
+  public setAceptar(aceptar : string) : void{
+      this.aceptar = aceptar;
+  }
+  
+  public getNombre() : string {
+      return this.nombre;
+  }
+  
+  public getCategoria() : string {
+      return this.categoria;
+  }
+  
+  public getAceptar() : string {
+      return this.aceptar;
+  }
 }

@@ -1,13 +1,13 @@
 <form>
   <div class="form-group">
-    <label for="exampleFormControlInput1">{{nombre}}</label>
+    <label for="exampleFormControlInput1">{{getNombre()}}</label>
     <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
   </div>
   <div class="form-group">
-    <label for="exampleFormControlSelect1">{{categoria}}</label>
+    <label for="exampleFormControlSelect1">{{getCategoria()}}</label>
     <select class="form-control" id="exampleFormControlSelect1"> 
       <option *ngFor="let c of categorias">{{c.nombre}}</option>
     </select>
   </div>
-  <button type="button" class="btn btn-light">Primary</button>
+  <button type="button" class="btn btn-light">{{getAceptar()}}</button>
 </form>
