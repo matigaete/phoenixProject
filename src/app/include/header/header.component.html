@@ -6,19 +6,20 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto menu-buttons">
       <li class="nav-item active">
-        <a class="nav-link" href="">{{inicio}}</a>
+        <a class="nav-link" href="">{{getInicio()}}</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{action}}
+          {{getAction()}}
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <ul>
-            <li *ngFor="let accion of acciones"> 
-             <a class="dropdown-item" (click)="redirect(accion.path)">{{accion.nombre}}</a>  
-           </li>
-         </ul>
-      </div>
+            <li *ngFor="let a of acciones"> 
+              <a class="dropdown-item" (click)="redirect(a.path)">{{a.nombre}}</a>  
+            </li>
+          </ul>
+        </div>
+      </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Buscar ..." aria-label="Search">
