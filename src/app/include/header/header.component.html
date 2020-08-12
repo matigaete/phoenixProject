@@ -1,13 +1,12 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">{{titulo}}</a>
+<nav class="navbar navbar-expand-lg navbar-light navbar-blank">
+  <img src="https://technicalservice.cl/wp-content/uploads/2020/05/cropped-logo13-320x38.png" class="img-fluid" alt="no hay imagen :'v">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav mr-auto menu-buttons">
       <li class="nav-item active">
-        <a class="nav-link" href="">{{inicio}} <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="">{{inicio}}</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -16,15 +15,14 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <ul>
             <li *ngFor="let accion of acciones"> 
-              <a class="dropdown-item" (click)="redirect(accion.path)">{{accion.nombre}}</a>  
-            </li>
-          </ul>
-        </div>
-      </li>
+             <a class="dropdown-item" (click)="redirect(accion.path)">{{accion.nombre}}</a>  
+           </li>
+         </ul>
+      </div>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      <input class="form-control mr-sm-2" type="search" placeholder="Buscar ..." aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
     </form>
   </div>
 </nav>

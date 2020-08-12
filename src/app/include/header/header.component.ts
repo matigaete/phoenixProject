@@ -10,8 +10,8 @@ export class HeaderComponent implements OnInit {
   
   titulo : string = 'PhoenixProject';
   inicio : string = 'Inicio';
-  action : string = 'Acción';
-  acciones : IAcciones[];
+  action : string = 'Mantenedores';
+  acciones : IAcciones[]; 
   //name;
   
   constructor(
@@ -35,15 +35,15 @@ export class HeaderComponent implements OnInit {
   getAcciones() : IAcciones[] {
     return [{
         id : 1,
-        nombre : 'Añadir',  
+        nombre : 'Productos',  
         path : 'create',
     }, {
         id : 2,
-        nombre : 'Modificar',
+        nombre : '',
         path : 'update',
     }, {
         id : 3,
-        nombre : 'Buscar',
+        nombre : '',
         path : 'find',
       }
     ]
