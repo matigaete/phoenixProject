@@ -4,21 +4,6 @@ import { Ilista } from '../../../Interfaces/ilista';
 
 @Component({
   selector: 'app-create',
-<<<<<<< Updated upstream
-  template: `<form>
-                  <div class="form-group">
-                    <label for="exampleFormControlInput1">{{getNombre()}}</label>
-                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleFormControlSelect1">{{getCategoria()}}</label>
-                    <select class="form-control" id="exampleFormControlSelect1"> 
-                      <option *ngFor="let c of categorias">{{c.nombre}}</option>
-                    </select>
-                  </div>
-                  <button type="button" class="btn btn-light">{{getAceptar()}}</button>
-                </form>`,
-=======
   template:  `<form>
                 <div class="form-group">
                   <label for="exampleFormControlInput1">{{codigo}}</label>
@@ -56,7 +41,6 @@ import { Ilista } from '../../../Interfaces/ilista';
                 </div>
                 <button type="button" class="btn btn-light">{{aceptar}}</button>
               </form>`,
->>>>>>> Stashed changes
   styles: []
 })
 export class CreateComponent implements OnInit {
@@ -73,15 +57,7 @@ export class CreateComponent implements OnInit {
   public active : string;
   public categorias : Ilista[]; 
   
-<<<<<<< Updated upstream
-  constructor( private businessService: BusinessService ) { 
-    this.nombre    = businessService.getNombre();
-    this.categoria = businessService.getCategoria();
-    this.aceptar   = businessService.getAceptar(); 
-  }
-=======
   constructor( private businessService : BusinessService ) { }
->>>>>>> Stashed changes
 
   public ngOnInit(): void { 
     this.codigo       = this.businessService.getCodigo();
@@ -94,7 +70,7 @@ export class CreateComponent implements OnInit {
     this.precioCompra = this.businessService.getPrecioCompra();
     this.precioVenta  = this.businessService.getPrecioVenta();
     this.aceptar      = this.businessService.getAceptar(); 
-    this.active       = this.businessService.getActive();
+    this.active       = this.businessService.getActive() ;
   }
 
 }
