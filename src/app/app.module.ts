@@ -7,11 +7,14 @@ import { FooterComponent } from './include/footer/footer.component';
 import { HeaderComponent } from './include/header/header.component';
 import { IndexComponent } from './Home/index/index.component';
 import { CreateComponent } from './Mantenedores/Productos/create/create.component';
-import { SearchComponent } from './Mantenedores/Productos/search/search.component';
-import { ModifyComponent } from './Mantenedores/Productos/modify/modify.component';
+import { SearchComponent } from './Mantenedores/Productos/search/search.component'; 
 import { IndexProductosComponent } from './Mantenedores/Productos/index-productos/index-productos.component';
 import { BusinessService } from './business.service';
-
+import { ListaComponent } from './Include/lista/lista.component';
+import { FindComponent } from './Include/find/find.component';
+import { InfoComponent } from './Include/info/info.component';
+import { ListadoComponent } from './Include/listado/listado.component';
+  
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,9 +22,12 @@ import { BusinessService } from './business.service';
     HeaderComponent,
     IndexComponent,
     CreateComponent,
-    SearchComponent,
-    ModifyComponent,
-    IndexProductosComponent
+    SearchComponent, 
+    IndexProductosComponent,
+    ListaComponent,
+    FindComponent,
+    InfoComponent,
+    ListadoComponent
   ],
   imports: [
     BrowserModule,
