@@ -1,51 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, OnInit } from '@angular/core'; 
 import { BusinessService } from '../../business.service';
 import { Ilista } from '../../Interfaces/ilista';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styles: [`.navbar-blank{
+              background : #FFFFFF !important;
+            }
+            .menu-buttons{
+              margin-left : 440px;
+            }
+            .input-group.md-form.form-sm.form-2 input {
+              border: 1px solid #bdbdbd;
+              border-top-left-radius: 0.25rem;
+              border-bottom-left-radius: 0.25rem;
+            }`]
 })
 export class HeaderComponent implements OnInit {
   
-  private inicio : string;
-  private action : string; 
+  public inicio : string;
+  public action : string; 
   public acciones : Ilista[]; 
   
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private businessService: BusinessService,
-    ) { 
-    
-    this.inicio = businessService.getInicio();
-    this.action = businessService.getAction(); 
-    
-  }
+  constructor(private businessService: BusinessService) { }
 
   public ngOnInit(): void {
     this.acciones = this.businessService.getMantenedores();
+    this.inicio   = this.businessService.getInicio();
+    this.action   = this.businessService.getAction();
   }
   
-  public redirect( path ) {
-      this.router.navigate([path]);
+  public redirect(path : string) : void {
+      this.businessService.redirect(path);
   }
   
-  public setAction(action : string) : void{
-      this.action = action;
-  }
-  
-  public setInicio(inicio : string) : void {
-      this.inicio = inicio;
-  }
-  
-  public getAction() : string {
-      return this.action;
-  }
-  
-  public getInicio() : string {
-      return this.inicio;
-  }
 }
