@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BusinessService } from 'src/app/business.service';
 import { Ilista } from '../../Interfaces/ilista';
+import { Producto } from 'src/app/Clases/producto';
 
 @Component({
   selector: 'app-listado',
@@ -14,9 +15,9 @@ import { Ilista } from '../../Interfaces/ilista';
                 </thead>
                 <tbody>
                   <tr *ngFor="let p of productos">
-                    <th scope="row">{{p.id}}</th>
-                    <td>{{p.nombre}}</td>
-                    <td>{{p.path}}</td> 
+                    <th scope="row">{{p.getID()}}</th>
+                    <td>{{p.getNombre()}}</td>
+                    <td>{{p.getCategoria()}}</td> 
                   </tr>
                 </tbody>
               </table>`,
@@ -24,7 +25,7 @@ import { Ilista } from '../../Interfaces/ilista';
 })
 export class ListadoComponent implements OnInit {
 
-  productos : Ilista[];
+  productos : Producto[];
 
   constructor(private businessSerivce : BusinessService) { }
 
