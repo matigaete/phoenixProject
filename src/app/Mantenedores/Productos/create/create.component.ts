@@ -1,43 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { BusinessService } from '../../../business.service';
 import { Ilista } from '../../../Interfaces/ilista';
+import { Producto } from 'src/app/Clases/producto';
 
 @Component({
   selector: 'app-create',
   template:  `<form>
                 <div class="form-group">
-                  <label for="exampleFormControlInput1">{{codigo}}</label>
-                  <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+                  <label>{{codigo}}</label>
+                  <input type="text" [readOnly]="!isNew" class="form-control" placeholder="">
                 </div>
                 <div class="form-group">
-                  <label for="exampleFormControlInput1">{{nombre}}</label>
-                  <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="">
+                  <label>{{nombre}}</label>
+                  <input type="text" class="form-control" placeholder="">
                 </div>
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">{{descripcion}}</label>
-                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                  <label>{{descripcion}}</label>
+                  <textarea class="form-control" rows="3"></textarea>
                 </div>
                 <div class="form-group">
-                  <label for="exampleFormControlSelect1">{{categoria}}</label>
-                  <select class="form-control" id="exampleFormControlSelect1"> 
+                  <label>{{categoria}}</label>
+                  <select class="form-control"> 
                     <option *ngFor="let c of categorias">{{c.nombre}}</option>
                   </select>
                 </div> 
                 <div class="form-group">
-                  <label for="exampleFormControlInput1">{{stock}}</label>
-                  <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
+                  <label>{{stock}}</label>
+                  <input type="number" class="form-control" placeholder="">
                 </div>
                 <div class="form-group">
-                  <label for="exampleFormControlInput1">{{stockCritico}}</label>
-                  <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
+                  <label>{{stockCritico}}</label>
+                  <input type="number" class="form-control" placeholder="">
                 </div>
                 <div class="form-group">
-                  <label for="exampleFormControlInput1">{{precioCompra}}</label>
-                  <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
+                  <label>{{precioCompra}}</label>
+                  <input type="number" class="form-control" placeholder="">
                 </div>
                 <div class="form-group">
-                  <label for="exampleFormControlInput1">{{precioVenta}}</label>
-                  <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="">
+                  <label>{{precioVenta}}</label>
+                  <input type="number" class="form-control" placeholder="">
                 </div>
                 <button type="button" class="btn btn-light">{{aceptar}}</button>
               </form>`,
@@ -45,6 +46,9 @@ import { Ilista } from '../../../Interfaces/ilista';
 })
 export class CreateComponent implements OnInit {
   
+  @Input() isNew : boolean;
+  @Input() producto : Producto;
+
   public codigo : string; 
   public nombre : string;
   public descripcion : string; 
@@ -55,7 +59,7 @@ export class CreateComponent implements OnInit {
   public precioVenta : string; 
   public aceptar : string; 
   public active : string;
-  public categorias : Ilista[]; 
+  public categorias : Ilista[];   
   
   constructor( private businessService : BusinessService ) { }
 

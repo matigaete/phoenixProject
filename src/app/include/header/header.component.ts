@@ -9,7 +9,7 @@ import { Ilista } from '../../Interfaces/ilista';
               background : #FFFFFF !important;
             }
             .menu-buttons{
-              margin-left : 440px;
+              margin-left : 430px;
             }
             .input-group.md-form.form-sm.form-2 input {
               border: 1px solid #bdbdbd;

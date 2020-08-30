@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ilista } from './Interfaces/ilista';
+import { Producto } from './Clases/producto';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class BusinessService {
   private active : string;
   private action : string; 
   private option : number;
+  private info : string;
   
   constructor(private router: Router) { 
     this.inicio = 'Inicio';
@@ -34,6 +36,8 @@ export class BusinessService {
     this.precioVenta = 'Precio de venta';
     this.aceptar = 'Aceptar';  
     this.option = 1;
+    this.active = 'active';
+    this.info = 'Aqui contiene la información del producto';
   }
   
 //-Listas desplegables--------------------------//
@@ -42,11 +46,11 @@ export class BusinessService {
         id : 1,
         nombre : 'Productos',  
         path : 'index-productos',
-    }/*, {
-        id : 2,
-        nombre : '',
-        path : 'update',
     }, {
+        id : 2,
+        nombre : 'Categorías',
+        path : 'index-categorias',
+    }/*, {
         id : 3,
         nombre : '',
         path : 'find',
@@ -74,29 +78,22 @@ export class BusinessService {
   public getCategorias() : Ilista[] {
     return [{
         id : 1,
-        nombre : 'Maquina', 
+        nombre : 'Herramienta', 
     }, {
         id : 2,
-        nombre : 'Herramienta',
+        nombre : 'Maquina',
     } ]
   }
 
-  public getProductos() : Ilista[] {
-    return [{
-        id : 1,
-        nombre : 'Compresor de prueba', 
-        path : 'Herramienta'
-    }, {
-        id : 2,
-        nombre : 'Elevador',
-        path : 'Maquina'
-    },{
-        id : 3,
-        nombre : 'Aceite',
-        path : 'Liquidos'
-    }  
+  public getProductos() : Producto[] {
+    return [new Producto(1, 'Compresor de prueba', 'Herramienta', 
+    'Compresor de pana para familia de pana', 10, 1, 1000, 3000),
+    new Producto(2, 'Elevador', 'Maquina', 
+    'PA SUBIR A LA CIMA DEL MUNDO', 3, 1, 10000, 50000),
+    new Producto(3, 'Aceite', 'Herramienta', 
+    'Pa hacer unas papas d pana', 100, 10, 100, 3000), 
     ]
-  }
+  } 
 //-End listas----------------------------------//
   
 //-Funciones-----------------------------------//
@@ -107,7 +104,7 @@ export class BusinessService {
   public asignarOpcion(option : number, acciones : Ilista[]) : Ilista[] {
     this.option = option;
     this.clearCurrent(acciones);
-    acciones[option - 1].current = 'active'
+    acciones[option - 1].current = this.active;
     return acciones;
   }
 
@@ -115,6 +112,17 @@ export class BusinessService {
     for(let i = 0 ; i < acciones.length; i++){
       acciones[i].current = null;
     }
+  }
+
+  public filtrarProductos(productos : Producto[], filtro : string) : Producto[] {
+    productos = this.getProductos();
+    var aux = new Array;
+    for (let i = 0; i < productos.length; i++) {
+      if (productos[i].getCategoria() == filtro) {
+        aux.push(productos[i]); 
+      } 
+    }
+    return aux;
   }
   
 //-End Funciones-------------------------------//
@@ -171,6 +179,10 @@ export class BusinessService {
   public setprecioVenta(precioVenta : string) : void {
     this.precioVenta = precioVenta; 
   }
+
+  public setInfo(info : string) : void {
+    this.info = info; 
+  }
 //-End Setters----------------------------------//
   
 //-Getters--------------------------------------//
@@ -224,6 +236,10 @@ export class BusinessService {
   
   public getPrecioVenta() : string {
     return this.precioVenta;
+  }
+
+  public getInfo() : string {
+    return this.info;
   }
 //-End Getters-----------------------------------//
 }

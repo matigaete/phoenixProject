@@ -13,9 +13,9 @@ import { Ilista } from '../../../Interfaces/ilista';
                 </ul>
               </nav>
               <div class="container">  
-                <app-create  *ngIf="option == 1"></app-create>
-                <app-search  *ngIf="option == 2" valor="{{option}}"></app-search>
-                <app-search  *ngIf="option == 3" valor="{{option}}"></app-search> 
+                <app-create  *ngIf="option == 1" [isNew]="option"></app-create>
+                <app-search  *ngIf="option == 2" [valor]="option"></app-search>
+                <app-search  *ngIf="option == 3" [valor]="option"></app-search> 
                 <app-listado *ngIf="option == 4"></app-listado> 
               </div>`,
   styles: []
@@ -30,8 +30,8 @@ export class IndexProductosComponent implements OnInit {
     
   ngOnInit(): void {
       this.acciones = this.businessService.getAcciones();
-      this.option = 1;
-      this.acciones[this.option - 1].current = 'active';
+      this.option   = this.businessService.getOption();
+      this.acciones[this.option - 1].current = this.businessService.getActive();
   }
   
   public asignarOpcion(option : number) : void {
