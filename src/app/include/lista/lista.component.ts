@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { BusinessService } from '../../business.service'; 
-import { Ilista } from 'src/app/Interfaces/ilista';
+import { BusinessService } from '../../business.service';  
 import { Producto } from '../../Clases/producto';
 
 @Component({
@@ -15,8 +14,8 @@ import { Producto } from '../../Clases/producto';
 })
 export class ListaComponent implements OnInit { 
 
-  @Input() filtro : string;
   @Output() producto = new EventEmitter<Producto>();
+  @Input() filtro : string;
   public selected : Producto; 
   public productos : Producto[];
 

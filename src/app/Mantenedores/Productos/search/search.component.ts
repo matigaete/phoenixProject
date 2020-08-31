@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { FindComponent } from 'src/app/Include/find/find.component';
 import { Ilista } from 'src/app/Interfaces/ilista';
 import { Producto } from 'src/app/Clases/producto';
@@ -12,29 +12,34 @@ import { Producto } from 'src/app/Clases/producto';
                         <app-lista (producto)="enviaProducto($event)" [filtro]=filtro></app-lista>
                     </div>
                     <div class="col">
-                        <app-create *ngIf="valor == 2"  [producto]=producto></app-create>
-                        <app-info   *ngIf="valor == 3"  [producto]=producto></app-info>
+                        <app-create *ngIf="iValor == 2"  [iProducto]="producto"></app-create>
+                        <app-info   *ngIf="iValor == 3"  [iProducto]="producto" (oValor)="enviaAccion($event)"></app-info>
                     </div>
                 </div>
               </div>`,
   styles: []
 })
 export class SearchComponent implements OnInit {
-
-  @Input() valor : number;
+   
+  @Input() iValor : number;
   public filtro : string; 
   public producto : Producto;
 
   constructor() { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
   
-  refresh(filtro : string){
+  public refresh(filtro : string){
     this.filtro = filtro;
   }
 
-  enviaProducto(producto : Producto){
+  public enviaProducto(producto : Producto){
     this.producto = producto;
   }
+
+  public enviaAccion(oValor: number){
+    this.iValor = oValor; 
+  }
+
 }

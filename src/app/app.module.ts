@@ -15,6 +15,7 @@ import { ListaComponent } from './Include/lista/lista.component';
 import { FindComponent } from './Include/find/find.component';
 import { InfoComponent } from './Include/info/info.component';
 import { ListadoComponent } from './Include/listado/listado.component';
+import {HttpClientModule} from '@angular/common/http';
   
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { ListadoComponent } from './Include/listado/listado.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [BusinessService],
   bootstrap: [AppComponent]

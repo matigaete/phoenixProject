@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ilista } from './Interfaces/ilista';
 import { Producto } from './Clases/producto';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +23,12 @@ export class BusinessService {
   private action : string; 
   private option : number;
   private info : string;
+  private disabled : string;
+
+  public url = 'https://technicalservice.cl/php/';
   
-  constructor(private router: Router) { 
+  constructor(private router: Router,
+              private http: HttpClient) { 
     this.inicio = 'Inicio';
     this.action = 'Mantenedores'; 
     this.codigo = 'Código del producto';
@@ -38,6 +43,7 @@ export class BusinessService {
     this.option = 1;
     this.active = 'active';
     this.info = 'Aqui contiene la información del producto';
+    this.disabled = 'disabled';
   }
   
 //-Listas desplegables--------------------------//
@@ -91,7 +97,7 @@ export class BusinessService {
     new Producto(2, 'Elevador', 'Maquina', 
     'PA SUBIR A LA CIMA DEL MUNDO', 3, 1, 10000, 50000),
     new Producto(3, 'Aceite', 'Herramienta', 
-    'Pa hacer unas papas d pana', 100, 10, 100, 3000), 
+    'Pa hacer unas papas d pana', 100, 10, 100, 30000), 
     ]
   } 
 //-End listas----------------------------------//
@@ -125,6 +131,9 @@ export class BusinessService {
     return aux;
   }
   
+  seleccionar(codigo:number) {
+    return this.http.get(`${this.url}seleccionar.php?codigo=${codigo}`);
+  }
 //-End Funciones-------------------------------//
   
 //-Setters-------------------------------------//
@@ -183,6 +192,10 @@ export class BusinessService {
   public setInfo(info : string) : void {
     this.info = info; 
   }
+
+  public setDisabled(disabled : string) : void {
+    this.disabled = disabled; 
+  }
 //-End Setters----------------------------------//
   
 //-Getters--------------------------------------//
@@ -240,6 +253,10 @@ export class BusinessService {
 
   public getInfo() : string {
     return this.info;
+  }
+
+  public getDisabled() : string {
+    return this.disabled; 
   }
 //-End Getters-----------------------------------//
 }
