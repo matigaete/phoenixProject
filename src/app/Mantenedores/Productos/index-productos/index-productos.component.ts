@@ -25,8 +25,8 @@ export class IndexProductosComponent implements OnInit {
   
   public acciones : Ilista[];
   public option : number;
-  public current : string; 
-  public producto : Producto;
+  public current : string;  
+  public producto : Producto; 
   
   constructor( private businessService : BusinessService ) { }
     
@@ -34,7 +34,6 @@ export class IndexProductosComponent implements OnInit {
     this.acciones = this.businessService.getAcciones();
     this.option   = this.businessService.getOption();
     this.acciones[this.option - 1].current = this.businessService.getActive();
-    this.seleccionar();
   }
 
   public ngDoCheck(): void { 
@@ -45,11 +44,12 @@ export class IndexProductosComponent implements OnInit {
   public asignarOpcion(option : number) : void {
     this.acciones = this.businessService.asignarOpcion(option, this.acciones);
     this.option   = this.businessService.getOption();
+    this.seleccionar();
+    console.log(this.producto);
   }
 
   public seleccionar(){ 
-      this.businessService.seleccionar(1232154).subscribe(result => this.producto = result[0]);
-      console.log(this.producto);
+      this.businessService.getProducto(1232154).subscribe(( producto : Producto ) => this.producto = producto);
   }
 
 }

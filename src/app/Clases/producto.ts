@@ -1,17 +1,10 @@
 export class Producto {
 	
-	private id : number;
-	public nombre : string;
-	private categoria : string;
-	private descripcion : string;
-    private stock : number;
-    private stockCritico : number;
-    private precioCompra : number;
-    private precioVenta : number;
-
-	constructor(id : number, nombre : string, categoria : string,
-		  		descripcion : string, stock : number, stockCritico : number,
-				precioCompra : number, precioVenta : number){
+	constructor(private id : number, private nombre : string, 
+				private categoria : string, private descripcion : string, 
+				private stock : number, private stockCritico : number,
+				private precioCompra : number, private precioVenta : number,
+				private activo : number){
 		this.id = id;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
@@ -20,6 +13,7 @@ export class Producto {
 		this.stockCritico = stockCritico;
 		this.precioCompra = precioCompra;
 		this.precioVenta = precioVenta;
+		this.activo = activo;
 	}
 
 	public setID(id : number) : void{
@@ -86,7 +80,4 @@ export class Producto {
 		return this.precioVenta;
 	}
 
-	public toString() : string {
-		return 'CAMARA INCREIBLE, PANTALLA INCREIBLE';
-	}
 }
