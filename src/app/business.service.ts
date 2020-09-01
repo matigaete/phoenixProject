@@ -25,7 +25,7 @@ export class BusinessService {
   private info : string;
   private disabled : string;
 
-  public url = 'https://technicalservice.cl/php/';
+  public url = 'http://localhost:80/';
   
   constructor(private router: Router,
               private http: HttpClient) { 
@@ -93,13 +93,21 @@ export class BusinessService {
 
   public getProductos() : Producto[] {
     return [new Producto(1, 'Compresor de prueba', 'Herramienta', 
-    'Compresor de pana para familia de pana', 10, 1, 1000, 3000),
+    'Compresor de pana para familia de pana', 10, 1, 1000, 3000, 1),
     new Producto(2, 'Elevador', 'Maquina', 
-    'PA SUBIR A LA CIMA DEL MUNDO', 3, 1, 10000, 50000),
+    'PA SUBIR A LA CIMA DEL MUNDO', 3, 1, 10000, 50000, 1),
     new Producto(3, 'Aceite', 'Herramienta', 
-    'Pa hacer unas papas d pana', 100, 10, 100, 30000), 
+    'Pa hacer unas papas d pana', 100, 10, 100, 30000, 1), 
     ]
   } 
+
+  public getProductoss() {
+    return this.http.get(`${this.url}getProductos.php`);
+  }
+
+  public getProducto(codigo:number) {
+    return this.http.get(`${this.url}getProducto.php?codigo=${codigo}`);
+  }
 //-End listas----------------------------------//
   
 //-Funciones-----------------------------------//
@@ -131,9 +139,6 @@ export class BusinessService {
     return aux;
   }
   
-  seleccionar(codigo:number) {
-    return this.http.get(`${this.url}seleccionar.php?codigo=${codigo}`);
-  }
 //-End Funciones-------------------------------//
   
 //-Setters-------------------------------------//
