@@ -91,10 +91,10 @@ export class CreateComponent implements OnInit {
   public ngDoCheck(): void{ 
     if (this.iProducto !== undefined) {
       var product = this.iProducto[0];
-      this.valueCodigo = product.getID(); 
+      this.valueCodigo = product.getCodigo(); 
       this.valueNombre = product.getNombre();
       this.valueDescripcion = product.getDescripcion(); 
-      this.valueCategoria = product.getCategoria();
+      this.valueCategoria = product.getTipo();
       this.valueStock = product.getStock();
       this.valueStockCritico = product.getStockCritico();
       this.valuePrecioCompra = product.getPrecioCompra();

@@ -7,8 +7,16 @@
   }
   $codigo = $_GET["codigo"];
   $bd = include_once "conexion.php";
-  $sentencia = $bd->prepare("select * from producto where codigo = ?");
-  $sentencia->execute([$codigo]);
+  $sentencia = $bd->prepare(
+   "SELECT p.nombre, p.descripcion, c.tipo, 
+           p.stock, p.stockCritico, p.precioCompra, 
+           p.precioVenta, p.activo, p.codigo
+    FROM producto AS p
+    LEFT JOIN categoria AS c ON p.categoria = c.codigo        
+    WHERE p.codigo = ?");
+
+  $sentencia->execute([$codigo]); 
   $producto = $sentencia->fetchObject();  
+  
   echo json_encode($producto);
 ?>

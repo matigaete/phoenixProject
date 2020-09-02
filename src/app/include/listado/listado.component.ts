@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BusinessService } from 'src/app/business.service';
 import { Ilista } from '../../Interfaces/ilista';
 import { Producto } from 'src/app/Clases/producto';
+import { plainToClass, plainToClassFromExist } from 'class-transformer';
 
 @Component({
   selector: 'app-listado',
@@ -14,10 +15,10 @@ import { Producto } from 'src/app/Clases/producto';
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let p of productos">
-                    <th scope="row">{{p.getID()}}</th>
-                    <td>{{p.getNombre()}}</td>
-                    <td>{{p.getCategoria()}}</td> 
+                  <tr *ngFor="let p of jsonProductos">
+                    <th scope="row">{{p.codigo}}</th>
+                    <td>{{p.nombre}}</td>
+                    <td>{{p.categoria}}</td> 
                   </tr>
                 </tbody>
               </table>`,
@@ -25,12 +26,14 @@ import { Producto } from 'src/app/Clases/producto';
 })
 export class ListadoComponent implements OnInit {
 
+  public jsonProductos : JSON;
   productos : Producto[];
+  producto : Producto;
 
-  constructor(private businessSerivce : BusinessService) { }
+  constructor(private businessService : BusinessService) { }
 
-  ngOnInit(): void {
-    this.productos = this.businessSerivce.getProductos();
+  ngOnInit(): void { 
+    this.businessService.getProductoss().subscribe(( JsonProductos : JSON ) => this.jsonProductos = JsonProductos);
   }
 
 }
