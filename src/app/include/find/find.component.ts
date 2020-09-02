@@ -9,7 +9,7 @@ import { Ilista } from '../../Interfaces/ilista';
                   <div class="col"> 
                     <p>Ingrese una categoría:</p>
                     <select name="select" [(ngModel)]="actual" class="custom-select" (ngModelChange)="actualizarLista($event)"> 
-                      <option [value]="c.nombre" *ngFor="let c of categorias">{{c.nombre}}</option>
+                      <option [value]="c.codigo" *ngFor="let c of jsonCategorias">{{c.tipo}}</option>
                     </select>
                   </div> 
                 </div>
@@ -21,16 +21,16 @@ export class FindComponent implements OnInit {
   @Output() filtro = new EventEmitter<string>();
   actual : string;
   categorias : Ilista[];
+  jsonCategorias : JSON;
 
   constructor(private businessService : BusinessService) { }
 
   ngOnInit(): void {
-    this.categorias = this.businessService.getCategorias();  
-    this.actual = this.categorias[0].nombre;
-    this.actualizarLista(this.actual);
+    this.businessService.getCategoriass().subscribe(( jsonCategorias : JSON ) => this.jsonCategorias = jsonCategorias); 
+    this.actualizarLista(this.actual); 
   }
 
-  actualizarLista(selected){  
+  actualizarLista(selected){   
     this.filtro.emit(selected);
   }
 

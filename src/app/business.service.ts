@@ -92,22 +92,43 @@ export class BusinessService {
   }
 
   public getProductos() : Producto[] {
-    return [new Producto(1, 'Compresor de prueba', 'Herramienta', 
-    'Compresor de pana para familia de pana', 10, 1, 1000, 3000, 1),
-    new Producto(2, 'Elevador', 'Maquina', 
-    'PA SUBIR A LA CIMA DEL MUNDO', 3, 1, 10000, 50000, 1),
-    new Producto(3, 'Aceite', 'Herramienta', 
-    'Pa hacer unas papas d pana', 100, 10, 100, 30000, 1), 
+    return [new Producto('Compresor de prueba', 'Herramienta', 
+    'Compresor de pana para familia de pana', 10, 1, 1000, 3000, true, 1),
+    new Producto('Elevador', 'Maquina', 
+    'PA SUBIR A LA CIMA DEL MUNDO', 3, 1, 10000, 50000, true, 2),
+    new Producto('Aceite', 'Herramienta', 
+    'Pa hacer unas papas d pana', 100, 10, 100, 30000, true, 3), 
     ]
   } 
 
-  public getProductoss() {
-    return this.http.get(`${this.url}getProductos.php`);
+  public getCategoriass() {
+    return this.http.get(`${this.url}getCategories.php`);
   }
 
-  public getProducto(codigo:number) {
-    return this.http.get(`${this.url}getProducto.php?codigo=${codigo}`);
+  public getProductoss() {
+    return this.http.get(`${this.url}getProducts.php?codigo=undefined`);
   }
+
+  public getProductosFiltro(codigoCategoria) {
+    return this.http.get(`${this.url}getProducts.php?codigo=${codigoCategoria}`);
+  }
+
+  public getProducto(codigo : number) {
+    return this.http.get(`${this.url}getProduct.php?codigo=${codigo}`);
+  }
+
+  public creaProducto(producto : Producto) {
+    return this.http.post(`${this.url}addProduct.php`, producto);
+  }
+
+  public actualizaProducto(producto : Producto) {
+    return this.http.put(`${this.url}updateProduct.php`, producto);
+  }
+
+  public bajaProducto(producto : Producto) {
+    return this.http.put(`${this.url}unsuscribeProduct.php`, producto);
+  }
+
 //-End listas----------------------------------//
   
 //-Funciones-----------------------------------//
@@ -132,7 +153,7 @@ export class BusinessService {
     productos = this.getProductos();
     var aux = new Array;
     for (let i = 0; i < productos.length; i++) {
-      if (productos[i].getCategoria() == filtro) {
+      if (productos[i].getTipo() == filtro) {
         aux.push(productos[i]); 
       } 
     }

@@ -1,23 +1,23 @@
 export class Producto {
-	
-	constructor(private id : number, private nombre : string, 
-				private categoria : string, private descripcion : string, 
-				private stock : number, private stockCritico : number,
-				private precioCompra : number, private precioVenta : number,
-				private activo : number){
-		this.id = id;
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.categoria = categoria;
-		this.stock = stock;
-		this.stockCritico = stockCritico;
-		this.precioCompra = precioCompra;
-		this.precioVenta = precioVenta;
-		this.activo = activo;
+
+	constructor( private nombre : string, 
+		private tipo : string, private descripcion : string, 
+		private stock : number, private stockCritico : number,
+		private precioCompra : number, private precioVenta : number,
+		private activo : boolean, private codigo ?: number ){
+	this.codigo = codigo;
+	this.nombre = nombre;
+	this.descripcion = descripcion;
+	this.tipo = tipo;
+	this.stock = stock;
+	this.stockCritico = stockCritico;
+	this.precioCompra = precioCompra;
+	this.precioVenta = precioVenta;
+	this.activo = activo;
 	}
 
-	public setID(id : number) : void{
-		this.id = id;
+	public setCodigo(codigo : number) : void{
+		this.codigo = codigo;
 	}
 
 	public setNombre(nombre : string) : void{
@@ -28,8 +28,8 @@ export class Producto {
 		this.descripcion = descripcion;
 	}
 
-	public setCategoria(categoria : string) : void{
-		this.categoria = categoria;
+	public setTipo(tipo : string) : void{
+		this.tipo = tipo;
 	}
 
 	public setStock(stock : number) : void{
@@ -48,16 +48,20 @@ export class Producto {
 		this.precioVenta = precioVenta;
 	}
 
-	public getID() : number {
-		return this.id;		
+	public setActivo(activo : boolean) : void{
+		this.activo = activo;
+	}
+
+	public getCodigo() : number {
+		return this.codigo;		
 	}
 
 	public getNombre() : string {
 		return this.nombre;		
 	}
 
-	public getCategoria() : string {
-		return this.categoria;	
+	public getTipo() : string {
+		return this.tipo;	
 	}
 
 	public getDescripcion() : string{
@@ -78,6 +82,10 @@ export class Producto {
 
 	public getPrecioVenta() : number{
 		return this.precioVenta;
+	}
+
+	public getActivo() : boolean{
+		return this.activo;
 	}
 
 }

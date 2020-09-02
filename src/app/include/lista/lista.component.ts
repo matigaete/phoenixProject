@@ -1,13 +1,14 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BusinessService } from '../../business.service';  
 import { Producto } from '../../Clases/producto';
+import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'app-lista',
   template:  `<div class="form-group">
                 <label>Lista de productos:</label>
                 <select multiple class="form-control" [(ngModel)]="selected" (ngModelChange)="enviaProducto($event)">
-                  <option [value]="p" *ngFor="let p of productos">{{p.getNombre()}}</option> 
+                  <option [ngValue]="p" *ngFor="let p of jsonProductos">{{p.nombre}}</option> 
                 </select>
               </div>`,
   styles: []
@@ -18,19 +19,21 @@ export class ListaComponent implements OnInit {
   @Input() filtro : string;
   public selected : Producto; 
   public productos : Producto[];
+  public jsonProductos : Response;
 
   constructor(private businessService : BusinessService) { }
 
-  ngOnInit(): void { 
-    this.productos = this.businessService.filtrarProductos(this.productos, this.filtro);
+  public ngOnInit(): void { 
+    this.businessService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : Response ) => this.jsonProductos = JsonProductos);
   }
 
-  ngDoCheck(): void{
-    this.productos = this.businessService.filtrarProductos(this.productos, this.filtro); 
+  public ngOnChanges(): void{
+    this.businessService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : Response ) => this.jsonProductos = JsonProductos);
   }
 
-  enviaProducto(event : Producto){
-    this.producto.emit(event);
+  public enviaProducto(event : Response){
+    let producto = plainToClass(Producto, event);
+    this.producto.emit(producto);
   }
   
 }

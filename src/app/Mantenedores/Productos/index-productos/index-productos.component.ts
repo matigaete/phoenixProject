@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BusinessService } from '../../../business.service';
 import { Ilista } from '../../../Interfaces/ilista'; 
 import { Producto } from 'src/app/Clases/producto';
+import { plainToClass, plainToClassFromExist } from 'class-transformer';
+
 @Component({
   selector: 'app-index-productos',
   template:  `<nav>
@@ -26,7 +28,8 @@ export class IndexProductosComponent implements OnInit {
   public acciones : Ilista[];
   public option : number;
   public current : string;  
-  public producto : Producto; 
+  public jsonProducto : Response; 
+  public productos : Producto[] = []; 
   
   constructor( private businessService : BusinessService ) { }
     
@@ -44,12 +47,12 @@ export class IndexProductosComponent implements OnInit {
   public asignarOpcion(option : number) : void {
     this.acciones = this.businessService.asignarOpcion(option, this.acciones);
     this.option   = this.businessService.getOption();
-    this.seleccionar();
-    console.log(this.producto);
+    this.seleccionar(); 
   }
 
   public seleccionar(){ 
-      this.businessService.getProducto(1232154).subscribe(( producto : Producto ) => this.producto = producto);
+    this.businessService.getProducto(1232154).subscribe(( jsonProducto : Response ) => this.jsonProducto = jsonProducto);
+    let producto = plainToClass(Producto, this.jsonProducto); 
   }
-
+  
 }
