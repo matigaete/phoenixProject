@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BusinessService } from 'src/app/business.service';
-import { Ilista } from '../../Interfaces/ilista';
-import { Producto } from 'src/app/Clases/producto';
-import { plainToClass, plainToClassFromExist } from 'class-transformer';
+import { BusinessService } from 'src/app/Servicios/business.service'; 
+import { Producto } from 'src/app/Clases/producto'; 
+import { ProductosService } from 'src/app/Servicios/productos.service';
 
 @Component({
   selector: 'app-listado',
@@ -18,7 +17,7 @@ import { plainToClass, plainToClassFromExist } from 'class-transformer';
                   <tr *ngFor="let p of jsonProductos">
                     <th scope="row">{{p.codigo}}</th>
                     <td>{{p.nombre}}</td>
-                    <td>{{p.categoria}}</td> 
+                    <td>{{p.tipo}}</td> 
                   </tr>
                 </tbody>
               </table>`,
@@ -30,10 +29,10 @@ export class ListadoComponent implements OnInit {
   productos : Producto[];
   producto : Producto;
 
-  constructor(private businessService : BusinessService) { }
+  constructor(private productoService : ProductosService) { }
 
   ngOnInit(): void { 
-    this.businessService.getProductoss().subscribe(( JsonProductos : JSON ) => this.jsonProductos = JsonProductos);
+    this.productoService.getListaProductos().subscribe(( JsonProductos : JSON ) => this.jsonProductos = JsonProductos);
   }
 
 }

@@ -9,7 +9,7 @@ import { Producto } from 'src/app/Clases/producto';
                 <div class="row">
                     <div class="col">
                         <app-find (filtro)="refresh($event)"></app-find>
-                        <app-lista (producto)="enviaProducto($event)" [filtro]=filtro></app-lista>
+                        <app-lista (producto)="enviaProducto($event)" [filtro]=filtro [entrada]="'Productos'"></app-lista>
                     </div>
                     <div class="col">
                         <app-create *ngIf="iValor == 2"  [iProducto]="producto"></app-create>
@@ -22,7 +22,7 @@ import { Producto } from 'src/app/Clases/producto';
 export class SearchComponent implements OnInit {
    
   @Input() iValor : number;
-  public filtro : string; 
+  public filtro : number; 
   public producto : Producto;
 
   constructor() { }
@@ -30,7 +30,7 @@ export class SearchComponent implements OnInit {
   public ngOnInit(): void {
   }
   
-  public refresh(filtro : string){
+  public refresh(filtro : number){
     this.filtro = filtro;
   }
 

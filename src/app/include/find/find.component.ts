@@ -1,6 +1,6 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { BusinessService } from '../../business.service';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core'; 
 import { Ilista } from '../../Interfaces/ilista'; 
+import { CategoriasService } from 'src/app/Servicios/categorias.service';
 
 @Component({
   selector: 'app-find',
@@ -18,19 +18,19 @@ import { Ilista } from '../../Interfaces/ilista';
 })
 export class FindComponent implements OnInit {
   
-  @Output() filtro = new EventEmitter<string>();
-  actual : string;
+  @Output() filtro = new EventEmitter<number>();
+  actual : number;
   categorias : Ilista[];
-  jsonCategorias : JSON;
+  jsonCategorias : Response;
 
-  constructor(private businessService : BusinessService) { }
+  constructor(private categoriaService : CategoriasService) { }
 
   ngOnInit(): void {
-    this.businessService.getCategoriass().subscribe(( jsonCategorias : JSON ) => this.jsonCategorias = jsonCategorias); 
+    this.categoriaService.getCategorias().subscribe(( jsonCategorias : Response ) => this.jsonCategorias = jsonCategorias); 
     this.actualizarLista(this.actual); 
   }
 
-  actualizarLista(selected){   
+  actualizarLista(selected){    
     this.filtro.emit(selected);
   }
 
