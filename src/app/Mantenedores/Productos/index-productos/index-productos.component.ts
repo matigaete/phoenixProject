@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';   
-import { BusinessService } from '../../../business.service';
+import { BusinessService } from '../../../Servicios/business.service';
 import { Ilista } from '../../../Interfaces/ilista'; 
-import { Producto } from 'src/app/Clases/producto';
-import { plainToClass, plainToClassFromExist } from 'class-transformer';
+import { Producto } from 'src/app/Clases/producto'; 
+import { ProductosService } from 'src/app/Servicios/productos.service';
 
 @Component({
   selector: 'app-index-productos',
@@ -31,28 +31,22 @@ export class IndexProductosComponent implements OnInit {
   public jsonProducto : Response; 
   public productos : Producto[] = []; 
   
-  constructor( private businessService : BusinessService ) { }
+  constructor( private businessService : BusinessService,
+               private productoService : ProductosService ) { }
     
   public ngOnInit(): void {
     this.acciones = this.businessService.getAcciones();
-    this.option   = this.businessService.getOption();
-    this.acciones[this.option - 1].current = this.businessService.getActive();
+    this.option   = this.businessService.option;
+    this.acciones[this.option - 1].current = this.businessService.active;
   }
 
   public ngDoCheck(): void { 
-    this.option   = this.businessService.getOption();
-    this.acciones[this.option - 1].current = this.businessService.getActive();
+    this.option   = this.businessService.option;
+    this.acciones[this.option - 1].current = this.businessService.active;
 }
   
   public asignarOpcion(option : number) : void {
     this.acciones = this.businessService.asignarOpcion(option, this.acciones);
-    this.option   = this.businessService.getOption();
-    this.seleccionar(); 
-  }
-
-  public seleccionar(){ 
-    this.businessService.getProducto(1232154).subscribe(( jsonProducto : Response ) => this.jsonProducto = jsonProducto);
-    let producto = plainToClass(Producto, this.jsonProducto); 
-  }
-  
+    this.option   = this.businessService.option; 
+  }  
 }

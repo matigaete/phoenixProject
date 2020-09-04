@@ -1,91 +1,91 @@
 export class Producto {
 
-	constructor( private nombre : string, 
-		private tipo : string, private descripcion : string, 
-		private stock : number, private stockCritico : number,
-		private precioCompra : number, private precioVenta : number,
-		private activo : boolean, private codigo ?: number ){
-	this.codigo = codigo;
-	this.nombre = nombre;
-	this.descripcion = descripcion;
-	this.tipo = tipo;
-	this.stock = stock;
-	this.stockCritico = stockCritico;
-	this.precioCompra = precioCompra;
-	this.precioVenta = precioVenta;
-	this.activo = activo;
+	constructor( private _nombre : string, 
+		private _tipo : number | string, private _descripcion : string, 
+		private _stock : number, private _stockCritico : number,
+		private _precioCompra : number, private _precioVenta : number,
+		private _activo : boolean, private _codigo ?: number | string ){
+	this._codigo = _codigo;
+	this._nombre = _nombre;
+	this._descripcion = _descripcion;
+	this._tipo = _tipo;
+	this._stock = _stock;
+	this._stockCritico = _stockCritico;
+	this._precioCompra = _precioCompra;
+	this._precioVenta = _precioVenta;
+	this._activo = _activo;
 	}
 
-	public setCodigo(codigo : number) : void{
-		this.codigo = codigo;
+	public set codigo(codigo : number | string) {
+		this._codigo = codigo;
 	}
 
-	public setNombre(nombre : string) : void{
-		this.nombre = nombre;
+	public set nombre(nombre : string) {
+		this._nombre = nombre;
 	}
 
-	public setDescripcion(descripcion: string) : void{
-		this.descripcion = descripcion;
+	public set descripcion(descripcion: string){
+		this._descripcion = descripcion;
 	}
 
-	public setTipo(tipo : string) : void{
-		this.tipo = tipo;
+	public set tipo(tipo : number | string) {
+		this._tipo = tipo;
 	}
 
-	public setStock(stock : number) : void{
-		this.stock= stock;
+	public set stock(stock : number) {
+		this._stock= stock;
 	}
 
-	public setStockCritico(stockCritico : number) : void{
-		this.stockCritico = stockCritico;
+	public set stockCritico(stockCritico : number) {
+		this._stockCritico = stockCritico;
 	}
 
-	public setPrecioCompra(precioCompra : number) : void{
-		this.precioCompra = precioCompra;
+	public set precioCompra(precioCompra : number) {
+		this._precioCompra = precioCompra;
 	}
 
-	public setPrecioVenta(precioVenta : number) : void{
-		this.precioVenta = precioVenta;
+	public set precioVenta(precioVenta : number) {
+		this._precioVenta = precioVenta;
 	}
 
-	public setActivo(activo : boolean) : void{
-		this.activo = activo;
+	public set activo(activo : boolean) {
+		this._activo = activo;
 	}
 
-	public getCodigo() : number {
-		return this.codigo;		
+	public get codigo() : number | string {
+		return this._codigo;		
 	}
 
-	public getNombre() : string {
-		return this.nombre;		
+	public get nombre() : string {
+		return this._nombre;		
 	}
 
-	public getTipo() : string {
-		return this.tipo;	
+	public get tipo() : number | string {
+		return this._tipo;	
 	}
 
-	public getDescripcion() : string{
-		return this.descripcion;
+	public get descripcion() : string{
+		return this._descripcion;
 	}
 
-	public getStock() : number{
-		return this.stock;
+	public get stock() : number{
+		return this._stock;
 	}
 
-	public getStockCritico() : number{
-		return this.stockCritico;
+	public get stockCritico() : number{
+		return this._stockCritico;
 	}
 
-	public getPrecioCompra() : number{
-		return this.precioCompra;
+	public get precioCompra() : number{
+		return this._precioCompra;
 	}
 
-	public getPrecioVenta() : number{
-		return this.precioVenta;
+	public get precioVenta() : number{
+		return this._precioVenta;
 	}
 
-	public getActivo() : boolean{
-		return this.activo;
+	public get activo() : boolean{
+		return this._activo;
 	}
 
 }

@@ -1,6 +1,7 @@
 export interface Ilista {
 	id : number;
-    nombre : string;
+    nombre ?: string;
     path ?: string; 
     current ?: string;
+    tipo ?: string;
 }

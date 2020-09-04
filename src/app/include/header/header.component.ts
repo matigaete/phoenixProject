@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core'; 
-import { BusinessService } from '../../business.service';
+import { Component, OnInit } from '@angular/core';  
 import { Ilista } from '../../Interfaces/ilista';
+import { BusinessService } from 'src/app/Servicios/business.service';
 
 @Component({
   selector: 'app-header',
@@ -27,8 +27,8 @@ export class HeaderComponent implements OnInit {
 
   public ngOnInit(): void {
     this.acciones = this.businessService.getMantenedores();
-    this.inicio   = this.businessService.getInicio();
-    this.action   = this.businessService.getAction();
+    this.inicio   = this.businessService.inicio;
+    this.action   = this.businessService.action;
   }
   
   public redirect(path : string) : void {
