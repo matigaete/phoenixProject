@@ -13,8 +13,8 @@ $bd = include_once "conexion.php";
 $sentencia = $bd->prepare(
    "UPDATE producto 
     SET activo = 0
-    WHERE id = ?");
-$resultado = $sentencia->execute([$jsonProducto->id]);
+    WHERE codigo = ?");
+$resultado = $sentencia->execute([$jsonProducto->_codigo]);
     
 echo json_encode($resultado);
 

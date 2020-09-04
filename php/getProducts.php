@@ -6,7 +6,14 @@
   if ($_GET["codigo"] == "undefined") {
     $sentencia = $bd->query(
       "SELECT p.codigo, p.nombre, p.descripcion, 
-              c.tipo AS categoria, p.stock, p.stockCritico, 
+              p.categoria AS tipo, p.stock, p.stockCritico, 
+              p.precioCompra, p.precioVenta, p.activo 
+       FROM producto AS p  
+       WHERE p.activo = true"); 
+  } elseif ($_GET["codigo"] == "all") {
+    $sentencia = $bd->query(
+      "SELECT p.codigo, p.nombre, p.descripcion, 
+              c.tipo, p.stock, p.stockCritico, 
               p.precioCompra, p.precioVenta, p.activo 
        FROM producto AS p
        LEFT JOIN categoria AS c ON p.categoria = c.codigo 
@@ -14,12 +21,11 @@
   } else {
     $codigo = $_GET["codigo"];
     $sentencia = $bd->prepare(
-      "SELECT p.nombre, p.descripcion, c.tipo, 
+      "SELECT p.nombre, p.descripcion, p.categoria AS tipo, 
               p.stock, p.stockCritico, p.precioCompra, 
               p.precioVenta, p.activo, p.codigo
-      FROM producto AS p
-      LEFT JOIN categoria AS c ON p.categoria = c.codigo        
-      WHERE p.categoria = ?");
+      FROM producto AS p        
+      WHERE p.activo = true AND p.categoria = ?");
  
     $sentencia->execute([$codigo]);  
   }
