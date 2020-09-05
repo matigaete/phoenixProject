@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar'; 
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,10 @@ export class ProductosService {
   private _mensajeDescripcion : string;
   private _mensajeStock : string;
   private _mensajePrecio : string;
+  private _mensajeColumnas : string;
+  private _mensajeBajado : string;
+  private _mensajeActualizado : string;
+  private _mensajeCreado : string;
   
   constructor(private http: HttpClient,
     private dialogo: MatDialog,
@@ -45,6 +49,10 @@ export class ProductosService {
     this._mensajeDescripcion = 'Ingrese una descripción';
     this._mensajeStock = 'Stock debe ser mayor a 0';
     this._mensajePrecio = 'Ingrese un precio mayor a 0';
+    this._mensajeColumnas = 'Todas las columnas están desplegadas';
+    this._mensajeBajado = 'Producto dado de baja';
+    this._mensajeActualizado = 'Producto actualizado';
+    this._mensajeCreado = 'Producto añadido';
   }
   
 //-Listas desplegables--------------------------//
@@ -99,7 +107,7 @@ export class ProductosService {
       subscribe((confirmado: Boolean) => {
       if (!confirmado) return;
       this.bajaProducto(producto).subscribe(() => { 
-        this.snackBar.open('Producto dado de baja', undefined, {
+        this.snackBar.open(this._mensajeBajado, undefined, {
           duration: 1500,
         });
       });
@@ -179,6 +187,18 @@ export class ProductosService {
   public set mensajePrecio(mensajePrecio : string){
     this._mensajePrecio = mensajePrecio;
   }
+
+  public set mensajeColumnas(mensajeColumnas : string){
+    this._mensajeColumnas = mensajeColumnas;
+  }
+
+  public set mensajeActualizado(mensajeActualizado : string){
+    this._mensajeActualizado = mensajeActualizado;
+  }
+
+  public set mensajeCreado(mensajeCreado : string){
+    this._mensajeCreado = mensajeCreado;
+  }
 //-End Setters----------------------------------//
   
 //-Getters--------------------------------------//
@@ -236,6 +256,18 @@ export class ProductosService {
 
   public get mensajePrecio() : string {
     return this._mensajePrecio;
+  }
+
+  public get mensajeColumnas() : string {
+    return this._mensajeColumnas;
+  }
+
+  public get mensajeActualizado() : string {
+    return this._mensajeActualizado;
+  }
+
+  public get mensajeCreado() : string {
+    return this._mensajeCreado;
   }
 //-End Getters-----------------------------------//
 }
