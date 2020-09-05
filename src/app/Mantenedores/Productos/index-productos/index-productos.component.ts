@@ -28,7 +28,7 @@ export class IndexProductosComponent implements OnInit {
   public acciones : Ilista[];
   public option : number;
   public current : string;  
-  public jsonProducto : Response; 
+  public jsonProducto : any; 
   public productos : Producto[] = []; 
   
   constructor( private businessService : BusinessService,

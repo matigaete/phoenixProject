@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { Producto } from '../Clases/producto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/dialogo-confirmacion.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +28,9 @@ export class ProductosService {
   private _mensajeStock : string;
   private _mensajePrecio : string;
   
-  constructor(private http: HttpClient) {  
+  constructor(private http: HttpClient,
+    private dialogo: MatDialog,
+    private snackBar: MatSnackBar) {  
     this._codigo = 'Código del producto';
     this._nombre = 'Nombre del producto';
     this._categoria = 'Categoría del producto';
@@ -84,6 +89,21 @@ export class ProductosService {
 
   public bajaProducto(producto : Producto) {
     return this.http.put(`${this.url}unsuscribeProduct.php`, producto);
+  }
+
+  public bajarProducto(producto : Producto){
+    this.dialogo.open(DialogoConfirmacionComponent, {
+      data: `¿Realmente quieres dar de baja a ${producto.nombre}?`
+      })
+      .afterClosed().
+      subscribe((confirmado: Boolean) => {
+      if (!confirmado) return;
+      this.bajaProducto(producto).subscribe(() => { 
+        this.snackBar.open('Producto dado de baja', undefined, {
+          duration: 1500,
+        });
+      });
+    })
   }
 
 //-End listas----------------------------------//

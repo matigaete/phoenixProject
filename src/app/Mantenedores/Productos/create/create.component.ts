@@ -109,7 +109,7 @@ export class CreateComponent implements OnInit {
 
   public aceptar : string; 
   public active : string;
-  public jsonCategorias : Response;   
+  public jsonCategorias : any;   
 
   public errorCodigo : boolean;
   public errorNombre : boolean;
@@ -136,7 +136,7 @@ export class CreateComponent implements OnInit {
     this.nombre       = this.productoService.nombre;
     this.descripcion  = this.productoService.descripcion;
     this.categoria    = this.productoService.categoria;
-    this.categoriaService.getCategorias().subscribe(( jsonCategorias : Response ) => this.jsonCategorias = jsonCategorias); 
+    this.categoriaService.getCategorias().subscribe(( jsonCategorias : any ) => this.jsonCategorias = jsonCategorias); 
     this.stock        = this.productoService.stock;
     this.stockCritico = this.productoService.stockCritico;
     this.precioCompra = this.productoService.precioCompra;
@@ -174,18 +174,7 @@ export class CreateComponent implements OnInit {
         }) 
       } else {
         if (this.chkBaja) {
-          this.dialogo.open(DialogoConfirmacionComponent, {
-          data: `¿Realmente quieres dar de baja a ${this.productoModel.nombre}?`
-          })
-          .afterClosed().
-          subscribe((confirmado: Boolean) => {
-          if (!confirmado) return;
-          this.productoService.bajaProducto(this.productoModel).subscribe(() => { 
-            this.snackBar.open('Producto dado de baja', undefined, {
-              duration: 1500,
-            });
-          });
-        })
+          this.productoService.bajarProducto(this.productoModel);
         } else {
           this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
             this.snackBar.open('Producto actualizado', undefined, {

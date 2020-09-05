@@ -27,32 +27,32 @@ export class ListaComponent implements OnInit {
   public selectedP : Producto; 
   public selectedC : Categoria; 
   public productos : Producto[];
-  public jsonProductos : Response;
-  public jsonCategorias : Response;
+  public jsonProductos : any;
+  public jsonCategorias : any;
 
   constructor(private productoService : ProductosService,
               private categoriaService : CategoriasService) { }
 
   public ngOnInit(): void { 
     if (this.entrada == "Productos") {
-      this.productoService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : Response ) => this.jsonProductos = JsonProductos);  
+      this.productoService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : any ) => this.jsonProductos = JsonProductos);  
     } else {
-      this.categoriaService.getCategorias().subscribe(( jsonCategorias : Response ) => this.jsonCategorias = jsonCategorias); 
+      this.categoriaService.getCategorias().subscribe(( jsonCategorias : any ) => this.jsonCategorias = jsonCategorias); 
     }
   }
 
   public ngOnChanges(): void{
     if (this.entrada == "Productos") {
-    this.productoService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : Response ) => this.jsonProductos = JsonProductos);
+    this.productoService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : any ) => this.jsonProductos = JsonProductos);
     }
   }
 
-  public enviaProducto(event : Response){  
+  public enviaProducto(event : any){  
     let producto = plainToClass(Producto, event); 
     this.producto.emit(producto);
   }
 
-  public enviaCategoria(event : Response){  
+  public enviaCategoria(event : any){  
     let categoria = plainToClass(Categoria, event[0]); 
     this.categoria.emit(categoria);
   }

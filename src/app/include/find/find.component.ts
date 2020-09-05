@@ -21,12 +21,12 @@ export class FindComponent implements OnInit {
   @Output() filtro = new EventEmitter<number>();
   actual : number;
   categorias : Ilista[];
-  jsonCategorias : Response;
+  jsonCategorias : any;
 
   constructor(private categoriaService : CategoriasService) { }
 
   ngOnInit(): void {
-    this.categoriaService.getCategorias().subscribe(( jsonCategorias : Response ) => this.jsonCategorias = jsonCategorias); 
+    this.categoriaService.getCategorias().subscribe(( jsonCategorias : any ) =>this.jsonCategorias = jsonCategorias); 
     this.actualizarLista(this.actual); 
   }
 

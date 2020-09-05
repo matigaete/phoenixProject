@@ -1,19 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import { Ilista } from 'src/app/Interfaces/ilista';
+import { BusinessService } from 'src/app/Servicios/business.service';
 
 @Component({
   selector: 'app-index',
-  template:  `<app-header></app-header>
-                <div class="container">
-                  <router-outlet></router-outlet>
-                </div>
-              <app-footer></app-footer>`,
-  styles:[]
+  templateUrl: './index.component.html',
+  styleUrls:['./index.component.css']
 })
 export class IndexComponent implements OnInit {
 
-  constructor() { }
+  public inicio : string;
+  public action : string; 
+  public acciones : Ilista[];  
 
-  ngOnInit(): void {
+  constructor(private businessService: BusinessService) {}
+
+  public ngOnInit(): void {
+    this.acciones = this.businessService.getMantenedores();
+    this.inicio   = this.businessService.inicio;
+    this.action   = this.businessService.action;
+  }
+  
+  public redirect(path : string) : void {
+      this.businessService.redirect(path);
   }
 
 }

@@ -5,9 +5,6 @@ import { Categoria } from 'src/app/Clases/categoria';
   selector: 'app-index-categorias',
   template:  `<div class="container"> 
                 <div class="col">
-                  Nombre de categoría:
-                </div> 
-                <div class="col">
                   <app-form-categorias [iCategoria]="categoria"></app-form-categorias>
                 </div>
                 <div class="col">
