@@ -35,6 +35,7 @@ import { ListadoComponent } from './Include/listado/listado.component';
 import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dialogo-confirmacion.component'; 
 import { FormCategoriasComponent } from './Mantenedores/Categorias/form-categorias/form-categorias.component';
 import { IndexCategoriasComponent } from './Mantenedores/Categorias/index-categorias/index-categorias.component';
+import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-columna.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,7 @@ import { IndexCategoriasComponent } from './Mantenedores/Categorias/index-catego
     ListadoComponent,
     DialogoConfirmacionComponent,  
     FormCategoriasComponent, 
-    IndexCategoriasComponent,
+    IndexCategoriasComponent, DialogoColumnaComponent,
   ],
   entryComponents: [
     DialogoConfirmacionComponent,

@@ -1,8 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core'; 
 import { Producto } from 'src/app/Clases/producto';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
-import { MatDialog } from '@angular/material/dialog'; 
+import { MatSnackBar } from '@angular/material/snack-bar'; 
 
 import { BusinessService } from '../../../Servicios/business.service';
 import { ProductosService } from 'src/app/Servicios/productos.service'; 
@@ -128,8 +126,7 @@ export class CreateComponent implements OnInit {
   constructor( private businessService : BusinessService,
                private productoService : ProductosService,
                private categoriaService : CategoriasService,
-               private snackBar: MatSnackBar,
-               private dialogo: MatDialog ) { }
+               private snackBar: MatSnackBar) { }
 
   public ngOnInit(): void {  
     this.codigo       = this.productoService.codigo;
@@ -168,7 +165,7 @@ export class CreateComponent implements OnInit {
         !this.errorPrecioCompra && !this.errorPrecioVenta) {
       if (this.isNew) {
         this.productoService.creaProducto(this.productoModel).subscribe(() => {
-          this.snackBar.open('Producto añadido', undefined, {
+          this.snackBar.open(this.productoService.mensajeCreado, undefined, {
             duration: 1500,
           }); 
         }) 
@@ -177,7 +174,7 @@ export class CreateComponent implements OnInit {
           this.productoService.bajarProducto(this.productoModel);
         } else {
           this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
-            this.snackBar.open('Producto actualizado', undefined, {
+            this.snackBar.open(this.productoService.mensajeActualizado, undefined, {
               duration: 1500,
             });
           }) 

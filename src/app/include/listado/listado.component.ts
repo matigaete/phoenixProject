@@ -4,18 +4,22 @@ import { ProductosService } from 'src/app/Servicios/productos.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Ilista } from 'src/app/Interfaces/ilista';
+import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoColumnaComponent } from '../dialogo-columna/dialogo-columna.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-listado',
   template:  `<button mat-raised-button (click)="addColumn()"> 
                 <mat-icon >add</mat-icon>
-                Add column 
+                Añadir columnas
               </button> 
               <table mat-table [dataSource]="jsonProductos" class="mat-elevation-z8">
                 <ng-container [matColumnDef]="column.nombre" *ngFor="let column of textColumns">
                   <th mat-header-cell *matHeaderCellDef> 
                     {{column.tipo}} 
-                    <button mat-icon-button (click)="bajarProducto(producto)">
+                    <button mat-icon-button (click)="removeColumn(column)">
                       <mat-icon>remove_circle</mat-icon>
                     </button>
                   </th>
@@ -23,7 +27,7 @@ import { Ilista } from 'src/app/Interfaces/ilista';
                 </ng-container>
                 <ng-container [matColumnDef]="column.nombre" *ngFor="let column of priceColumns">
                   <th mat-header-cell *matHeaderCellDef> {{column.tipo}}
-                    <button mat-icon-button (click)="bajarProducto(producto)">
+                    <button mat-icon-button (click)="removeColumn(column)">
                       <mat-icon>remove_circle</mat-icon>
                     </button>
                   </th>
@@ -61,11 +65,14 @@ export class ListadoComponent implements OnInit {
                                   {nombre:'stockCritico',tipo:'Stock Critico'} ,];
   public priceColumns : Ilista[] = [{nombre:'precioCompra',tipo:'$ Compra'} , 
                                     {nombre:'precioVenta',tipo:'$ Venta'} ]; 
-  public buttonColumn: Ilista[] = [{nombre:'eliminar',tipo:'Dar de baja'}];
-  public allColumns: Ilista[] = this.textColumns.concat(this.priceColumns, this.buttonColumn);
-  public columnsToDisplay: string[];
+  public buttonColumn : Ilista[] = [{nombre:'eliminar',tipo:'Dar de baja'}];
+  public allColumns : Ilista[] = this.textColumns.concat(this.priceColumns, this.buttonColumn);
+  public columnsToDisplay : string[] = [];
+  public columnsOculted : Ilista[] = [];
 
-  constructor(private productoService : ProductosService) { 
+  constructor(private productoService : ProductosService,
+    private dialogo: MatDialog,
+    private snackBar: MatSnackBar) { 
     this.bajar = this.productoService.active;
   }
 
@@ -75,13 +82,31 @@ export class ListadoComponent implements OnInit {
   }
 
   addColumn() { 
-    // this.columnsToDisplay.push(this.allColumns[0]);
+    if (this.columnsOculted.length) {
+      this.dialogo.open(DialogoColumnaComponent, {
+        data: this.columnsOculted
+        })
+        .afterClosed().
+        subscribe((lista: Ilista[]) => {
+        lista.forEach(element => {
+          if(element.current) { 
+            this.columnsToDisplay.splice(this.columnsToDisplay.length - 1, 0 , element.nombre);
+            this.columnsOculted.splice(this.columnsOculted.indexOf(element),1);
+          }
+        });
+      })
+    } else{
+      this.snackBar.open(this.productoService.mensajeColumnas, undefined, {
+        duration: 1500,
+      });
+    }
   }
 
-  removeColumn() {
+  removeColumn(lista : Ilista) {  
     if (this.columnsToDisplay.length) {
-      this.columnsToDisplay.pop();
-    }
+      this.columnsToDisplay.splice(this.columnsToDisplay.indexOf(lista.nombre),1);
+      this.columnsOculted.push(lista);
+    } 
   }
 
   getColumns(){
