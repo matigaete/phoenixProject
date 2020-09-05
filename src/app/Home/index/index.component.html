@@ -1,0 +1,41 @@
+<div class="contenedor-padre">
+    <mat-toolbar class="barra navbar-blank" color="warn">
+      <mat-toolbar-row> 
+        <button (click)="cajon.toggle()" mat-icon-button color="primary">
+          <mat-icon>menu</mat-icon>
+          <span>Menu</span>
+        </button>
+        <span class="spacer"></span>
+        <img (click)="redirect('')" src="https://technicalservice.cl/wp-content/uploads/2020/05/cropped-logo13-320x38.png" 
+        class="img-fluid" alt="No image" role="button">
+        <span class="spacer"></span>
+        <span>
+          <a mat-stroked-button role="button" color="primary" (click)="redirect('')">{{inicio}}</a> 
+        </span>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-sidenav-container class="contenido">
+      <mat-sidenav style="min-width: 300px;" #cajon mode="side">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{action}}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+  
+            <mat-nav-list *ngFor="let a of acciones">
+              <a class="dropdown-item" role="button" (click)="redirect(a.path)">{{a.nombre}}</a>  
+            </mat-nav-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-sidenav>
+      <mat-sidenav-content class="padding-10">
+        <router-outlet></router-outlet>
+      </mat-sidenav-content> 
+    </mat-sidenav-container>
+  </div>
+
+
+
+
