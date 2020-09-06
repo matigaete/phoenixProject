@@ -10,7 +10,7 @@ import { plainToClass } from 'class-transformer';
 @Component({
   selector: 'app-listado',
   template:  `<button mat-raised-button (click)="addColumn()"> 
-                <mat-icon >add</mat-icon>
+                <mat-icon>add</mat-icon>
                 Añadir columnas
               </button> 
               <table mat-table [dataSource]="jsonProductos" class="mat-elevation-z8">
@@ -45,7 +45,7 @@ import { plainToClass } from 'class-transformer';
                   <td class="mat-cell" colspan="4">No existen registros</td>
                 </tr>
               </table>`,
-  styles: [ `table {
+            styles: [ `table {
               width: 100%;
             }
             

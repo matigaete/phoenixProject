@@ -63,15 +63,26 @@ import { CategoriasService } from 'src/app/Servicios/categorias.service';
                 <div class="form-group">
                   <label>{{precioCompra}}</label>
                   <input type="number" [ngClass]="formControlPrecioCompra()" name="precioCompra"
-                  [(ngModel)]="productoModel.precioCompra" (ngModelChange)="validaPrecioCompra($event)"
+                  [(ngModel)]="productoModel.precioCompra" (ngModelChange)="validaPrecioCompra($event); calculaValor();"
                   [value]="productoModel.precioCompra">
                   <div class="invalid-feedback">
                     {{mensajePrecio}}
                   </div>
                 </div>
                 <div class="form-group">
+                  <div >
+                    <mat-checkbox class="example-margin" [(ngModel)]="chkAuto" name="chkAuto">
+                      <label class="form-check-label">Valoración automática (%)</label>
+                    </mat-checkbox> 
+                  </div>
+                  <div class="col-2">
+                    <input [readOnly]="!chkAuto" type="number" class="form-control" name="multiplierPrice"
+                      [(ngModel)]="multiplierPrice"  (ngModelChange)="calculaValor(); validaPrecioVenta($event);" [value]="multiplierPrice">
+                  </div>
+                </div>
+                <div class="form-group">
                   <label>{{precioVenta}}</label>
-                  <input type="number" [ngClass]="formControlPrecioVenta()" name="precioVenta"
+                  <input [readOnly]="chkAuto" type="number" [ngClass]="formControlPrecioVenta()" name="precioVenta"
                   [(ngModel)]="productoModel.precioVenta" (ngModelChange)="validaPrecioVenta($event)"
                   [value]="productoModel.precioVenta">
                   <div class="invalid-feedback">
@@ -79,8 +90,7 @@ import { CategoriasService } from 'src/app/Servicios/categorias.service';
                   </div>
                 </div>
                 <section *ngIf="!isNew">
-                  <mat-checkbox class="example-margin" 
-                  [(ngModel)]="chkBaja" name="chkBaja">
+                  <mat-checkbox class="example-margin" [(ngModel)]="chkBaja" name="chkBaja">
                     <label class="form-check-label">{{active}}</label>
                   </mat-checkbox> 
                 </section>
@@ -104,6 +114,8 @@ export class CreateComponent implements OnInit {
   public precioCompra : string; 
   public precioVenta : string; 
   public chkBaja : boolean;
+  public chkAuto : boolean;
+  public multiplierPrice : number;
 
   public aceptar : string; 
   public active : string;
@@ -184,6 +196,17 @@ export class CreateComponent implements OnInit {
       this.snackBar.open(this.businessService.mensajeError, undefined, {
         duration: 1500,
       });
+    }
+  }
+
+  public calculaValor(){
+    try {
+      if (this.chkAuto) {
+        var percent = this.multiplierPrice / 100;
+        var pCompra = this.productoModel.precioCompra;
+        this.productoModel.precioVenta = pCompra + ( pCompra * percent );
+      }
+    } catch (error) { 
     }
   }
 
