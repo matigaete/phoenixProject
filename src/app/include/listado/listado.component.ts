@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogoColumnaComponent } from '../dialogo-columna/dialogo-columna.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { plainToClass } from 'class-transformer';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-listado',
@@ -13,7 +14,7 @@ import { plainToClass } from 'class-transformer';
                 <mat-icon>add</mat-icon>
                 Añadir columnas
               </button> 
-              <table mat-table [dataSource]="jsonProductos" class="mat-elevation-z8">
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
                 <ng-container [matColumnDef]="column.nombre" *ngFor="let column of textColumns">
                   <th mat-header-cell *matHeaderCellDef> 
                     {{column.tipo}} 
@@ -57,6 +58,7 @@ import { plainToClass } from 'class-transformer';
 export class ListadoComponent implements OnInit {
 
   public bajar : string;
+  public dataSource = new BehaviorSubject([]);
   public jsonProductos : any;
   public textColumns : Ilista[] = [{nombre:'codigo',tipo:'#'},
                                   {nombre:'nombre',tipo:'Nombre'}, 
@@ -79,7 +81,10 @@ export class ListadoComponent implements OnInit {
 
   ngOnInit(): void { 
     this.productoService.getListaProductos().subscribe(( jsonProductos : any ) => this.jsonProductos = jsonProductos);
-    this.columnsToDisplay = this.getColumns();
+    this.columnsToDisplay = this.getColumns(); 
+    setTimeout( () => { 
+      this.dataSource.next(this.jsonProductos);
+    }, 100 );
   }
 
   addColumn() { 
@@ -120,8 +125,18 @@ export class ListadoComponent implements OnInit {
 
   bajarProducto(event : any){
     let producto = plainToClass(Producto, event);
-    this.jsonProductos.splice(this.jsonProductos.indexOf(event),1); 
-    this.productoService.bajarProducto(producto);
+    this.productoService.bajarProducto(producto)
+    .afterClosed().
+      subscribe((confirmado: Boolean) => {
+      if (!confirmado) return;
+      this.productoService.bajaProducto(producto).subscribe(() => { 
+        this.snackBar.open(this.productoService.mensajeBajado, undefined, {
+          duration: 1500,
+        });
+      });
+      this.jsonProductos.splice(this.jsonProductos.indexOf(event),1); 
+      this.dataSource.next(this.jsonProductos);
+    }); 
   }
 
 }

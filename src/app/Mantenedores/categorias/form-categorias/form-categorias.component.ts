@@ -88,7 +88,8 @@ export class FormCategoriasComponent implements OnInit {
             this.snackBar.open(this.categoriasService.mensajeActualizado, undefined, {
               duration: 1500,
             })
-          }) 
+          })
+          this.actualiza.emit(this.categoriaModel); 
         })
       }
     } else {

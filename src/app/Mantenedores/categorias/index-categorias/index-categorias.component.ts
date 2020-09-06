@@ -8,7 +8,7 @@ import { Categoria } from 'src/app/Clases/categoria';
                   <app-form-categorias (actualiza)="enviaCategoria($event)" [iCategoria]="categoria"></app-form-categorias>
                 </div>
                 <div class="col">
-                  <app-lista (categoria)="enviaCategoria($event)" [entrada]="'Categorias'" [actualiza]="actualiza"></app-lista>
+                  <app-lista (categoria)="enviaCategoria($event)" [entrada]="'Categorias'" [actualiza]="categoria"></app-lista>
                 </div>
               </div>`,
   styles: []

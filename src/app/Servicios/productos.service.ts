@@ -33,8 +33,7 @@ export class ProductosService {
   private _mensajeCreado : string;
   
   constructor(private http: HttpClient,
-    private dialogo: MatDialog,
-    private snackBar: MatSnackBar) {  
+    private dialogo: MatDialog) {  
     this._codigo = 'Código del producto';
     this._nombre = 'Nombre del producto';
     this._categoria = 'Categoría del producto';
@@ -100,18 +99,9 @@ export class ProductosService {
   }
 
   public bajarProducto(producto : Producto){
-    this.dialogo.open(DialogoConfirmacionComponent, {
+    return this.dialogo.open(DialogoConfirmacionComponent, {
       data: `¿Realmente quieres dar de baja a ${producto.nombre}?`
-      })
-      .afterClosed().
-      subscribe((confirmado: Boolean) => {
-      if (!confirmado) return;
-      this.bajaProducto(producto).subscribe(() => { 
-        this.snackBar.open(this._mensajeBajado, undefined, {
-          duration: 1500,
-        });
       });
-    })
   }
 
 //-End listas----------------------------------//
@@ -199,6 +189,10 @@ export class ProductosService {
   public set mensajeCreado(mensajeCreado : string){
     this._mensajeCreado = mensajeCreado;
   }
+
+  public set mensajeBajado(mensajeBajado : string){
+    this._mensajeBajado = mensajeBajado;
+  }
 //-End Setters----------------------------------//
   
 //-Getters--------------------------------------//
@@ -268,6 +262,10 @@ export class ProductosService {
 
   public get mensajeCreado() : string {
     return this._mensajeCreado;
+  }
+
+  public get mensajeBajado() : string {
+    return this._mensajeBajado;
   }
 //-End Getters-----------------------------------//
 }

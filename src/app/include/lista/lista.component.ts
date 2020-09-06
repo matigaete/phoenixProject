@@ -46,6 +46,7 @@ export class ListaComponent implements OnInit {
     if (this.entrada == "Productos") {
       this.productoService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : any ) => this.jsonProductos = JsonProductos);
     } else {
+      this.jsonCategorias = null;
       this.categoriaService.getCategorias().subscribe(( jsonCategorias : any ) => this.jsonCategorias = jsonCategorias);     
     }
   }

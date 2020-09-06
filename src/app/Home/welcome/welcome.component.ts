@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 export interface Transaction {
+  insert: boolean;
   item: string;
   name?: string;
   cant?: number;
@@ -13,26 +15,51 @@ export interface Transaction {
   styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements OnInit {
-
+ 
   constructor() { }
 
-  displayedColumns = ['item', 'name', 'cant', 'cost', 'subtotal'];
+  displayedColumns = ['insert','item', 'name', 'sellcost', 'cost', 'cant', 'subtotal'];
   transactions: Transaction[] = [
-    {item: 'Beach ball', name:'test', cant:4, cost: 4},
-    {item: 'Towel', cant:6, cost: 5},
-    {item: 'Frisbee', cant:3, cost: 2},
-    {item: 'Sunscreen', cant:5, cost: 4},
-    {item: 'Cooler', cant:10, cost: 25},
-    {item: 'Swim suit', cant:2, cost: 15},
-  ];
+    {insert: false, item: '', name:'', cant:0, cost: 0},];
+  dataSource = new BehaviorSubject([]);
+  public chkAll : boolean = false;
 
   ngOnInit(){
-
+    this.dataSource.next(this.transactions);
   }
 
   /** Gets the total cost of all transactions. */
-  getTotalCost() {
+  getTotalCost() { 
     return this.transactions.map(t => t.cost*t.cant).reduce((acc, value) => acc + value, 0);
   }
 
+  btnClick(){
+    var registro : Transaction = {insert:false, item:'', cant:0, cost:0}; 
+    this.transactions.push(registro); 
+    this.dataSource.next(this.transactions);
+  }
+
+  clear(){
+    var array = [];
+    this.transactions.forEach(function(transaction, index) {
+      if (!transaction.insert) {
+        array.push(transaction);
+      } 
+    });
+    this.transactions = array;
+    this.dataSource.next(this.transactions);
+    this.chkAll = false;
+  }
+
+  select(row){ 
+      if (!row.insert) {
+        row.insert = true;
+      } else {
+        row.insert = false;
+      }
+  }
+  selectAll(){ 
+    this.transactions.map(transac => transac.insert = this.chkAll);
+    this.dataSource.next(this.transactions);
+  }
 }

@@ -180,10 +180,20 @@ export class CreateComponent implements OnInit {
           this.snackBar.open(this.productoService.mensajeCreado, undefined, {
             duration: 1500,
           }); 
+          this.productoModel = new Producto('',1,'',0,0,0,0,false,'');
         }) 
       } else {
         if (this.chkBaja) {
-          this.productoService.bajarProducto(this.productoModel);
+          this.productoService.bajarProducto(this.productoModel)
+          .afterClosed().
+            subscribe((confirmado: Boolean) => {
+            if (!confirmado) return;
+            this.productoService.bajaProducto(this.productoModel).subscribe(() => { 
+              this.snackBar.open(this.productoService.mensajeBajado, undefined, {
+                duration: 1500,
+              });
+            }); 
+          }); 
         } else {
           this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
             this.snackBar.open(this.productoService.mensajeActualizado, undefined, {
