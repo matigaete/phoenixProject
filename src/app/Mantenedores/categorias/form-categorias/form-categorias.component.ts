@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CategoriasService } from 'src/app/Servicios/categorias.service'; 
 import { BusinessService } from 'src/app/Servicios/business.service'; 
 import { Categoria } from 'src/app/Clases/categoria';
@@ -30,14 +30,15 @@ import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmaci
   styles: []
 })
 export class FormCategoriasComponent implements OnInit {
-
+  @Output() actualiza = new EventEmitter<Categoria>();
   @Input() iCategoria : Categoria;
-  public categoriaModel : Categoria = new Categoria('',0); 
+  public categoriaModel : Categoria = new Categoria('',0);  
   public aceptar : string;
   public nombre : string;
   public nuevo : string;
   public mensajeNombre : string;
   public errorNombre : boolean;
+  public categoria : string = 'categorias';
 
   constructor( private businessService   : BusinessService,
                private categoriasService : CategoriasService,
@@ -54,14 +55,15 @@ export class FormCategoriasComponent implements OnInit {
 
   public ngOnChanges() {
     if (this.iCategoria != undefined) {
-      this.categoriaModel = this.iCategoria;  
+      this.categoriaModel.codigo = this.iCategoria.codigo;
+      const nombre = this.iCategoria.tipo;
+      this.categoriaModel.tipo = nombre; 
       this.errorNombre = false;
     }
   }
 
   public OnSubmit(){
-    if (!this.errorNombre) {
-      console.log(this.categoriaModel);
+    if (!this.errorNombre) { 
       if (this.categoriaModel.codigo == 0) {
         this.dialogo.open(DialogoConfirmacionComponent, {
           data: this.categoriasService.getMensajeCrear(this.categoriaModel.tipo)
@@ -73,9 +75,9 @@ export class FormCategoriasComponent implements OnInit {
             this.snackBar.open(this.categoriasService.mensajeCreado, undefined, {
               duration: 1500,
             })
-          })
+          }) 
         })
-      } else {
+      } else { 
         this.dialogo.open(DialogoConfirmacionComponent, {
           data: this.categoriasService.getMensajeActualizar(this.iCategoria.tipo, this.categoriaModel.tipo) 
           })
@@ -86,7 +88,7 @@ export class FormCategoriasComponent implements OnInit {
             this.snackBar.open(this.categoriasService.mensajeActualizado, undefined, {
               duration: 1500,
             })
-          })
+          }) 
         })
       }
     } else {
@@ -106,6 +108,6 @@ export class FormCategoriasComponent implements OnInit {
   }
 
   public validaNombre(campo : any){
-    this.errorNombre = this.businessService.validaCampo(campo, this.errorNombre);
-  }
+    this.errorNombre = this.businessService.validaCampo(campo, this.errorNombre); 
+  } 
 }

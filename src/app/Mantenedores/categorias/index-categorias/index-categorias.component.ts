@@ -5,10 +5,10 @@ import { Categoria } from 'src/app/Clases/categoria';
   selector: 'app-index-categorias',
   template:  `<div class="container"> 
                 <div class="col">
-                  <app-form-categorias [iCategoria]="categoria"></app-form-categorias>
+                  <app-form-categorias (actualiza)="enviaCategoria($event)" [iCategoria]="categoria"></app-form-categorias>
                 </div>
                 <div class="col">
-                  <app-lista (categoria)="enviaCategoria($event)" [entrada]="'Categorias'"></app-lista>
+                  <app-lista (categoria)="enviaCategoria($event)" [entrada]="'Categorias'" [actualiza]="actualiza"></app-lista>
                 </div>
               </div>`,
   styles: []
@@ -16,6 +16,7 @@ import { Categoria } from 'src/app/Clases/categoria';
 export class IndexCategoriasComponent implements OnInit {
 
   public categoria : Categoria;
+  public actualiza : Categoria;
   constructor() { } 
 
   ngOnInit(): void {
@@ -24,5 +25,4 @@ export class IndexCategoriasComponent implements OnInit {
   public enviaCategoria(categoria : Categoria){
     this.categoria = categoria;
   }
-
 }
