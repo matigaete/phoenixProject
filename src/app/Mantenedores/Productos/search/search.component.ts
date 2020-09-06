@@ -1,6 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { FindComponent } from 'src/app/Include/find/find.component';
-import { Ilista } from 'src/app/Interfaces/ilista';
+import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core'; 
 import { Producto } from 'src/app/Clases/producto';
 
 @Component({

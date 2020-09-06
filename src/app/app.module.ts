@@ -36,7 +36,7 @@ import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dia
 import { FormCategoriasComponent } from './Mantenedores/Categorias/form-categorias/form-categorias.component';
 import { IndexCategoriasComponent } from './Mantenedores/Categorias/index-categorias/index-categorias.component';
 import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-columna.component';
-import { WelcomeComponent } from './welcome/welcome.component';
+import { WelcomeComponent } from './Home/welcome/welcome.component';
 
 @NgModule({
   declarations: [
