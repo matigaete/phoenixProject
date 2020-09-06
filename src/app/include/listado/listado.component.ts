@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core'; 
 import { Producto } from 'src/app/Clases/producto'; 
-import { ProductosService } from 'src/app/Servicios/productos.service';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatFormFieldControl } from '@angular/material/form-field';
-import { Ilista } from 'src/app/Interfaces/ilista';
-import { DialogoConfirmacionComponent } from '../dialogo-confirmacion/dialogo-confirmacion.component';
+import { ProductosService } from 'src/app/Servicios/productos.service'; 
+import { Ilista } from 'src/app/Interfaces/ilista'; 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoColumnaComponent } from '../dialogo-columna/dialogo-columna.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { plainToClass } from 'class-transformer';
 
 @Component({
   selector: 'app-listado',
@@ -43,6 +41,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
                 <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell" colspan="4">No existen registros</td>
+                </tr>
               </table>`,
   styles: [ `table {
               width: 100%;
@@ -117,7 +118,9 @@ export class ListadoComponent implements OnInit {
     return aux;
   }
 
-  bajarProducto(producto : Producto){
+  bajarProducto(event : any){
+    let producto = plainToClass(Producto, event);
+    this.jsonProductos.splice(this.jsonProductos.indexOf(event),1); 
     this.productoService.bajarProducto(producto);
   }
 

@@ -24,6 +24,7 @@ export class ListaComponent implements OnInit {
   @Output() categoria = new EventEmitter<Categoria>();
   @Input() filtro : string;
   @Input() entrada : string;
+  @Input() actualiza : Categoria;
   public selectedP : Producto; 
   public selectedC : Categoria; 
   public productos : Producto[];
@@ -43,7 +44,9 @@ export class ListaComponent implements OnInit {
 
   public ngOnChanges(): void{
     if (this.entrada == "Productos") {
-    this.productoService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : any ) => this.jsonProductos = JsonProductos);
+      this.productoService.getProductosFiltro(this.filtro).subscribe(( JsonProductos : any ) => this.jsonProductos = JsonProductos);
+    } else {
+      this.categoriaService.getCategorias().subscribe(( jsonCategorias : any ) => this.jsonCategorias = jsonCategorias);     
     }
   }
 
