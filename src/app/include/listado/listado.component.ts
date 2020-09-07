@@ -10,43 +10,8 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-listado',
-  template:  `<button mat-raised-button (click)="addColumn()"> 
-                <mat-icon>add</mat-icon>
-                Añadir columnas
-              </button> 
-              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-                <ng-container [matColumnDef]="column.nombre" *ngFor="let column of textColumns">
-                  <th mat-header-cell *matHeaderCellDef> 
-                    {{column.tipo}} 
-                    <button mat-icon-button (click)="removeColumn(column)">
-                      <mat-icon>remove_circle</mat-icon>
-                    </button>
-                  </th>
-                  <td mat-cell *matCellDef="let producto"> {{producto[column.nombre]}} </td>
-                </ng-container>
-                <ng-container [matColumnDef]="column.nombre" *ngFor="let column of priceColumns">
-                  <th mat-header-cell *matHeaderCellDef> {{column.tipo}}
-                    <button mat-icon-button (click)="removeColumn(column)">
-                      <mat-icon>remove_circle</mat-icon>
-                    </button>
-                  </th>
-                  <td mat-cell *matCellDef="let producto"> {{producto[column.nombre] | currency : 'CLP'}} </td>
-                </ng-container>
-                <ng-container matColumnDef="eliminar">
-                  <th mat-header-cell *matHeaderCellDef>{{bajar}}</th>
-                  <td mat-cell *matCellDef="let producto">
-                    <button mat-icon-button (click)="bajarProducto(producto)">
-                      <mat-icon color="warn">delete</mat-icon>
-                    </button>
-                  </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-                <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
-                <tr class="mat-row" *matNoDataRow>
-                  <td class="mat-cell" colspan="4">No existen registros</td>
-                </tr>
-              </table>`,
-            styles: [ `table {
+  templateUrl: './listado.component.html',
+  styles: [ `table {
               width: 100%;
             }
             
