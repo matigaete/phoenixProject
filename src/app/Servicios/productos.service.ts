@@ -31,6 +31,7 @@ export class ProductosService {
   private _mensajeBajado : string;
   private _mensajeActualizado : string;
   private _mensajeCreado : string;
+  private _mensajeActivado : string;
   
   constructor(private http: HttpClient,
     private dialogo: MatDialog) {  
@@ -52,6 +53,7 @@ export class ProductosService {
     this._mensajeBajado = 'Producto dado de baja';
     this._mensajeActualizado = 'Producto actualizado';
     this._mensajeCreado = 'Producto añadido';
+    this._mensajeActivado = 'Producto activado';
   }
   
 //-Listas desplegables--------------------------//
@@ -78,6 +80,10 @@ export class ProductosService {
     return this.http.get(`${this.url}getProducts.php?codigo=all`);
   }
 
+  public getProductosInactivos() {
+    return this.http.get(`${this.url}getProducts.php?codigo=inactives`);
+  }
+
   public getProductosFiltro(codigoCategoria) {
     return this.http.get(`${this.url}getProducts.php?codigo=${codigoCategoria}`);
   }
@@ -98,9 +104,19 @@ export class ProductosService {
     return this.http.put(`${this.url}unsuscribeProduct.php`, producto);
   }
 
+  public activaProducto(producto : Producto) {
+    return this.http.put(`${this.url}activateProduct.php`, producto);
+  }
+
   public bajarProducto(producto : Producto){
     return this.dialogo.open(DialogoConfirmacionComponent, {
       data: `¿Realmente quieres dar de baja a ${producto.nombre}?`
+      });
+  }
+
+  public activarProducto(producto : Producto){
+    return this.dialogo.open(DialogoConfirmacionComponent, {
+      data: `¿Desea recuperar el producto ${producto.nombre}?`
       });
   }
 
@@ -193,6 +209,10 @@ export class ProductosService {
   public set mensajeBajado(mensajeBajado : string){
     this._mensajeBajado = mensajeBajado;
   }
+
+  public set mensajeActivado(mensajeActivado : string){
+    this._mensajeActivado = mensajeActivado; 
+  }
 //-End Setters----------------------------------//
   
 //-Getters--------------------------------------//
@@ -266,6 +286,10 @@ export class ProductosService {
 
   public get mensajeBajado() : string {
     return this._mensajeBajado;
+  }
+
+  public get mensajeActivado() : string {
+    return this._mensajeActivado;
   }
 //-End Getters-----------------------------------//
 }

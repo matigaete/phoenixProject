@@ -1,7 +1,6 @@
 <?php 
   header('Access-Control-Allow-Origin: *'); 
-  header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-  
+  header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept"); 
   $bd = include_once "conexion.php";
   if ($_GET["codigo"] == "undefined") {
     $sentencia = $bd->query(
@@ -18,6 +17,12 @@
        FROM producto AS p
        LEFT JOIN categoria AS c ON p.categoria = c.codigo 
        WHERE p.activo = true"); 
+  } elseif ($_GET["codigo"] == "inactives") {
+    $sentencia = $bd->query(
+      "SELECT p.codigo, p.nombre, c.tipo, p.stock
+       FROM producto AS p
+       LEFT JOIN categoria AS c ON p.categoria = c.codigo 
+       WHERE p.activo = false"); 
   } else {
     $codigo = $_GET["codigo"];
     $sentencia = $bd->prepare(

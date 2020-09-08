@@ -23,20 +23,26 @@ import { BehaviorSubject } from 'rxjs';
 export class ListadoComponent implements OnInit {
 
   public bajar : string;
-  public dataSource = new BehaviorSubject([]);
+  public dataSourceA = new BehaviorSubject([]);
+  public dataSourceI = new BehaviorSubject([]);
   public jsonProductos : any;
-  public textColumns : Ilista[] = [{nombre:'codigo',tipo:'#'},
-                                  {nombre:'nombre',tipo:'Nombre'}, 
-                                  {nombre:'descripcion',tipo:'Descripción'} ,
-                                  {nombre:'tipo',tipo:'Categoría'} , 
-                                  {nombre:'stock',tipo:'Cantidad disponible'} , 
-                                  {nombre:'stockCritico',tipo:'Stock Critico'} ,];
-  public priceColumns : Ilista[] = [{nombre:'precioCompra',tipo:'$ Compra'} , 
-                                    {nombre:'precioVenta',tipo:'$ Venta'} ]; 
-  public buttonColumn : Ilista[] = [{nombre:'eliminar',tipo:'Dar de baja'}];
+  public jsonInactivos : any;
+  public textColumns : Ilista[] = [{id:0,nombre:'codigo',tipo:'#'},
+                                  {id:1,nombre:'nombre',tipo:'Nombre'}, 
+                                  {id:2,nombre:'descripcion',tipo:'Descripción'} ,
+                                  {id:3,nombre:'tipo',tipo:'Categoría'} , 
+                                  {id:4,nombre:'stock',tipo:'Cantidad disponible'} , 
+                                  {id:5,nombre:'stockCritico',tipo:'Stock Critico'} ,];
+  public priceColumns : Ilista[] = [{id:6,nombre:'precioCompra',tipo:'$ Compra'} , 
+                                    {id:7,nombre:'precioVenta',tipo:'$ Venta'} ]; 
+  public buttonColumn : Ilista[] = [{id:8,nombre:'eliminar',tipo:'Dar de baja'}];
   public allColumns : Ilista[] = this.textColumns.concat(this.priceColumns, this.buttonColumn);
   public columnsToDisplay : string[] = [];
   public columnsOculted : Ilista[] = [];
+
+  public inactiveColums : string[] = ['codigo', 'nombre', 'tipo', 'stock'];
+  public activeColumn : string[] = ['activar'];
+  public columnsToDisplayI : string[] = this.inactiveColums.concat(this.activeColumn);
 
   constructor(private productoService : ProductosService,
     private dialogo: MatDialog,
@@ -44,27 +50,35 @@ export class ListadoComponent implements OnInit {
     this.bajar = this.productoService.active;
   }
 
-  ngOnInit(): void { 
+  public ngOnInit(): void { 
     this.productoService.getListaProductos().subscribe(( jsonProductos : any ) => this.jsonProductos = jsonProductos);
+    this.productoService.getProductosInactivos().subscribe(( jsonInactivos : any ) => this.jsonInactivos = jsonInactivos);
     this.columnsToDisplay = this.getColumns(); 
     setTimeout( () => { 
-      this.dataSource.next(this.jsonProductos);
-    }, 100 );
+      this.dataSourceA.next(this.jsonProductos); 
+      this.dataSourceI.next(this.jsonInactivos);  
+    }, 200 );
   }
 
-  addColumn() { 
-    if (this.columnsOculted.length) {
+  public addColumn() { 
+    if (this.columnsOculted.length) { 
+      var arrayOculted = [];
       this.dialogo.open(DialogoColumnaComponent, {
         data: this.columnsOculted
         })
         .afterClosed().
         subscribe((lista: Ilista[]) => {
-        lista.forEach(element => {
-          if(element.current) { 
-            this.columnsToDisplay.splice(this.columnsToDisplay.length - 1, 0 , element.nombre);
-            this.columnsOculted.splice(this.columnsOculted.indexOf(element),1);
-          }
-        });
+        if (lista) {
+          var col = this.columnsToDisplay;
+          col.pop();
+          lista.forEach(element => { 
+            if(element.current) col.splice(element.id, 0 , element.nombre);  
+            else arrayOculted.push(element);
+          });   
+          this.columnsOculted = arrayOculted;   
+          col.splice(col.length, 0 , 'eliminar'); 
+          this.columnsToDisplay = col;
+        }
       })
     } else{
       this.snackBar.open(this.productoService.mensajeColumnas, undefined, {
@@ -73,14 +87,15 @@ export class ListadoComponent implements OnInit {
     }
   }
 
-  removeColumn(lista : Ilista) {  
+  public removeColumn(lista : Ilista) {  
     if (this.columnsToDisplay.length) {
       this.columnsToDisplay.splice(this.columnsToDisplay.indexOf(lista.nombre),1);
+      lista.current = false;
       this.columnsOculted.push(lista);
-    } 
+    }  
   }
 
-  getColumns(){
+  public getColumns(){
     var aux = new Array;
     for (let i = 0; i < this.allColumns.length; i++) {
       aux.push(this.allColumns[i].nombre);
@@ -88,7 +103,7 @@ export class ListadoComponent implements OnInit {
     return aux;
   }
 
-  bajarProducto(event : any){
+  public bajarProducto(event : any){
     let producto = plainToClass(Producto, event);
     this.productoService.bajarProducto(producto)
     .afterClosed().
@@ -100,7 +115,23 @@ export class ListadoComponent implements OnInit {
         });
       });
       this.jsonProductos.splice(this.jsonProductos.indexOf(event),1); 
-      this.dataSource.next(this.jsonProductos);
+      this.dataSourceA.next(this.jsonProductos);
+    }); 
+  }
+
+  public activarProducto(event : any){
+    let producto = plainToClass(Producto, event);
+    this.productoService.activarProducto(producto)
+    .afterClosed().
+      subscribe((confirmado: Boolean) => {
+      if (!confirmado) return;
+      this.productoService.activaProducto(producto).subscribe(() => { 
+        this.snackBar.open(this.productoService.mensajeActivado, undefined, {
+          duration: 1500,
+        });
+      });
+      this.jsonInactivos.splice(this.jsonInactivos.indexOf(event),1); 
+      this.dataSourceI.next(this.jsonInactivos);
     }); 
   }
 
