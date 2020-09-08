@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface Transaction {
   insert: boolean;
@@ -16,7 +17,7 @@ export interface Transaction {
 })
 export class WelcomeComponent implements OnInit {
  
-  constructor() { }
+  constructor(private snackBar : MatSnackBar) { }
 
   public displayedColumns = ['insert','item', 'name', 'sellcost', 'cost', 'cant', 'subtotal'];
   public transactions: Transaction[] = [
@@ -26,6 +27,12 @@ export class WelcomeComponent implements OnInit {
 
   public ngOnInit(){
     this.dataSource.next(this.transactions);
+  }
+
+  public OnSubmit(){
+    this.snackBar.open('Generador de facturas en proceso, favor paciencia...', undefined, {
+      duration: 1500,
+    });
   }
 
   /** Gets the total cost of all transactions. */
@@ -62,4 +69,5 @@ export class WelcomeComponent implements OnInit {
     this.transactions.map(transac => transac.insert = this.chkAll);
     this.dataSource.next(this.transactions);
   }
+
 }
