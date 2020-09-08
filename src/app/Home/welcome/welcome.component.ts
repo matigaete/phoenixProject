@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface Transaction {
   insert: boolean;
@@ -16,30 +17,36 @@ export interface Transaction {
 })
 export class WelcomeComponent implements OnInit {
  
-  constructor() { }
+  constructor(private snackBar : MatSnackBar) { }
 
-  displayedColumns = ['insert','item', 'name', 'sellcost', 'cost', 'cant', 'subtotal'];
-  transactions: Transaction[] = [
+  public displayedColumns = ['insert','item', 'name', 'sellcost', 'cost', 'cant', 'subtotal'];
+  public transactions: Transaction[] = [
     {insert: false, item: '', name:'', cant:0, cost: 0},];
-  dataSource = new BehaviorSubject([]);
+  public dataSource = new BehaviorSubject([]);
   public chkAll : boolean = false;
 
-  ngOnInit(){
+  public ngOnInit(){
     this.dataSource.next(this.transactions);
   }
 
+  public OnSubmit(){
+    this.snackBar.open('Generador de facturas en proceso, favor paciencia...', undefined, {
+      duration: 1500,
+    });
+  }
+
   /** Gets the total cost of all transactions. */
-  getTotalCost() { 
+  public getTotalCost() { 
     return this.transactions.map(t => t.cost*t.cant).reduce((acc, value) => acc + value, 0);
   }
 
-  btnClick(){
+  public btnClick(){
     var registro : Transaction = {insert:false, item:'', cant:0, cost:0}; 
     this.transactions.push(registro); 
     this.dataSource.next(this.transactions);
   }
 
-  clear(){
+  public clear(){
     var array = [];
     this.transactions.forEach(function(transaction, index) {
       if (!transaction.insert) {
@@ -51,15 +58,16 @@ export class WelcomeComponent implements OnInit {
     this.chkAll = false;
   }
 
-  select(row){ 
+  public select(row){ 
       if (!row.insert) {
         row.insert = true;
       } else {
         row.insert = false;
       }
   }
-  selectAll(){ 
+  public selectAll(){ 
     this.transactions.map(transac => transac.insert = this.chkAll);
     this.dataSource.next(this.transactions);
   }
+
 }
