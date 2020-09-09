@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Categoria } from '../Clases/categoria';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class CategoriasService {
   }
 
   public getCategorias() {
-    return this.http.get(`${this.url}getCategories.php`);
+    return this.http.get<Categoria[]>(`${this.url}getCategories.php`);
   } 
 
   public creaCategoria(categoria : Categoria) {

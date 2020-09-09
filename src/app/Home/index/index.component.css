@@ -23,3 +23,11 @@
 .navbar-blank{
   background : #FFFFFF !important;
 }
+
+.bg {
+  background-image: url('/assets/Serviciotecnico-1.jpg');
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

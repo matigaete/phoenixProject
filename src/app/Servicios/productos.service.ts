@@ -56,40 +56,26 @@ export class ProductosService {
     this._mensajeActivado = 'Producto activado';
   }
   
-//-Listas desplegables--------------------------//
+//-Respuestas HTTP-------------------------------//
   
-  public getProductos() : Producto[] {
-    return [new Producto('Compresor de prueba', 'Herramienta', 
-    'Compresor de pana para familia de pana', 10, 1, 1000, 3000, true, 1),
-    new Producto('Elevador', 'Maquina', 
-    'PA SUBIR A LA CIMA DEL MUNDO', 3, 1, 10000, 50000, true, 2),
-    new Producto('Aceite', 'Herramienta', 
-    'Pa hacer unas papas d pana', 100, 10, 100, 30000, true, 3), 
-    ]
-  } 
-
-  public getCategorias() {
-    return this.http.get(`${this.url}getCategories.php`);
-  }
-
-  public getProductoss() {
-    return this.http.get(`${this.url}getProducts.php?codigo=undefined`);
+  public getProductos() {
+    return this.http.get<Producto[]>(`${this.url}getProducts.php?codigo=undefined`);
   }
 
   public getListaProductos() {
-    return this.http.get(`${this.url}getProducts.php?codigo=all`);
+    return this.http.get<Producto[]>(`${this.url}getProducts.php?codigo=all`);
   }
 
   public getProductosInactivos() {
-    return this.http.get(`${this.url}getProducts.php?codigo=inactives`);
+    return this.http.get<Producto[]>(`${this.url}getProducts.php?codigo=inactives`);
   }
 
   public getProductosFiltro(codigoCategoria) {
-    return this.http.get(`${this.url}getProducts.php?codigo=${codigoCategoria}`);
+    return this.http.get<Producto[]>(`${this.url}getProducts.php?codigo=${codigoCategoria}`);
   }
 
-  public getProducto(codigo : number) {
-    return this.http.get(`${this.url}getProduct.php?codigo=${codigo}`);
+  public getProducto(codigo : number | string) {
+    return this.http.get<Producto>(`${this.url}getProduct.php?codigo=${codigo}`);
   }
 
   public creaProducto(producto : Producto) {
@@ -108,6 +94,9 @@ export class ProductosService {
     return this.http.put(`${this.url}activateProduct.php`, producto);
   }
 
+//-End Respuestas HTTP----------------------------------//
+
+//-Mensajes Dialogos-----------------------------------//
   public bajarProducto(producto : Producto){
     return this.dialogo.open(DialogoConfirmacionComponent, {
       data: `¿Realmente quieres dar de baja a ${producto.nombre}?`
@@ -120,20 +109,9 @@ export class ProductosService {
       });
   }
 
-//-End listas----------------------------------//
+//-End Mensajes----------------------------------//
   
 //-Funciones-----------------------------------//
-
-  public filtrarProductos(productos : Producto[], filtro : string) : Producto[] {
-    productos = this.getProductos();
-    var aux = new Array;
-    for (let i = 0; i < productos.length; i++) {
-      if (productos[i].tipo == filtro) {
-        aux.push(productos[i]); 
-      } 
-    }
-    return aux;
-  }
   
 //-End Funciones-------------------------------//
   

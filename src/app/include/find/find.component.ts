@@ -1,6 +1,8 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core'; 
 import { Ilista } from '../../Interfaces/ilista'; 
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
+import { Subscription, Observable } from 'rxjs';
+import { Categoria } from 'src/app/Clases/categoria';
 
 @Component({
   selector: 'app-find',
@@ -9,7 +11,7 @@ import { CategoriasService } from 'src/app/Servicios/categorias.service';
                   <div class="col"> 
                     <p>Ingrese una categoría:</p>
                     <select name="select" [(ngModel)]="actual" class="custom-select" (ngModelChange)="actualizarLista($event)"> 
-                      <option [value]="c.codigo" *ngFor="let c of jsonCategorias">{{c.tipo}}</option>
+                      <option [value]="c.codigo" *ngFor="let c of (categorias$ | async)">{{c.tipo}}</option>
                     </select>
                   </div> 
                 </div>
@@ -19,18 +21,18 @@ import { CategoriasService } from 'src/app/Servicios/categorias.service';
 export class FindComponent implements OnInit {
   
   @Output() filtro = new EventEmitter<number>();
-  actual : number;
-  categorias : Ilista[];
-  jsonCategorias : any;
+  public actual : number;
+  public categorias$: Observable<Categoria[]>;
+  public subscription: Subscription;
 
   constructor(private categoriaService : CategoriasService) { }
 
-  ngOnInit(): void {
-    this.categoriaService.getCategorias().subscribe(( jsonCategorias : any ) =>this.jsonCategorias = jsonCategorias); 
+  public ngOnInit(): void {
+    this.categorias$ = this.categoriaService.getCategorias(); 
     this.actualizarLista(this.actual); 
   }
 
-  actualizarLista(selected){    
+  public actualizarLista(selected){    
     this.filtro.emit(selected);
   }
 

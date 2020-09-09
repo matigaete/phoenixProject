@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ProductosService } from 'src/app/Servicios/productos.service';
+import { Producto } from 'src/app/Clases/producto';
 
 export interface Transaction {
   insert: boolean;
@@ -17,13 +19,16 @@ export interface Transaction {
 })
 export class WelcomeComponent implements OnInit {
  
-  constructor(private snackBar : MatSnackBar) { }
+  constructor(private productosService : ProductosService, 
+    private snackBar : MatSnackBar) { }
 
   public displayedColumns = ['insert','item', 'name', 'sellcost', 'cost', 'cant', 'subtotal'];
   public transactions: Transaction[] = [
     {insert: false, item: '', name:'', cant:0, cost: 0},];
   public dataSource = new BehaviorSubject([]);
   public chkAll : boolean = false;
+  public total : number;
+  public producto$ : Observable<Producto>;
 
   public ngOnInit(){
     this.dataSource.next(this.transactions);
@@ -34,10 +39,9 @@ export class WelcomeComponent implements OnInit {
       duration: 1500,
     });
   }
-
-  /** Gets the total cost of all transactions. */
+ 
   public getTotalCost() { 
-    return this.transactions.map(t => t.cost*t.cant).reduce((acc, value) => acc + value, 0);
+    this.total = this.transactions.map(t => t.cost*t.cant).reduce((acc, value) => acc + value, 0);
   }
 
   public btnClick(){
@@ -70,4 +74,11 @@ export class WelcomeComponent implements OnInit {
     this.dataSource.next(this.transactions);
   }
 
+  public find(number : string){
+    this.producto$ = this.productosService.getProducto(number);
+    this.producto$.forEach(element => {
+      console.log(element);
+    });
+    
+  }
 }

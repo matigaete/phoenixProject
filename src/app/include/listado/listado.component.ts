@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogoColumnaComponent } from '../dialogo-columna/dialogo-columna.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { plainToClass } from 'class-transformer';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-listado',
@@ -23,6 +23,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ListadoComponent implements OnInit {
 
   public bajar : string;
+  public subscriptions: Subscription[] = [];
   public dataSourceA = new BehaviorSubject([]);
   public dataSourceI = new BehaviorSubject([]);
   public jsonProductos : any;
@@ -51,8 +52,10 @@ export class ListadoComponent implements OnInit {
   }
 
   public ngOnInit(): void { 
-    this.productoService.getListaProductos().subscribe(( jsonProductos : any ) => this.jsonProductos = jsonProductos);
-    this.productoService.getProductosInactivos().subscribe(( jsonInactivos : any ) => this.jsonInactivos = jsonInactivos);
+    this.subscriptions.push(
+    this.productoService.getListaProductos().subscribe(( jsonProductos : any ) => this.jsonProductos = jsonProductos) );
+    this.subscriptions.push(
+    this.productoService.getProductosInactivos().subscribe(( jsonInactivos : any ) => this.jsonInactivos = jsonInactivos) );
     this.columnsToDisplay = this.getColumns(); 
     setTimeout( () => { 
       this.dataSourceA.next(this.jsonProductos); 
@@ -135,4 +138,7 @@ export class ListadoComponent implements OnInit {
     }); 
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+  }
 }
