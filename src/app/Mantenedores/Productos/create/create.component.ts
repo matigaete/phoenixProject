@@ -5,104 +5,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BusinessService } from '../../../Servicios/business.service';
 import { ProductosService } from 'src/app/Servicios/productos.service'; 
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
+import { Subscription, Observable } from 'rxjs';
+import { Categoria } from 'src/app/Clases/categoria';
 
 @Component({
   selector: 'app-create',
-  template:  `<form (ngSubmit)="OnSubmit()">
-                <div class="form-group">
-                  <label>{{codigo}}</label>
-                  <input type="text" [readOnly]="!isNew" [ngClass]="formControlCodigo()"  
-                  [(ngModel)]="productoModel.codigo" (ngModelChange)="validaCodigo($event)"
-                  [value]="productoModel.codigo" name="codigo">
-                  <div class="invalid-feedback">
-                    {{mensajeCodigo}}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>{{nombre}}</label>
-                  <input type="text" [ngClass]="formControlNombre()"  
-                  [(ngModel)]="productoModel.nombre" (ngModelChange)="validaNombre($event)"
-                  [value]="productoModel.nombre" name="nombre">
-                  <div class="invalid-feedback">
-                    {{mensajeNombre}}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>{{descripcion}}</label> 
-                  <textarea [ngClass]="formControlDescripcion()" name="descripcion"
-                  [(ngModel)]="productoModel.descripcion" (ngModelChange)="validaDescripcion($event)"
-                  rows="3">{{productoModel.descripcion}}</textarea>
-                  <div class="invalid-feedback">
-                    {{mensajeDescripcion}}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>{{categoria}}</label>
-                  <select name="select" [(ngModel)]="productoModel.tipo" class="form-control"> 
-                    <option [value]="c.codigo" *ngFor="let c of jsonCategorias">{{c.tipo}}</option>
-                  </select>
-                </div> 
-                <div class="form-group">
-                  <label>{{stock}}</label>
-                  <input type="number" [ngClass]="formControlStock()" name="stock"
-                  [(ngModel)]="productoModel.stock" (ngModelChange)="validaStock($event)"
-                  [value]="productoModel.stock">
-                  <div class="invalid-feedback">
-                    {{mensajeStock}}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>{{stockCritico}}</label>
-                  <input type="number" [ngClass]="formControlStockCritico()" name="stockCritico"
-                  [(ngModel)]="productoModel.stockCritico" (ngModelChange)="validaStockCritico($event)"
-                  [value]="productoModel.stockCritico">
-                  <div class="invalid-feedback">
-                    {{mensajeStock}}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>{{precioCompra}}</label>
-                  <input type="number" [ngClass]="formControlPrecioCompra()" name="precioCompra"
-                  [(ngModel)]="productoModel.precioCompra" (ngModelChange)="validaPrecioCompra($event); calculaValor();"
-                  [value]="productoModel.precioCompra">
-                  <div class="invalid-feedback">
-                    {{mensajePrecio}}
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div >
-                    <mat-checkbox class="example-margin" [(ngModel)]="chkAuto" name="chkAuto">
-                      <label class="form-check-label">Valoración automática (%)</label>
-                    </mat-checkbox> 
-                  </div>
-                  <div class="col-2">
-                    <input [readOnly]="!chkAuto" type="number" class="form-control" name="multiplierPrice"
-                      [(ngModel)]="multiplierPrice"  (ngModelChange)="calculaValor(); validaPrecioVenta($event);" [value]="multiplierPrice">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>{{precioVenta}}</label>
-                  <input [readOnly]="chkAuto" type="number" [ngClass]="formControlPrecioVenta()" name="precioVenta"
-                  [(ngModel)]="productoModel.precioVenta" (ngModelChange)="validaPrecioVenta($event)"
-                  [value]="productoModel.precioVenta">
-                  <div class="invalid-feedback">
-                    {{mensajePrecio}}
-                  </div>
-                </div>
-                <section *ngIf="!isNew">
-                  <mat-checkbox class="example-margin" [(ngModel)]="chkBaja" name="chkBaja">
-                    <label class="form-check-label">{{active}}</label>
-                  </mat-checkbox> 
-                </section>
-
-                <button type="submit" class="btn btn-dark">{{aceptar}}</button> 
-              </form>`,
+  templateUrl: './create.component.html',
   styles: []
 })
 export class CreateComponent implements OnInit {
   
   @Input() isNew : boolean;
   @Input() iProducto : Producto;
+  public subscription: Subscription;
+
   public productoModel : Producto = new Producto('',1,'',0,0,0,0,false,'');;
 
   public codigo : string; 
@@ -118,8 +34,8 @@ export class CreateComponent implements OnInit {
   public multiplierPrice : number;
 
   public aceptar : string; 
-  public active : string;
-  public jsonCategorias : any;   
+  public active : string; 
+  public categorias$: Observable<Categoria[]>;
 
   public errorCodigo : boolean;
   public errorNombre : boolean;
@@ -145,7 +61,7 @@ export class CreateComponent implements OnInit {
     this.nombre       = this.productoService.nombre;
     this.descripcion  = this.productoService.descripcion;
     this.categoria    = this.productoService.categoria;
-    this.categoriaService.getCategorias().subscribe(( jsonCategorias : any ) => this.jsonCategorias = jsonCategorias); 
+    this.categorias$  = this.categoriaService.getCategorias(); 
     this.stock        = this.productoService.stock;
     this.stockCritico = this.productoService.stockCritico;
     this.precioCompra = this.productoService.precioCompra;
@@ -181,6 +97,8 @@ export class CreateComponent implements OnInit {
             duration: 1500,
           }); 
           this.productoModel = new Producto('',1,'',0,0,0,0,false,'');
+          this.multiplierPrice = null;
+          this.chkAuto = false;
         }) 
       } else {
         if (this.chkBaja) {
