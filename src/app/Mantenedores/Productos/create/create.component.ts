@@ -1,37 +1,197 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core'; 
+import { Producto } from 'src/app/Clases/producto';
+import { MatSnackBar } from '@angular/material/snack-bar'; 
+
+import { BusinessService } from '../../../Servicios/business.service';
+import { ProductosService } from 'src/app/Servicios/productos.service'; 
+import { CategoriasService } from 'src/app/Servicios/categorias.service';
+import { Subscription, Observable } from 'rxjs';
+import { Categoria } from 'src/app/Clases/categoria';
 
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
-  styleUrls: ['./create.component.css']
+  styles: []
 })
 export class CreateComponent implements OnInit {
-  nombre : string = 'Nombre del producto';
-  categoria : string = 'Categoría del producto';
-  categorias : ICategorias[];
-  constructor() { 
+  
+  @Input() isNew : boolean;
+  @Input() iProducto : Producto;
+  public subscription: Subscription;
+
+  public productoModel : Producto = new Producto('',1,'',0,0,0,0,false,'');;
+
+  public codigo : string; 
+  public nombre : string;
+  public descripcion : string; 
+  public categoria : string;
+  public stock : string; 
+  public stockCritico : string; 
+  public precioCompra : string; 
+  public precioVenta : string; 
+  public chkBaja : boolean;
+  public chkAuto : boolean;
+  public multiplierPrice : number;
+
+  public aceptar : string; 
+  public active : string; 
+  public categorias$: Observable<Categoria[]>;
+
+  public errorCodigo : boolean;
+  public errorNombre : boolean;
+  public errorDescripcion : boolean;
+  public errorStock : boolean;
+  public errorStockCritico : boolean;
+  public errorPrecioCompra : boolean;
+  public errorPrecioVenta : boolean; 
+
+  public mensajeCodigo : string;
+  public mensajeNombre : string;
+  public mensajeDescripcion : string;
+  public mensajeStock : string;
+  public mensajePrecio : string;
+  
+  constructor( private businessService : BusinessService,
+               private productoService : ProductosService,
+               private categoriaService : CategoriasService,
+               private snackBar: MatSnackBar) { }
+
+  public ngOnInit(): void {  
+    this.codigo       = this.productoService.codigo;
+    this.nombre       = this.productoService.nombre;
+    this.descripcion  = this.productoService.descripcion;
+    this.categoria    = this.productoService.categoria;
+    this.categorias$  = this.categoriaService.getCategorias(); 
+    this.stock        = this.productoService.stock;
+    this.stockCritico = this.productoService.stockCritico;
+    this.precioCompra = this.productoService.precioCompra;
+    this.precioVenta  = this.productoService.precioVenta;
+    this.aceptar      = this.businessService.aceptar; 
+    this.active       = this.productoService.active;
+    this.errorCodigo  = this.errorNombre  = this.errorDescripcion = 
+    this.errorStock   = this.errorStockCritico = this.errorPrecioCompra = 
+    this.errorPrecioVenta = this.businessService.error;
+    this.mensajeCodigo = this.productoService.mensajeCodigo;
+    this.mensajeDescripcion = this.productoService.mensajeDescripcion;
+    this.mensajeNombre = this.businessService.mensajeNombre;
+    this.mensajePrecio = this.productoService.mensajePrecio;
+    this.mensajeStock = this.productoService.mensajeStock;
   }
 
-  ngOnInit(): void {
-    this.categorias = this.getCategorias();
+  public ngDoCheck(): void{ 
+    if (this.iProducto !== undefined) {
+      this.productoModel = this.iProducto[0]; 
+      this.errorCodigo  = this.errorNombre  = this.errorDescripcion = 
+      this.errorStock = this.errorStockCritico = this.errorPrecioCompra = 
+      this.errorPrecioVenta = !this.businessService.error;
+    }
   }
-  
-  getCategorias() : ICategorias[] {
-      return [{
-          id : 1,
-          nombre : 'Maquina', 
-      },
-      {
-          id : 2,
-          nombre : 'Herramienta',
+
+  public OnSubmit() { 
+    if (!this.errorCodigo && !this.errorNombre && !this.errorDescripcion &&
+        !this.errorStock && !this.errorStockCritico && 
+        !this.errorPrecioCompra && !this.errorPrecioVenta) {
+      if (this.isNew) {
+        this.productoService.creaProducto(this.productoModel).subscribe(() => {
+          this.snackBar.open(this.productoService.mensajeCreado, undefined, {
+            duration: 1500,
+          }); 
+          this.productoModel = new Producto('',1,'',0,0,0,0,false,'');
+          this.multiplierPrice = null;
+          this.chkAuto = false;
+        }) 
+      } else {
+        if (this.chkBaja) {
+          this.productoService.bajarProducto(this.productoModel)
+          .afterClosed().
+            subscribe((confirmado: Boolean) => {
+            if (!confirmado) return;
+            this.productoService.bajaProducto(this.productoModel).subscribe(() => { 
+              this.snackBar.open(this.productoService.mensajeBajado, undefined, {
+                duration: 1500,
+              });
+            }); 
+          }); 
+        } else {
+          this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
+            this.snackBar.open(this.productoService.mensajeActualizado, undefined, {
+              duration: 1500,
+            });
+          }) 
+        }
       }
-      ]
+    } else {
+      this.snackBar.open(this.businessService.mensajeError, undefined, {
+        duration: 1500,
+      });
+    }
   }
-  
 
-}
+  public calculaValor(){
+    try {
+      if (this.chkAuto) {
+        var percent = this.multiplierPrice / 100;
+        var pCompra = this.productoModel.precioCompra;
+        this.productoModel.precioVenta = pCompra + ( pCompra * percent );
+      }
+    } catch (error) { 
+    }
+  }
 
-interface ICategorias{
-    id : number;
-    nombre : string;
+  public formControlCodigo(){
+    return this.businessService.getFormControl(this.errorCodigo); 
+  }
+
+  public formControlNombre(){
+    return this.businessService.getFormControl(this.errorNombre); 
+  }
+
+  public formControlDescripcion(){
+    return this.businessService.getFormControl(this.errorDescripcion); 
+  }
+
+  public formControlStock(){
+    return this.businessService.getFormControl(this.errorStock); 
+  }
+
+  public formControlStockCritico(){
+    return this.businessService.getFormControl(this.errorStockCritico); 
+  }
+
+  public formControlPrecioCompra(){
+    return this.businessService.getFormControl(this.errorPrecioCompra); 
+  }
+
+  public formControlPrecioVenta(){
+    return this.businessService.getFormControl(this.errorPrecioVenta); 
+  }
+
+  public validaCodigo(campo : any){
+    this.errorCodigo = this.businessService.validaCampo(campo, this.errorCodigo);
+  }
+
+  public validaNombre(campo : any){
+    this.errorNombre = this.businessService.validaCampo(campo, this.errorCodigo);
+  }
+
+  public validaDescripcion(campo : any){
+    this.errorDescripcion = this.businessService.validaCampo(campo, this.errorCodigo);
+  }
+
+  public validaStock(campo : any){
+    this.errorStock = this.businessService.validaCampo(campo, this.errorCodigo);
+  }
+
+  public validaStockCritico(campo : any){
+    this.errorStockCritico = this.businessService.validaCampo(campo, this.errorCodigo);
+  }
+
+  public validaPrecioCompra(campo : any){
+    this.errorPrecioCompra = this.businessService.validaCampo(campo, this.errorCodigo);
+  }
+
+  public validaPrecioVenta(campo : any){
+    this.errorPrecioVenta = this.businessService.validaCampo(campo, this.errorCodigo);
+  }
+
 }

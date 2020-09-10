@@ -1,0 +1,67 @@
+<div class="container-fluid">
+  <h2>Productos activos</h2>
+  <button mat-raised-button (click)="addColumn()"> 
+    <mat-icon>add</mat-icon>
+    Añadir columnas
+  </button> 
+  <br><br>
+  <table mat-table [dataSource]="dataSourceA" class="mat-elevation-z8">
+    <ng-container [matColumnDef]="column.nombre" *ngFor="let column of textColumns">
+      <th mat-header-cell *matHeaderCellDef> 
+        {{column.tipo}} 
+        <button mat-icon-button (click)="removeColumn(column)">
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+      </th>
+      <td mat-cell *matCellDef="let producto"> {{producto[column.nombre]}} </td>
+    </ng-container>
+    <ng-container [matColumnDef]="column.nombre" *ngFor="let column of priceColumns">
+      <th mat-header-cell *matHeaderCellDef> {{column.tipo}}
+        <button mat-icon-button (click)="removeColumn(column)">
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+      </th>
+      <td mat-cell *matCellDef="let producto"> {{producto[column.nombre] | currency : 'CLP'}} </td>
+    </ng-container>
+    <ng-container matColumnDef="eliminar">
+      <th mat-header-cell *matHeaderCellDef>{{bajar}}</th>
+      <td mat-cell *matCellDef="let producto">
+        <button mat-icon-button (click)="bajarProducto(producto)">
+          <mat-icon color="warn">delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No existen registros</td>
+    </tr>
+  </table>
+</div>
+
+
+<div class="container-fluid">
+  <br>
+  <h2>Productos dados de baja</h2>
+  <table mat-table [dataSource]="dataSourceI" class="mat-elevation-z8">
+    <ng-container [matColumnDef]="column" *ngFor="let column of inactiveColums">
+      <th mat-header-cell *matHeaderCellDef> 
+        {{column}}  
+      </th>
+      <td mat-cell *matCellDef="let producto"> {{producto[column]}} </td>
+    </ng-container> 
+    <ng-container matColumnDef="activar">
+      <th mat-header-cell *matHeaderCellDef>Activar producto</th>
+      <td mat-cell *matCellDef="let producto">
+        <button mat-icon-button (click)="activarProducto(producto)">
+          <mat-icon color="primary">add</mat-icon>
+        </button>
+      </td> 
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayI"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplayI;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4">No existen registros</td>
+    </tr>
+  </table>
+</div>
