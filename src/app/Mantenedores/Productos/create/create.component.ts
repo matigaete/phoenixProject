@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core'; 
+import { Component, OnInit, Input } from '@angular/core';
 import { Producto } from 'src/app/Clases/producto';
-import { MatSnackBar } from '@angular/material/snack-bar'; 
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { BusinessService } from '../../../Servicios/business.service';
-import { ProductosService } from 'src/app/Servicios/productos.service'; 
+import { ProductosService } from 'src/app/Servicios/productos.service';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { Subscription, Observable } from 'rxjs';
 import { Categoria } from 'src/app/Clases/categoria';
@@ -14,63 +14,63 @@ import { Categoria } from 'src/app/Clases/categoria';
   styles: []
 })
 export class CreateComponent implements OnInit {
-  
-  @Input() isNew : boolean;
-  @Input() iProducto : Producto;
+
+  @Input() isNew: boolean;
+  @Input() iProducto: Producto;
   public subscription: Subscription;
 
-  public productoModel : Producto = new Producto('',1,'',0,0,0,0,false,'');;
+  public productoModel: Producto = new Producto('', 1, '', 0, 0, 0, 0, false, '');;
 
-  public codigo : string; 
-  public nombre : string;
-  public descripcion : string; 
-  public categoria : string;
-  public stock : string; 
-  public stockCritico : string; 
-  public precioCompra : string; 
-  public precioVenta : string; 
-  public chkBaja : boolean;
-  public chkAuto : boolean;
-  public multiplierPrice : number;
+  public codigo: string;
+  public nombre: string;
+  public descripcion: string;
+  public categoria: string;
+  public stock: string;
+  public stockCritico: string;
+  public precioCompra: string;
+  public precioVenta: string;
+  public chkBaja: boolean;
+  public chkAuto: boolean;
+  public multiplierPrice: number;
 
-  public aceptar : string; 
-  public active : string; 
+  public aceptar: string;
+  public active: string;
   public categorias$: Observable<Categoria[]>;
 
-  public errorCodigo : boolean;
-  public errorNombre : boolean;
-  public errorDescripcion : boolean;
-  public errorStock : boolean;
-  public errorStockCritico : boolean;
-  public errorPrecioCompra : boolean;
-  public errorPrecioVenta : boolean; 
+  public errorCodigo: boolean;
+  public errorNombre: boolean;
+  public errorDescripcion: boolean;
+  public errorStock: boolean;
+  public errorStockCritico: boolean;
+  public errorPrecioCompra: boolean;
+  public errorPrecioVenta: boolean;
 
-  public mensajeCodigo : string;
-  public mensajeNombre : string;
-  public mensajeDescripcion : string;
-  public mensajeStock : string;
-  public mensajePrecio : string;
-  
-  constructor( private businessService : BusinessService,
-               private productoService : ProductosService,
-               private categoriaService : CategoriasService,
-               private snackBar: MatSnackBar) { }
+  public mensajeCodigo: string;
+  public mensajeNombre: string;
+  public mensajeDescripcion: string;
+  public mensajeStock: string;
+  public mensajePrecio: string;
 
-  public ngOnInit(): void {  
-    this.codigo       = this.productoService.codigo;
-    this.nombre       = this.productoService.nombre;
-    this.descripcion  = this.productoService.descripcion;
-    this.categoria    = this.productoService.categoria;
-    this.categorias$  = this.categoriaService.getCategorias(); 
-    this.stock        = this.productoService.stock;
+  constructor(private businessService: BusinessService,
+    private productoService: ProductosService,
+    private categoriaService: CategoriasService,
+    private snackBar: MatSnackBar) { }
+
+  public ngOnInit(): void {
+    this.codigo = this.productoService.codigo;
+    this.nombre = this.productoService.nombre;
+    this.descripcion = this.productoService.descripcion;
+    this.categoria = this.productoService.categoria;
+    this.categorias$ = this.categoriaService.getCategorias();
+    this.stock = this.productoService.stock;
     this.stockCritico = this.productoService.stockCritico;
     this.precioCompra = this.productoService.precioCompra;
-    this.precioVenta  = this.productoService.precioVenta;
-    this.aceptar      = this.businessService.aceptar; 
-    this.active       = this.productoService.active;
-    this.errorCodigo  = this.errorNombre  = this.errorDescripcion = 
-    this.errorStock   = this.errorStockCritico = this.errorPrecioCompra = 
-    this.errorPrecioVenta = this.businessService.error;
+    this.precioVenta = this.productoService.precioVenta;
+    this.aceptar = this.businessService.aceptar;
+    this.active = this.productoService.active;
+    this.errorCodigo = this.errorNombre = this.errorDescripcion =
+      this.errorStock = this.errorStockCritico = this.errorPrecioCompra =
+      this.errorPrecioVenta = this.businessService.error;
     this.mensajeCodigo = this.productoService.mensajeCodigo;
     this.mensajeDescripcion = this.productoService.mensajeDescripcion;
     this.mensajeNombre = this.businessService.mensajeNombre;
@@ -78,46 +78,46 @@ export class CreateComponent implements OnInit {
     this.mensajeStock = this.productoService.mensajeStock;
   }
 
-  public ngDoCheck(): void{ 
+  public ngDoCheck(): void {
     if (this.iProducto !== undefined) {
-      this.productoModel = this.iProducto[0]; 
-      this.errorCodigo  = this.errorNombre  = this.errorDescripcion = 
-      this.errorStock = this.errorStockCritico = this.errorPrecioCompra = 
-      this.errorPrecioVenta = !this.businessService.error;
+      this.productoModel = this.iProducto[0];
+      this.errorCodigo = this.errorNombre = this.errorDescripcion =
+        this.errorStock = this.errorStockCritico = this.errorPrecioCompra =
+        this.errorPrecioVenta = !this.businessService.error;
     }
   }
 
-  public OnSubmit() { 
+  public OnSubmit() {
     if (!this.errorCodigo && !this.errorNombre && !this.errorDescripcion &&
-        !this.errorStock && !this.errorStockCritico && 
-        !this.errorPrecioCompra && !this.errorPrecioVenta) {
+      !this.errorStock && !this.errorStockCritico &&
+      !this.errorPrecioCompra && !this.errorPrecioVenta) {
       if (this.isNew) {
         this.productoService.creaProducto(this.productoModel).subscribe(() => {
           this.snackBar.open(this.productoService.mensajeCreado, undefined, {
             duration: 1500,
-          }); 
-          this.productoModel = new Producto('',1,'',0,0,0,0,false,'');
+          });
+          this.productoModel = new Producto('', 1, '', 0, 0, 0, 0, false, '');
           this.multiplierPrice = null;
           this.chkAuto = false;
-        }) 
+        })
       } else {
         if (this.chkBaja) {
           this.productoService.bajarProducto(this.productoModel)
-          .afterClosed().
+            .afterClosed().
             subscribe((confirmado: Boolean) => {
-            if (!confirmado) return;
-            this.productoService.bajaProducto(this.productoModel).subscribe(() => { 
-              this.snackBar.open(this.productoService.mensajeBajado, undefined, {
-                duration: 1500,
+              if (!confirmado) return;
+              this.productoService.bajaProducto(this.productoModel).subscribe(() => {
+                this.snackBar.open(this.productoService.mensajeBajado, undefined, {
+                  duration: 1500,
+                });
               });
-            }); 
-          }); 
+            });
         } else {
           this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
             this.snackBar.open(this.productoService.mensajeActualizado, undefined, {
               duration: 1500,
             });
-          }) 
+          })
         }
       }
     } else {
@@ -127,70 +127,70 @@ export class CreateComponent implements OnInit {
     }
   }
 
-  public calculaValor(){
+  public calculaValor() {
     try {
       if (this.chkAuto) {
         var percent = this.multiplierPrice / 100;
         var pCompra = this.productoModel.precioCompra;
-        this.productoModel.precioVenta = pCompra + ( pCompra * percent );
+        this.productoModel.precioVenta = pCompra + (pCompra * percent);
       }
-    } catch (error) { 
+    } catch (error) {
     }
   }
 
-  public formControlCodigo(){
-    return this.businessService.getFormControl(this.errorCodigo); 
+  public formControlCodigo() {
+    return this.businessService.getFormControl(this.errorCodigo);
   }
 
-  public formControlNombre(){
-    return this.businessService.getFormControl(this.errorNombre); 
+  public formControlNombre() {
+    return this.businessService.getFormControl(this.errorNombre);
   }
 
-  public formControlDescripcion(){
-    return this.businessService.getFormControl(this.errorDescripcion); 
+  public formControlDescripcion() {
+    return this.businessService.getFormControl(this.errorDescripcion);
   }
 
-  public formControlStock(){
-    return this.businessService.getFormControl(this.errorStock); 
+  public formControlStock() {
+    return this.businessService.getFormControl(this.errorStock);
   }
 
-  public formControlStockCritico(){
-    return this.businessService.getFormControl(this.errorStockCritico); 
+  public formControlStockCritico() {
+    return this.businessService.getFormControl(this.errorStockCritico);
   }
 
-  public formControlPrecioCompra(){
-    return this.businessService.getFormControl(this.errorPrecioCompra); 
+  public formControlPrecioCompra() {
+    return this.businessService.getFormControl(this.errorPrecioCompra);
   }
 
-  public formControlPrecioVenta(){
-    return this.businessService.getFormControl(this.errorPrecioVenta); 
+  public formControlPrecioVenta() {
+    return this.businessService.getFormControl(this.errorPrecioVenta);
   }
 
-  public validaCodigo(campo : any){
+  public validaCodigo(campo: any) {
     this.errorCodigo = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaNombre(campo : any){
+  public validaNombre(campo: any) {
     this.errorNombre = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaDescripcion(campo : any){
+  public validaDescripcion(campo: any) {
     this.errorDescripcion = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaStock(campo : any){
+  public validaStock(campo: any) {
     this.errorStock = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaStockCritico(campo : any){
+  public validaStockCritico(campo: any) {
     this.errorStockCritico = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaPrecioCompra(campo : any){
+  public validaPrecioCompra(campo: any) {
     this.errorPrecioCompra = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaPrecioVenta(campo : any){
+  public validaPrecioVenta(campo: any) {
     this.errorPrecioVenta = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 

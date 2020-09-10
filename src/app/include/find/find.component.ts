@@ -1,12 +1,12 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core'; 
-import { Ilista } from '../../Interfaces/ilista'; 
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Ilista } from '../../Interfaces/ilista';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { Subscription, Observable } from 'rxjs';
 import { Categoria } from 'src/app/Clases/categoria';
 
 @Component({
   selector: 'app-find',
-  template:  `<form>
+  template: `<form>
                 <div class="form-row align-items-center">
                   <div class="col"> 
                     <p>Ingrese una categoría:</p>
@@ -19,20 +19,20 @@ import { Categoria } from 'src/app/Clases/categoria';
   styles: []
 })
 export class FindComponent implements OnInit {
-  
+
   @Output() filtro = new EventEmitter<number>();
-  public actual : number;
+  public actual: number;
   public categorias$: Observable<Categoria[]>;
   public subscription: Subscription;
 
-  constructor(private categoriaService : CategoriasService) { }
+  constructor(private categoriaService: CategoriasService) { }
 
   public ngOnInit(): void {
-    this.categorias$ = this.categoriaService.getCategorias(); 
-    this.actualizarLista(this.actual); 
+    this.categorias$ = this.categoriaService.getCategorias();
+    this.actualizarLista(this.actual);
   }
 
-  public actualizarLista(selected){    
+  public actualizarLista(selected) {
     this.filtro.emit(selected);
   }
 
