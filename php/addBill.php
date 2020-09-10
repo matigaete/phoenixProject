@@ -8,9 +8,7 @@ if (!$jsonFactura) {
 $bd = include_once "conexion.php";
  
 $sentencia = $bd->prepare(
-   "INSERT INTO factura(codigo_factura, codigo_proveedor, fecha_factura, 
-                        hora_factura, total_compra, tipo_factura)
-    VALUES (?,?,?,?,?,?)");
+   "CALL `INSERTA_FACTURA`(?, ?, ?, ?, ?, ?);");
 
 $resultado = $sentencia->execute([
     $jsonFactura->_codigoFactura, $jsonFactura->_codProveedor, $jsonFactura->_fecha,
