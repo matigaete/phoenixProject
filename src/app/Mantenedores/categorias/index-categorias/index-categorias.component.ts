@@ -3,7 +3,7 @@ import { Categoria } from 'src/app/Clases/categoria';
 
 @Component({
   selector: 'app-index-categorias',
-  template:  `<div class="container"> 
+  template: `<div class="container"> 
                 <div class="col">
                   <app-form-categorias (actualiza)="enviaCategoria($event)" [iCategoria]="categoria"></app-form-categorias>
                 </div>
@@ -15,14 +15,14 @@ import { Categoria } from 'src/app/Clases/categoria';
 })
 export class IndexCategoriasComponent implements OnInit {
 
-  public categoria : Categoria;
-  public actualiza : Categoria;
-  constructor() { } 
+  public categoria: Categoria;
+  public actualiza: Categoria;
+  constructor() { }
 
   ngOnInit(): void {
   }
 
-  public enviaCategoria(categoria : Categoria){
+  public enviaCategoria(categoria: Categoria) {
     this.categoria = categoria;
   }
 }

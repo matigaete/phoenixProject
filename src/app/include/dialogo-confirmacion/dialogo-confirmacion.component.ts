@@ -18,12 +18,12 @@ export class DialogoConfirmacionComponent implements OnInit {
     public dialogo: MatDialogRef<DialogoConfirmacionComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string) { }
 
-    cerrarDialogo(): void {
-      this.dialogo.close(false);
-    }
-    confirmado(): void {
-      this.dialogo.close(true);
-    }
+  cerrarDialogo(): void {
+    this.dialogo.close(false);
+  }
+  confirmado(): void {
+    this.dialogo.close(true);
+  }
 
   ngOnInit() {
   }

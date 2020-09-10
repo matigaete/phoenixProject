@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BusinessService } from 'src/app/Servicios/business.service';
-import { Producto } from 'src/app/Clases/producto'; 
+import { Producto } from 'src/app/Clases/producto';
 import { ProductosService } from 'src/app/Servicios/productos.service';
 
 @Component({
   selector: 'app-info',
-  template:  `<div class="card">
+  template: `<div class="card">
                 <div class="card-header">
                   {{nombre}}
                 </div>
@@ -23,23 +23,23 @@ import { ProductosService } from 'src/app/Servicios/productos.service';
 })
 export class InfoComponent implements OnInit {
 
-  @Output() oValor = new EventEmitter<number>(); 
-  @Input() iProducto : Producto;
-  public nombre : string; 
-  public info : string; 
-  public modificar : string; 
-  public stock : number;
-  public stockCritico : number;
-  public precioCompra : number;
-  public precioVenta : number; 
-  public disabled : string;
+  @Output() oValor = new EventEmitter<number>();
+  @Input() iProducto: Producto;
+  public nombre: string;
+  public info: string;
+  public modificar: string;
+  public stock: number;
+  public stockCritico: number;
+  public precioCompra: number;
+  public precioVenta: number;
+  public disabled: string;
 
-  constructor( private businessService : BusinessService,
-               private productoService : ProductosService ) { }
+  constructor(private businessService: BusinessService,
+    private productoService: ProductosService) { }
 
-  public ngOnInit(): void { 
+  public ngOnInit(): void {
     this.nombre = this.productoService.nombre;
-    this.modificar = this.businessService.getAcciones()[1].nombre; 
+    this.modificar = this.businessService.getAcciones()[1].nombre;
     this.info = this.productoService.info;
     this.stock = 0;
     this.stockCritico = 0;
@@ -47,10 +47,10 @@ export class InfoComponent implements OnInit {
     this.precioVenta = 0;
   }
 
-  public ngDoCheck(): void{ 
+  public ngDoCheck(): void {
     if (this.iProducto !== undefined) {
       var product = this.iProducto[0];
-      this.nombre = product.nombre; 
+      this.nombre = product.nombre;
       this.info = product.descripcion;
       this.stock = product.stock;
       this.stockCritico = product.stockCritico;
@@ -58,13 +58,13 @@ export class InfoComponent implements OnInit {
       this.precioVenta = product.precioVenta;
       this.disabled = null;
     }
-    else{
+    else {
       this.disabled = this.businessService.disabled;
     }
   }
 
-  public asignarOpcion(option : number) : void {
-    this.oValor.emit(option); 
+  public asignarOpcion(option: number): void {
+    this.oValor.emit(option);
   }
 
 }
