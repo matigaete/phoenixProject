@@ -5,12 +5,13 @@ import { environment } from 'src/environments/environment';
 import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UpdateProduct } from '../Interfaces/update-product';
+import { Factura } from '../Clases/factura';
+import { DetalleFactura } from '../Clases/detalle-factura';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductosService {
+export class FacturaService {
 
   public url = environment.baseUrl;
   private _codigo: string;
@@ -59,60 +60,37 @@ export class ProductosService {
 
   //-Respuestas HTTP-------------------------------//
 
-  public getProductos() {
-    return this.http.get<Producto[]>(`${this.url}getProducts.php?codigo=undefined`);
+  public getListaFacturas() {
+    return this.http.get<Factura[]>(`${this.url}getBills.php?codigo=all`);
   }
 
-  public getListaProductos() {
-    return this.http.get<Producto[]>(`${this.url}getProducts.php?codigo=all`);
+  public getFactura(codigo: number | string) {
+    return this.http.get<Factura>(`${this.url}getBill.php?codigo=${codigo}`);
   }
 
-  public getProductosInactivos() {
-    return this.http.get<Producto[]>(`${this.url}getProducts.php?codigo=inactives`);
+  public creaFactura(factura: Factura) {
+    return this.http.post(`${this.url}addBill.php`, factura);
   }
 
-  public getProductosFiltro(codigoCategoria) {
-    return this.http.get<Producto[]>(`${this.url}getProducts.php?codigo=${codigoCategoria}`);
+  public actualizaFactura(factura: Factura) {
+    return this.http.put(`${this.url}updateBill.php`, factura);
   }
 
-  public getProducto(codigo: number | string) {
-    return this.http.get<Producto>(`${this.url}getProduct.php?codigo=${codigo}`);
+  public getListaDetalle() {
+    return this.http.get<DetalleFactura[]>(`${this.url}getDetailBill.php?codigo=all`);
   }
 
-  public creaProducto(producto: Producto) {
-    return this.http.post(`${this.url}addProduct.php`, producto);
+  public creaDetalle(detalle: DetalleFactura[]) {
+    return this.http.post(`${this.url}addDetailBill.php`, detalle);
   }
 
-  public actualizaProducto(producto: Producto) {
-    return this.http.put(`${this.url}updateProduct.php`, producto);
-  }
-
-  public actualizaProductos(productos: UpdateProduct[]) {
-    return this.http.put(`${this.url}updateProducts.php`, productos);
-  }
-
-  public bajaProducto(producto: Producto) {
-    return this.http.put(`${this.url}unsuscribeProduct.php`, producto);
-  }
-
-  public activaProducto(producto: Producto) {
-    return this.http.put(`${this.url}activateProduct.php`, producto);
+  public actualizaDetalle(detalle: DetalleFactura[]) {
+    return this.http.put(`${this.url}updateDetailBill.php`, detalle);
   }
 
   //-End Respuestas HTTP----------------------------------//
 
   //-Mensajes Dialogos-----------------------------------//
-  public bajarProducto(producto: Producto) {
-    return this.dialogo.open(DialogoConfirmacionComponent, {
-      data: `¿Realmente quieres dar de baja a ${producto.nombre}?`
-    });
-  }
-
-  public activarProducto(producto: Producto) {
-    return this.dialogo.open(DialogoConfirmacionComponent, {
-      data: `¿Desea recuperar el producto ${producto.nombre}?`
-    });
-  }
 
   //-End Mensajes----------------------------------//
 

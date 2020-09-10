@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'; 
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Producto } from '../../Clases/producto';
 import { plainToClass } from 'class-transformer';
 import { ProductosService } from 'src/app/Servicios/productos.service';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { Categoria } from 'src/app/Clases/categoria';
-import { Observable } from 'rxjs'; 
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-lista',
-  template:  `<div class="form-group">
+  template: `<div class="form-group">
                 <label>Lista de {{entrada}}:</label>
                 <select multiple *ngIf="entrada=='Productos'" class="form-control" [(ngModel)]="selectedP" (ngModelChange)="enviaProducto($event)">
                   <option [ngValue]="p" *ngFor="let p of (productos$ | async)">{{p.nombre}}</option> 
@@ -19,45 +19,45 @@ import { Observable } from 'rxjs';
               </div>`,
   styles: []
 })
-export class ListaComponent implements OnInit { 
+export class ListaComponent implements OnInit {
 
   @Output() producto = new EventEmitter<Producto>();
   @Output() categoria = new EventEmitter<Categoria>();
-  @Input() filtro : string;
-  @Input() entrada : string;
-  @Input() actualiza : Categoria;
-  public selectedP : Producto; 
-  public selectedC : Categoria;    
+  @Input() filtro: string;
+  @Input() entrada: string;
+  @Input() actualiza: Categoria;
+  public selectedP: Producto;
+  public selectedC: Categoria;
   public categorias$: Observable<Categoria[]>;
   public productos$: Observable<Producto[]>;
 
-  constructor(private productoService : ProductosService,
-              private categoriaService : CategoriasService) { }
+  constructor(private productoService: ProductosService,
+    private categoriaService: CategoriasService) { }
 
-  public ngOnInit(): void { 
-    if (this.entrada == "Productos") {
-      this.productos$ = this.productoService.getProductosFiltro(this.filtro);
-     } else {  
-      this.categorias$ = this.categoriaService.getCategorias();  
-    }
-  }
-
-  public ngOnChanges(): void{
+  public ngOnInit(): void {
     if (this.entrada == "Productos") {
       this.productos$ = this.productoService.getProductosFiltro(this.filtro);
     } else {
-      this.categorias$ = this.categoriaService.getCategorias(); 
+      this.categorias$ = this.categoriaService.getCategorias();
     }
   }
 
-  public enviaProducto(event : any){  
-    let producto = plainToClass(Producto, event); 
+  public ngOnChanges(): void {
+    if (this.entrada == "Productos") {
+      this.productos$ = this.productoService.getProductosFiltro(this.filtro);
+    } else {
+      this.categorias$ = this.categoriaService.getCategorias();
+    }
+  }
+
+  public enviaProducto(event: any) {
+    let producto = plainToClass(Producto, event);
     this.producto.emit(producto);
   }
 
-  public enviaCategoria(event : any){  
-    let categoria = plainToClass(Categoria, event[0]); 
+  public enviaCategoria(event: any) {
+    let categoria = plainToClass(Categoria, event[0]);
     this.categoria.emit(categoria);
   }
- 
+
 }
