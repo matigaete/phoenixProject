@@ -8,7 +8,6 @@ import { Factura } from 'src/app/Clases/factura';
 import { DetalleFactura } from 'src/app/Clases/detalle-factura';
 import { DatePipe } from '@angular/common';
 import { Transaction } from 'src/app/Interfaces/transaction';
-import { UpdateProduct } from 'src/app/Interfaces/update-product';
 
 @Component({
   selector: 'app-welcome',
@@ -43,33 +42,27 @@ export class WelcomeComponent implements OnInit {
     this.dataSource.next(this.transactions);
   }
 
-  public OnSubmit() { 
+  public OnSubmit() {
     if (this.rdFactura != undefined) {
       try {
         let hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
         let fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
         let factura = new Factura(this.codFactura, this.codProveedor, fecha, hora, this.total, this.rdFactura);
-        let detalle: DetalleFactura[] = [];
-        let actualizaProducto: UpdateProduct[] = [];
+        let detalle: DetalleFactura[] = []; 
         for (let i = 0; i < this.transactions.length; i++) {
           const transac = this.transactions[i];
           detalle.push(new DetalleFactura(this.codFactura, i + 1, transac.cant, transac.cost, this.getSubtotal(transac), transac.idItem, this.codProveedor));
-          if (this.rdFactura == 'C') var newCant = transac.disp + transac.cant;
-          else var newCant = transac.disp - transac.cant;
-          actualizaProducto.push({ idProducto: transac.idItem, newCant: newCant });
         }
         this.facturaService.creaFactura(factura).subscribe(() => {
           this.facturaService.creaDetalle(detalle).subscribe(() => {
-            this.productosService.actualizaProductos(actualizaProducto).subscribe(() => {
-              this.snackBar.open('Factura creada correctamente', undefined, {
-                duration: 1500,
-              });
-              this.transactions = [];
-              this.dataSource.next(this.transactions);
-              this.codFactura = null;
-              this.codProveedor = null;
-              this.fecha = null;
-            })
+            this.snackBar.open('Factura creada correctamente', undefined, {
+              duration: 1500,
+            });
+            this.transactions = [];
+            this.dataSource.next(this.transactions);
+            this.codFactura = null;
+            this.codProveedor = null;
+            this.fecha = null;
           });
         });
       } catch (error) {
@@ -133,9 +126,13 @@ export class WelcomeComponent implements OnInit {
           if (element.idpos == datpos.idpos && producto) {
             datpos.name = producto.nombre;
             datpos.disp = producto.stock;
+            if (this.rdFactura == 'V') datpos.cost = producto.precioVenta;
             modificado = true;
             break;
-          } else datpos.name = '';
+          } else {
+            datpos.name = '';
+            if (this.rdFactura == 'V') datpos.cost = 0;
+          }
         }
       });
       if (modificado) this.dataSource.next(this.transactions);
