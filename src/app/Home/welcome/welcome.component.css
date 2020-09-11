@@ -36,7 +36,7 @@ tr.mat-footer-row {
 }
 
 .mat-column-subtotal {
-  max-width: 10px;
+  max-width: 50px;
 }
 
 .mat-radio-button ~ .mat-radio-button {
