@@ -72,9 +72,7 @@ export class FormCategoriasComponent implements OnInit {
           subscribe((confirmado: Boolean) => {
             if (!confirmado) return;
             this.categoriasService.creaCategoria(this.categoriaModel).subscribe(() => {
-              this.snackBar.open(this.categoriasService.mensajeCreado, undefined, {
-                duration: 1500,
-              })
+              this.businessService.getAlert(this.categoriasService.mensajeCreado);
             })
           })
       } else {
@@ -85,17 +83,13 @@ export class FormCategoriasComponent implements OnInit {
           subscribe((confirmado: Boolean) => {
             if (!confirmado) return;
             this.categoriasService.actualizaCategoria(this.categoriaModel).subscribe(() => {
-              this.snackBar.open(this.categoriasService.mensajeActualizado, undefined, {
-                duration: 1500,
-              })
+              this.businessService.getAlert(this.categoriasService.mensajeActualizado);
             })
             this.actualiza.emit(this.categoriaModel);
           })
       }
     } else {
-      this.snackBar.open(this.businessService.mensajeError, undefined, {
-        duration: 1500,
-      });
+      this.businessService.getAlert(this.businessService.mensajeError); 
     }
   }
 

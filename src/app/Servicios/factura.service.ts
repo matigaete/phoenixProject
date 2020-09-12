@@ -68,7 +68,11 @@ export class FacturaService {
     return this.http.get<Factura>(`${this.url}getBill.php?codigo=${codigo}`);
   }
 
-  public creaFactura(factura: Factura) {
+  public creaFacturaCompra(factura: Factura) {
+    return this.http.post(`${this.url}addBill.php`, factura);
+  }
+
+  public creaFacturaVenta(factura: Factura) {
     return this.http.post(`${this.url}addBill.php`, factura);
   }
 
@@ -80,7 +84,11 @@ export class FacturaService {
     return this.http.get<DetalleFactura[]>(`${this.url}getDetailBill.php?codigo=all`);
   }
 
-  public creaDetalle(detalle: DetalleFactura[]) {
+  public creaDetalleCompra(detalle: DetalleFactura[]) {
+    return this.http.post(`${this.url}addDetailBill.php`, detalle);
+  }
+
+  public creaDetalleVenta(detalle: DetalleFactura[]) {
     return this.http.post(`${this.url}addDetailBill.php`, detalle);
   }
 

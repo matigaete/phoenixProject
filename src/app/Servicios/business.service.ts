@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ilista } from '../Interfaces/ilista';
-import { Producto } from '../Clases/producto';
-import { HttpClient } from '@angular/common/http';
+import { Producto } from '../Clases/producto'; 
 import { environment } from 'src/environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class BusinessService {
   private _mensajeNombre: string;
 
   constructor(private router: Router,
-    private http: HttpClient) {
+    private snackBar: MatSnackBar) {
 
     this._inicio = 'Inicio';
     this._action = 'Mantenedores';
@@ -45,12 +45,15 @@ export class BusinessService {
       id: 2,
       nombre: 'Categorías',
       path: 'categorias',
-    }/*, {
-        id : 3,
-        nombre : '',
-        path : 'find',
-    }*/
-    ]
+    }, {
+      id: 3,
+      nombre: 'Clientes',
+      path: 'clientes',
+    }, {
+      id: 4,
+      nombre: 'Proveedores',
+      path: 'proveedores',
+    }]
   }
 
   public getAcciones(): Ilista[] {
@@ -127,6 +130,12 @@ export class BusinessService {
     return aux;
   }
 
+  public getAlert(message: string){
+    this.snackBar.open(message, undefined, {
+      duration: 1500,
+    });
+  }
+
   //-End Funciones-------------------------------//
 
   //-Setters-------------------------------------//
@@ -167,7 +176,7 @@ export class BusinessService {
   }
 
   //-End Setters----------------------------------//
-
+  
   //-Getters--------------------------------------//
   public get action(): string {
     return this._action;

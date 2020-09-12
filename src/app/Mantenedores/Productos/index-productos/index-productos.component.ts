@@ -6,13 +6,12 @@ import { ProductosService } from 'src/app/Servicios/productos.service';
 
 @Component({
   selector: 'app-index-productos',
-  template: `<nav>
+  template: ` <nav>
                 <ul class="pagination justify-content-center">
-                  <li *ngFor="let a of acciones" class="page-item {{a.current}}" role="button">  
-                    <a class="page-link" (click)="asignarOpcion(a.id)">
-                      {{a.nombre}} 
-                    </a>
-                  </li> 
+                  <mat-button-toggle-group class="justify-content-center">
+                    <mat-button-toggle *ngFor="let a of acciones" 
+                    (click)="asignarOpcion(a.id)">{{a.nombre}}</mat-button-toggle> 
+                  </mat-button-toggle-group> 
                 </ul>
               </nav>
               <div class="container">  

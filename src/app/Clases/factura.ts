@@ -1,25 +1,25 @@
 export class Factura {
     
-    constructor(private _codigoFactura: string,
-        private _codProveedor: string,
+    constructor(private _codFactura: string,
+        private _codPersona: string,
         private _fecha: string,
         private _hora: string,
         private _total: number,
         private _tipo: string) {
-        this._codigoFactura = _codigoFactura;
-        this._codProveedor = _codProveedor;
+        this._codFactura = _codFactura;
+        this._codPersona = _codPersona;
         this._fecha = _fecha;
         this._hora = _hora;
         this._total = _total;
         this._tipo = _tipo;
     }
 
-    public set codigoFactura(codigoFactura: string) {
-        this._codigoFactura = codigoFactura;
+    public set codFactura(codFactura: string) {
+        this._codFactura = codFactura;
     }
 
-    public set codProveedor(value: string) {
-        this._codProveedor = value;
+    public set codPersona(value: string) {
+        this._codPersona = value;
     }
 
     public set fecha(value: string) {
@@ -46,12 +46,12 @@ export class Factura {
         return this._total;
     }
 
-    public get codigoFactura(): string {
-        return this._codigoFactura;
+    public get codFactura(): string {
+        return this._codFactura;
     }
 
-    public get codProveedor(): string {
-        return this._codProveedor;
+    public get codPersona(): string {
+        return this._codPersona;
     }
 
     public get fecha(): string {

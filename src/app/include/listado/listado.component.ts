@@ -7,6 +7,7 @@ import { DialogoColumnaComponent } from '../dialogo-columna/dialogo-columna.comp
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { plainToClass } from 'class-transformer';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { BusinessService } from 'src/app/Servicios/business.service';
 
 @Component({
   selector: 'app-listado',
@@ -45,7 +46,8 @@ export class ListadoComponent implements OnInit {
   public activeColumn: string[] = ['activar'];
   public columnsToDisplayI: string[] = this.inactiveColums.concat(this.activeColumn);
 
-  constructor(private productoService: ProductosService,
+  constructor(private businessService: BusinessService,
+    private productoService: ProductosService,
     private dialogo: MatDialog,
     private snackBar: MatSnackBar) {
     this.bajar = this.productoService.active;
@@ -84,9 +86,7 @@ export class ListadoComponent implements OnInit {
           }
         })
     } else {
-      this.snackBar.open(this.productoService.mensajeColumnas, undefined, {
-        duration: 1500,
-      });
+      this.businessService.getAlert(this.productoService.mensajeColumnas); 
     }
   }
 
@@ -113,9 +113,7 @@ export class ListadoComponent implements OnInit {
       subscribe((confirmado: Boolean) => {
         if (!confirmado) return;
         this.productoService.bajaProducto(producto).subscribe(() => {
-          this.snackBar.open(this.productoService.mensajeBajado, undefined, {
-            duration: 1500,
-          });
+          this.businessService.getAlert(this.productoService.mensajeBajado); 
         });
         this.jsonProductos.splice(this.jsonProductos.indexOf(event), 1);
         this.dataSourceA.next(this.jsonProductos);
@@ -129,9 +127,7 @@ export class ListadoComponent implements OnInit {
       subscribe((confirmado: Boolean) => {
         if (!confirmado) return;
         this.productoService.activaProducto(producto).subscribe(() => {
-          this.snackBar.open(this.productoService.mensajeActivado, undefined, {
-            duration: 1500,
-          });
+          this.businessService.getAlert(this.productoService.mensajeActivado);  
         });
         this.jsonInactivos.splice(this.jsonInactivos.indexOf(event), 1);
         this.dataSourceI.next(this.jsonInactivos);
