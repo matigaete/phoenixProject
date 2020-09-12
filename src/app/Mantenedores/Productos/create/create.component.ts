@@ -93,9 +93,7 @@ export class CreateComponent implements OnInit {
       !this.errorPrecioCompra && !this.errorPrecioVenta) {
       if (this.isNew) {
         this.productoService.creaProducto(this.productoModel).subscribe(() => {
-          this.snackBar.open(this.productoService.mensajeCreado, undefined, {
-            duration: 1500,
-          });
+          this.businessService.getAlert(this.productoService.mensajeCreado);
           this.productoModel = new Producto('', 1, '', 0, 0, 0, 0, false, '');
           this.multiplierPrice = null;
           this.chkAuto = false;
@@ -107,23 +105,17 @@ export class CreateComponent implements OnInit {
             subscribe((confirmado: Boolean) => {
               if (!confirmado) return;
               this.productoService.bajaProducto(this.productoModel).subscribe(() => {
-                this.snackBar.open(this.productoService.mensajeBajado, undefined, {
-                  duration: 1500,
-                });
+                this.businessService.getAlert(this.productoService.mensajeBajado);
               });
             });
         } else {
           this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
-            this.snackBar.open(this.productoService.mensajeActualizado, undefined, {
-              duration: 1500,
-            });
+            this.businessService.getAlert(this.productoService.mensajeActualizado);
           })
         }
       }
     } else {
-      this.snackBar.open(this.businessService.mensajeError, undefined, {
-        duration: 1500,
-      });
+      this.businessService.getAlert(this.businessService.mensajeError);
     }
   }
 

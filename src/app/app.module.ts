@@ -24,6 +24,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { AppComponent } from './app.component';
 import { FooterComponent } from './include/footer/footer.component';
@@ -88,7 +89,8 @@ import { CategoriasService } from './Servicios/categorias.service';
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatRadioModule  
+    MatRadioModule,
+    MatButtonToggleModule
   ],
   providers: [BusinessService, ProductosService, CategoriasService, DatePipe],
   bootstrap: [AppComponent]
