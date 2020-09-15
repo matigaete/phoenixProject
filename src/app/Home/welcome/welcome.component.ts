@@ -26,13 +26,8 @@ export class WelcomeComponent implements OnInit {
   public producto$: Observable<Producto>;
   public fecha: string;
   public codPersona: string;
-  public codFactura: string;
-  // public myFilter = (d: Date | null): boolean => {
-  //   const day = (d || new Date()).getDay();
-  //   // Prevent Saturday and Sunday from being selected.
-  //   return day !== 0 && day !== 6;
-  // }
-
+  public codFactura: string; 
+  
   constructor(private businessService: BusinessService,
     private productosService: ProductosService,
     private facturaService: FacturaService,

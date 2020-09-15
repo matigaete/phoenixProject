@@ -25,6 +25,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
 
 import { AppComponent } from './app.component';
 import { FooterComponent } from './include/footer/footer.component';
@@ -44,6 +46,8 @@ import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-colum
 import { WelcomeComponent } from './Home/welcome/welcome.component';
 import { MatNativeDateModule } from '@angular/material/core';
 import { CategoriasService } from './Servicios/categorias.service';
+import { ProveedoresComponent } from './Mantenedores/proveedores/proveedores.component';
+import { ClientesComponent } from './Mantenedores/clientes/clientes.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +67,8 @@ import { CategoriasService } from './Servicios/categorias.service';
     IndexCategoriasComponent,
     DialogoColumnaComponent,
     DialogoConfirmacionComponent,
+    ProveedoresComponent,
+    ClientesComponent,
   ],
   entryComponents: [
     DialogoConfirmacionComponent,
@@ -90,7 +96,9 @@ import { CategoriasService } from './Servicios/categorias.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatRadioModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatGridListModule,
+    MatCardModule
   ],
   providers: [BusinessService, ProductosService, CategoriasService, DatePipe],
   bootstrap: [AppComponent]
