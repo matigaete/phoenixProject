@@ -6,14 +6,14 @@ export class DetalleFactura {
         private _precioCompra: number,
         private _subtotal: number,
         private _codProducto: string,
-        private _codCliente: string) {
+        private _codPersona: string) {
         this._posicion = _posicion;
         this._codFactura = _codFactura;
         this._cantidad = _cantidad;
         this._precioCompra = _precioCompra;
         this._subtotal = _subtotal;
         this._codProducto = _codProducto;
-        this._codCliente = _codCliente;
+        this._codPersona = _codPersona;
     }
 
     public set posicion(posicion: number) {
@@ -24,8 +24,8 @@ export class DetalleFactura {
         this._codFactura = codFactura;
     }
 
-    public set codCliente(value: string) {
-        this._codCliente = value;
+    public set codPersona(value: string) {
+        this._codPersona = value;
     }
 
     public set codProducto(value: string) {
@@ -52,8 +52,8 @@ export class DetalleFactura {
         return this._codFactura;
     }
 
-    public get codCliente(): string {
-        return this._codCliente;
+    public get codPersona(): string {
+        return this._codPersona;
     }
 
     public get codProducto(): string {

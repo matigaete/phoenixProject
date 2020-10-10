@@ -48,6 +48,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { CategoriasService } from './Servicios/categorias.service';
 import { ProveedoresComponent } from './Mantenedores/proveedores/proveedores.component';
 import { ClientesComponent } from './Mantenedores/clientes/clientes.component';
+=======
+import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-errores.component';
+>>>>>>> Stashed changes
 
 @NgModule({
   declarations: [
@@ -67,8 +70,12 @@ import { ClientesComponent } from './Mantenedores/clientes/clientes.component';
     IndexCategoriasComponent,
     DialogoColumnaComponent,
     DialogoConfirmacionComponent,
+<<<<<<< Updated upstream
     ProveedoresComponent,
     ClientesComponent,
+=======
+    DialogoErroresComponent,
+>>>>>>> Stashed changes
   ],
   entryComponents: [
     DialogoConfirmacionComponent,

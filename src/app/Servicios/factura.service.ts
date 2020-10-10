@@ -60,39 +60,59 @@ export class FacturaService {
 
   //-Respuestas HTTP-------------------------------//
 
-  public getListaFacturas() {
-    return this.http.get<Factura[]>(`${this.url}getBills.php?codigo=all`);
+  public getListaFacturasCompra() {
+    return this.http.get<Factura[]>(`${this.url}getPurchaseBills.php?codigo=all`);
   }
 
-  public getFactura(codigo: number | string) {
-    return this.http.get<Factura>(`${this.url}getBill.php?codigo=${codigo}`);
+  public getFacturaCompra(codigo: number | string) {
+    return this.http.get<Factura>(`${this.url}getPurchaseBill.php?codigo=${codigo}`);
   }
 
   public creaFacturaCompra(factura: Factura) {
-    return this.http.post(`${this.url}addBill.php`, factura);
+    return this.http.post(`${this.url}addPurchaseBill.php`, factura);
   }
 
-  public creaFacturaVenta(factura: Factura) {
-    return this.http.post(`${this.url}addBill.php`, factura);
-  }
-
-  public actualizaFactura(factura: Factura) {
+  public actualizaFacturaCompra(factura: Factura) {
     return this.http.put(`${this.url}updateBill.php`, factura);
   }
 
-  public getListaDetalle() {
+  public getListaDetalleCompra() {
     return this.http.get<DetalleFactura[]>(`${this.url}getDetailBill.php?codigo=all`);
   }
 
   public creaDetalleCompra(detalle: DetalleFactura[]) {
-    return this.http.post(`${this.url}addDetailBill.php`, detalle);
+    return this.http.post(`${this.url}addDetailPurchaseBill.php`, detalle);
+  }
+
+  public actualizaDetalleCompra(detalle: DetalleFactura[]) {
+    return this.http.put(`${this.url}updateDetailBill.php`, detalle);
+  }
+
+  public getListaFacturasVenta() {
+    return this.http.get<Factura[]>(`${this.url}getSellBills.php?codigo=all`);
+  }
+
+  public getFacturaVenta(codigo: number | string) {
+    return this.http.get<Factura>(`${this.url}getSellBill.php?codigo=${codigo}`);
+  }
+
+  public creaFacturaVenta(factura: Factura) {
+    return this.http.post(`${this.url}addSellBill.php`, factura);
+  }
+
+  public actualizaFacturaVenta(factura: Factura) {
+    return this.http.put(`${this.url}updateBill.php`, factura);
+  }
+
+  public getListaDetalleVenta() {
+    return this.http.get<DetalleFactura[]>(`${this.url}getDetailBill.php?codigo=all`);
   }
 
   public creaDetalleVenta(detalle: DetalleFactura[]) {
-    return this.http.post(`${this.url}addDetailBill.php`, detalle);
+    return this.http.post(`${this.url}addDetailSellBill.php`, detalle);
   }
 
-  public actualizaDetalle(detalle: DetalleFactura[]) {
+  public actualizaDetalleVenta(detalle: DetalleFactura[]) {
     return this.http.put(`${this.url}updateDetailBill.php`, detalle);
   }
 

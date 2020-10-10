@@ -15,30 +15,14 @@ tr.mat-footer-row {
   border-top: 1px solid #e0e0e0;
 }
 
-.mat-column-insert {
-  max-width: 60px;
-}
-
-.mat-column-item {
-  max-width: 80px;
-}
-
-.mat-column-name {
-  max-width: 100px;
-}
-
-.mat-column-cant {
-  max-width: 100px;
-}
-
-.mat-column-cost {
-  max-width: 100px;
-}
-
-.mat-column-subtotal {
-  max-width: 50px;
-}
-
 .mat-radio-button ~ .mat-radio-button {
   margin-left: 16px;
+}
+
+.texto {
+  max-width: 250px;
+}
+
+.numero {
+  max-width: 110px;
 }

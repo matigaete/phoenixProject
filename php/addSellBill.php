@@ -7,14 +7,11 @@ if (!$jsonFactura) {
 }
 $bd = include_once "conexion.php";
  
-$sentencia = $bd->prepare(
-   "INSERT INTO factura(codigo_factura, codigo_proveedor, fecha_factura, 
-                        hora_factura, total_compra, tipo_factura)
-    VALUES (?,?,?,?,?,?)");
+$sentencia = $bd->prepare("CALL insert_fact_venta(?,?,?,?,?,?,?)");
 
 $resultado = $sentencia->execute([
-    $jsonFactura->_codigoFactura, $jsonFactura->_codProveedor, $jsonFactura->_fecha,
-    $jsonFactura->_hora, $jsonFactura->_total, $jsonFactura->_tipo]);
+    $jsonFactura->_codFactura, $jsonFactura->_codPersona, $jsonFactura->_fecha,
+    $jsonFactura->_hora, $jsonFactura->_neto, $jsonFactura->_iva, $jsonFactura->_total]);
 
 echo json_encode([
     "resultado" => $resultado,
