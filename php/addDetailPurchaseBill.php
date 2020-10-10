@@ -8,15 +8,10 @@ if (!$jsonDetalle) {
 $bd = include_once "conexion.php"; 
 $arrayResultado = []; 
 foreach ($jsonDetalle as $detalle) { //foreach element in $arr
-    $sentencia = $bd->prepare(
-        "INSERT INTO detalle_factura(codigo_factura, codigo_proveedor, 
-        codigo_producto, cantidad, 
-        precio_compra, subtotal_factura)
-         VALUES (?,?,?,?,?,?)"
-    );
+    $sentencia = $bd->prepare("CALL insert_detalle_fc(?,?,?,?,?,?)");
 
     $resultado = $sentencia->execute([
-        $detalle->_codigoFactura, $detalle->_codProveedor, 
+        $detalle->_cod  Factura, $detalle->_codPersona, 
         $detalle->_codProducto, $detalle->_cantidad, 
         $detalle->_precioCompra, $detalle->_subtotal
     ]);

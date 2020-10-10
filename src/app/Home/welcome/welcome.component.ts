@@ -8,6 +8,8 @@ import { DetalleFactura } from 'src/app/Clases/detalle-factura';
 import { DatePipe } from '@angular/common';
 import { Transaction } from 'src/app/Interfaces/transaction';
 import { BusinessService } from 'src/app/Servicios/business.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoErroresComponent } from 'src/app/Include/dialogo-errores/dialogo-errores.component';
 
 @Component({
   selector: 'app-welcome',
@@ -16,13 +18,13 @@ import { BusinessService } from 'src/app/Servicios/business.service';
 })
 export class WelcomeComponent implements OnInit {
 
-  public displayedColumns = ['insert', 'item', 'name', 'cost', 'cant', 'subtotal'];
+  public displayedColumns = ['insert', 'add', 'item', 'name', 'cant', 'cost', 'dcto', 'subtotal'];
   public transactions: Transaction[] = [
-    { idpos: 0, insert: false, idItem: '', name: '', cant: 0, cost: 0 },];
+    { idpos: 0, insert: false, idItem: '', name: '', cant: 0, dcto: 0, cost: 0 },];
   public dataSource = new BehaviorSubject([]);
   public chkAll: boolean = false;
   public persona: string;
-  public rdFactura: string;
+  public rdFactura: string = 'C';
   public producto$: Observable<Producto>;
   public fecha: string;
   public codPersona: string;
@@ -31,53 +33,49 @@ export class WelcomeComponent implements OnInit {
   constructor(private businessService: BusinessService,
     private productosService: ProductosService,
     private facturaService: FacturaService,
-    private datepipe: DatePipe) { }
+    private datepipe: DatePipe,
+    private dialogo: MatDialog) { }
 
   public ngOnInit() {
     this.dataSource.next(this.transactions);
   }
 
   public OnSubmit() {
-    var errores = this.validaPosiciones();
-    if (this.rdFactura != undefined) {
-      if (!errores.length) {
-        try {
-          let hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
-          let fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
-          let factura = new Factura(this.codFactura, this.codPersona, fecha, hora, this.getTotalCost(), this.rdFactura);
-          let detalle: DetalleFactura[] = [];
-          for (let i = 0; i < this.transactions.length; i++) {
-            const transac = this.transactions[i];
-            detalle.push(new DetalleFactura(this.codFactura, i + 1, transac.cant, transac.cost, this.getSubtotal(transac), transac.idItem, this.codPersona));
-          }
-          if (factura.tipo == 'C') {
-            this.facturaService.creaFacturaCompra(factura).subscribe(() => {
-              this.facturaService.creaDetalleCompra(detalle).subscribe(() => {
-                this.businessService.getAlert('Factura creada correctamente');
-                this.reset();
-              });
-            });
-          } else {
-            this.facturaService.creaFacturaVenta(factura).subscribe(() => {
-              this.facturaService.creaDetalleVenta(detalle).subscribe(() => {
-                this.businessService.getAlert('Factura creada correctamente');
-                this.reset();
-              });
-            });
-          }
-        } catch (error) {
-          this.businessService.getAlert('Ingrese una fecha válida');
-        }
+    var errores = this.validaCampos();
+    if (!errores.length) {
+      let hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
+      let fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
+      let factura = new Factura(this.codFactura, this.codPersona, fecha, hora, this.getNetAmount(), this.getIVA(), this.getTotalCost(), this.rdFactura);
+      let detalle: DetalleFactura[] = [];
+      for (let i = 0; i < this.transactions.length; i++) {
+        const transac = this.transactions[i];
+        detalle.push(new DetalleFactura(this.codFactura, i + 1, transac.cant, transac.cost, this.getSubtotal(transac), transac.idItem, this.codPersona));
+      }
+      if (factura.tipo == 'C') {
+        this.facturaService.creaFacturaCompra(factura).subscribe(() => {
+          this.facturaService.creaDetalleCompra(detalle).subscribe(() => {
+            this.businessService.getAlert('Factura creada correctamente');
+            this.reset();
+          });
+        });
       } else {
-        var timeOut = 1500;
-        errores.forEach((message, index) => {
-          setTimeout(() => {
-            this.businessService.getAlert(message);
-          }, index * (timeOut + 200)); // 500 => timeout between two messages
+        this.facturaService.creaFacturaVenta(factura).subscribe(() => {
+          this.facturaService.creaDetalleVenta(detalle).subscribe(() => {
+            this.businessService.getAlert('Factura creada correctamente');
+            this.reset();
+          });
         });
       }
     } else {
-      this.businessService.getAlert('Ingrese tipo de factura');
+      this.dialogo.open(DialogoErroresComponent, {
+        data: errores
+      });
+      // var timeOut = 1500;
+      // errores.forEach((message, index) => {
+      //   setTimeout(() => {
+      //     this.businessService.getAlert(message);
+      //   }, index * (timeOut + 200)); // 500 => timeout between two messages
+      // });
     }
   }
 
@@ -87,7 +85,7 @@ export class WelcomeComponent implements OnInit {
     } catch (error) {
       newID = 0;
     }
-    var registro: Transaction = { idpos: newID, insert: false, idItem: '', cant: 0, cost: 0 };
+    var registro: Transaction = { idpos: newID, insert: false, idItem: '', cant: 0, cost: 0, dcto: 0 };
     this.transactions.push(registro);
     this.dataSource.next(this.transactions);
   }
@@ -99,10 +97,14 @@ export class WelcomeComponent implements OnInit {
         array.push(transaction);
       }
     });
-    this.transactions = array;
-    this.dataSource.next(this.transactions);
-    this.chkAll = false;
-    this.businessService.getAlert('Posiciones seleccionadas eliminadas');
+    if (array.length < this.transactions.length) {
+      this.transactions = array;
+      this.dataSource.next(this.transactions);
+      this.chkAll = false;
+      this.businessService.getAlert('Posiciones seleccionadas eliminadas');
+    } else {
+      this.businessService.getAlert('No se eliminaron posiciones');
+    }
   }
 
   public reset() {
@@ -141,8 +143,13 @@ export class WelcomeComponent implements OnInit {
     }
   }
 
-  public validaPosiciones() {
-    var log = [];
+  public validaCampos() {
+    var log = []; 
+    if (this.rdFactura == 'C') var texto = 'Proveedor'; else texto = 'Cliente';
+    if (this.codFactura == undefined) log.push('Ingrese código de factura');
+    if (this.codPersona == undefined) log.push(`Ingrese código de ${texto}`);
+    if (this.fecha == undefined) log.push('Ingrese una fecha válida');
+    if (this.rdFactura == undefined) log.push('Ingrese tipo de factura');
     this.transactions.forEach(function (pos, index) {
       var msg = `Pos. ${index + 1} datos incompletos`;
       var error = false;
@@ -150,9 +157,10 @@ export class WelcomeComponent implements OnInit {
       if (!pos.cant) { error = true }
       if (!pos.cost) { error = true }
       if (error) { log.push(msg) }
-    });
+    }); 
     return log;
   }
+
   public getTipoPersona() {
     var valor: string;
     if (this.rdFactura == 'V') {
@@ -163,16 +171,26 @@ export class WelcomeComponent implements OnInit {
     return valor;
   }
   public getSubtotal(t: Transaction): number {
-    return t.cant * t.cost;
+    var subtotal = (t.cant * t.cost) - t.dcto;
+    if (subtotal < 0) subtotal = 0;
+    return subtotal;
   }
 
-  public getTotalCost(): number {
+  public getNetAmount(): number {
     var total: number;
     try {
-      total = this.transactions.map(t => t.cost * t.cant).reduce((acc, value) => acc + value, 0);
+      total = this.transactions.map(t => (t.cost * t.cant) - t.dcto).reduce((acc, value) => acc + value, 0);
     } catch (error) {
       total = 0;
     }
     return total;
+  }
+
+  public getIVA(): number {
+    return this.getNetAmount() * 0.19;
+  }
+
+  public getTotalCost(): number {
+    return this.getNetAmount() + this.getIVA();
   }
 }

@@ -4,6 +4,8 @@ export class Factura {
         private _codPersona: string,
         private _fecha: string,
         private _hora: string,
+        private _neto: number,
+        private _iva: number,
         private _total: number,
         private _tipo: string) {
         this._codFactura = _codFactura;
@@ -16,7 +18,7 @@ export class Factura {
 
     public set codFactura(codFactura: string) {
         this._codFactura = codFactura;
-    }
+    } 
 
     public set codPersona(value: string) {
         this._codPersona = value;
@@ -36,6 +38,14 @@ export class Factura {
 
     public set tipo(value: string) {
         this._tipo = value;
+    }
+
+    public set neto(value: number) {
+        this._neto = value;
+    }
+
+    public set iva(value: number) {
+        this._iva = value;
     }
 
     public get hora(): string {
@@ -60,6 +70,14 @@ export class Factura {
     
     public get tipo(): string {
         return this._tipo;
+    }
+
+    public get neto(): number {
+        return this._neto;
+    }
+
+    public get iva(): number {
+        return this._iva;
     }
 
 }

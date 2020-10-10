@@ -5,5 +5,6 @@ export interface Transaction {
     name?: string;
     cant?: number;
     disp?: number;
+    dcto?: number;
     cost: number;
 }
