@@ -22,7 +22,13 @@ export class Factura {
 
     public getNetAmount(): number {
         try {
-            this._neto = this.detalle.map(t => (t.producto.precioVenta * t.cantidad) - t.dcto).reduce((acc, value) => acc + value, 0);
+            if (this._tipo == 'C') {
+                this._neto = this.detalle.map(t => (t.producto.precioCompra * t.cantidad) - t.dcto)
+                .reduce((acc, value) => acc + value, 0);
+            } else {
+                this._neto = this.detalle.map(t => (t.producto.precioVenta * t.cantidad) - t.dcto)
+                .reduce((acc, value) => acc + value, 0);
+            }
         } catch (error) {
             this._neto = 0;
         }

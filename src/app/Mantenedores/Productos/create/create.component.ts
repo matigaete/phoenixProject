@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BusinessService } from '../../../Servicios/business.service';
 import { ProductosService } from 'src/app/Servicios/productos.service';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
-import { Subscription, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Categoria } from 'src/app/Clases/categoria';
 
 @Component({
@@ -16,8 +16,7 @@ import { Categoria } from 'src/app/Clases/categoria';
 export class CreateComponent implements OnInit {
 
   @Input() isNew: boolean;
-  @Input() iProducto: Producto;
-  public subscription: Subscription;
+  @Input() iProducto: Producto; 
 
   public productoModel: Producto = new Producto('', 1, '', 0, 0, 0, 0, false, '');;
 
@@ -53,8 +52,7 @@ export class CreateComponent implements OnInit {
 
   constructor(private businessService: BusinessService,
     private productoService: ProductosService,
-    private categoriaService: CategoriasService,
-    private snackBar: MatSnackBar) { }
+    private categoriaService: CategoriasService) { }
 
   public ngOnInit(): void {
     this.codigo = this.productoService.codigo;

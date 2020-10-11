@@ -15,7 +15,7 @@ tr.mat-footer-row {
   border-top: 1px solid #e0e0e0;
 }
 
-.mat-radio-button ~ .mat-radio-button {
+.mat-radio-button~.mat-radio-button {
   margin-left: 16px;
 }
 
@@ -25,4 +25,16 @@ tr.mat-footer-row {
 
 .numero {
   max-width: 110px;
+}
+
+.alertMessage {
+  position: fixed;
+  top: 30%;
+  left: 80%;
+  width: 400px;
+  margin-left: -150px;
+  margin-top: -100px;
+  text-align: left;
+  z-index: 99999; 
+  border-radius: 0px;
 }

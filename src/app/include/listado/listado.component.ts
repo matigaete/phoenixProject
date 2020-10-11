@@ -48,8 +48,7 @@ export class ListadoComponent implements OnInit {
 
   constructor(private businessService: BusinessService,
     private productoService: ProductosService,
-    private dialogo: MatDialog,
-    private snackBar: MatSnackBar) {
+    private dialogo: MatDialog) {
     this.bajar = this.productoService.active;
   }
 

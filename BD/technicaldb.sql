@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-10-2020 a las 08:30:55
+-- Tiempo de generación: 11-10-2020 a las 22:28:19
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -257,7 +257,25 @@ CREATE TABLE `detalle_factura_venta` (
 --
 
 INSERT INTO `detalle_factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `codigo_producto`, `cantidad`, `precio_compra`, `subtotal_factura`) VALUES
-('13221312', '21321', '1234', 1412, 25, 35200);
+('13221312', '21321', '1234', 1412, 25, 35200),
+('12321', '321312', '12344', 10, 3000, 30000),
+('12321', '321312', '438732', 22, 200, 4400),
+('12321', '321312', '12344', 10, 3000, 30000),
+('12321', '321312', '438732', 22, 200, 4400),
+('12321', '321312', '12344', 10, 3000, 30000),
+('12321', '321312', '438732', 22, 200, 4400),
+('12321', '321312', '12344', 10, 3000, 30000),
+('12321', '321312', '438732', 22, 200, 4400),
+('12321', '321312', '12344', 10, 3000, 30000),
+('12321', '321312', '438732', 22, 200, 4400),
+('12321', '321312', '12344', 10, 3000, 30000),
+('12321', '321312', '438732', 22, 200, 4400),
+('12321', '321312', '12344', 11, 3000, 33000),
+('12321', '321312', '438732', 22, 200, 4400),
+('12321', '321312', '12344', 11, 3000, 33000),
+('12321', '321312', '438732', 22, 200, 4400),
+('12321', '321312', '12344', 11, 3000, 33000),
+('12321', '321312', '438732', 22, 200, 4400);
 
 -- --------------------------------------------------------
 
@@ -342,10 +360,10 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('12312334', 'Elevador', 'Elevador de pana para llegar a la cima del mundo', 2, 100, 1, 100000, 500000, 0),
 ('1232154', 'Compresor de prueba', 'Compresor de pana para familia de pana', 1, 10, 1, 1000, 15000, 0),
 ('1234', 'TEST', 'sadddsadsa', 3, 1020, 15, 20, 25, 1),
-('12344', 'TEST', 'sadddsadsa', 3, 10, 15, 20, 3000, 1),
+('12344', 'TEST', 'sadddsadsa', 3, -83, 15, 20, 3000, 1),
 ('123441', 'TEST', 'sadddsadsa', 3, 10, 15, 20, 25, 1),
 ('4321', 'Prueba de productos', 'JEJEJE', 1, 50, 0, 1000, 5000, 1),
-('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, 31, 10, 50, 200, 1),
+('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, -167, 10, 50, 200, 1),
 ('4579843', 'Tractor', 'Pa pitiarse a todos los wones', 2, 5, 1, 500000, 5000000, 1);
 
 -- --------------------------------------------------------
@@ -358,6 +376,19 @@ CREATE TABLE `proveedores` (
   `codigo_proveedor` varchar(9) NOT NULL,
   `nombre_proveedor` varchar(30) NOT NULL,
   `direccion_proveedor` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `servicio`
+--
+
+CREATE TABLE `servicio` (
+  `codigo` varchar(15) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `descripcion` text NOT NULL,
+  `precioVenta` mediumint(9) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -406,6 +437,12 @@ ALTER TABLE `producto`
 --
 ALTER TABLE `proveedores`
   ADD PRIMARY KEY (`codigo_proveedor`);
+
+--
+-- Indices de la tabla `servicio`
+--
+ALTER TABLE `servicio`
+  ADD PRIMARY KEY (`codigo`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas

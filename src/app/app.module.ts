@@ -3,6 +3,7 @@ import { ProductosService } from './Servicios/productos.service';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -27,6 +28,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
+import { MatNativeDateModule } from '@angular/material/core';
 
 import { AppComponent } from './app.component';
 import { FooterComponent } from './include/footer/footer.component';
@@ -44,11 +46,11 @@ import { FormCategoriasComponent } from './Mantenedores/Categorias/form-categori
 import { IndexCategoriasComponent } from './Mantenedores/Categorias/index-categorias/index-categorias.component';
 import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-columna.component';
 import { WelcomeComponent } from './Home/welcome/welcome.component';
-import { MatNativeDateModule } from '@angular/material/core';
 import { CategoriasService } from './Servicios/categorias.service';
 import { ProveedoresComponent } from './Mantenedores/proveedores/proveedores.component';
 import { ClientesComponent } from './Mantenedores/clientes/clientes.component';
 import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-errores.component';
+import { FacturaService } from './Servicios/factura.service'; 
 
 @NgModule({
   declarations: [
@@ -70,13 +72,15 @@ import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-error
     DialogoConfirmacionComponent,
     ProveedoresComponent,
     ClientesComponent,
-    DialogoErroresComponent,
+    DialogoErroresComponent, 
   ],
   entryComponents: [
     DialogoConfirmacionComponent,
     DialogoColumnaComponent,
+    DialogoErroresComponent
   ],
   imports: [
+    NgbModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
@@ -102,7 +106,7 @@ import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-error
     MatGridListModule,
     MatCardModule
   ],
-  providers: [BusinessService, ProductosService, CategoriasService, DatePipe],
+  providers: [BusinessService, ProductosService, CategoriasService, FacturaService ,DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
