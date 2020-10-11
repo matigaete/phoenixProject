@@ -1,4 +1,5 @@
 import { Producto } from './producto';
+import { Servicio } from './servicio';
 
 export class DetalleFactura {
     
@@ -9,7 +10,8 @@ export class DetalleFactura {
         private _codFactura?: string,
         private _codPersona?: string,
         private _dcto?: number,
-        private _producto?: Producto) {
+        private _producto?: Producto,
+        private _servicio?: Servicio) {
         this._posicion = _posicion;
         this._codFactura = _codFactura;
         this._cantidad = _cantidad; 
@@ -20,9 +22,14 @@ export class DetalleFactura {
         this._dcto = _dcto;
     }
 
-    public getSubtotal(dcto: number): number {
+    public getSubtotal(tipo: string): number {
+        if (tipo == 'C') {
+            var precio = this.producto.precioCompra;
+        } else {
+            precio = this.producto.precioVenta;
+        }
         try {
-            var subtotal = (this.cantidad * this.producto.precioVenta) - dcto;   
+            var subtotal = (this.cantidad * precio) - this.dcto;   
         } catch(error) {
             subtotal = 0
         }
@@ -63,6 +70,10 @@ export class DetalleFactura {
         this._insert = value;
     }
 
+    public set servicio(value: Servicio) {
+        this._servicio = value;
+    }
+
     public get posicion(): number {
         return this._posicion;
     }
@@ -93,6 +104,10 @@ export class DetalleFactura {
 
     public get insert(): boolean {
         return this._insert;
+    }
+
+    public get servicio(): Servicio {
+        return this._servicio;
     }
 
 }

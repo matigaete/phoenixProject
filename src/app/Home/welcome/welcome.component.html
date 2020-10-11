@@ -31,6 +31,11 @@
         </mat-form-field>
       </div>
     </div>
+    <div class="col-7 alertMessage">
+      <p *ngFor="let alert of alertas">
+        <ngb-alert [type]="alert.tipo" (close)="close(alert)">{{ alert.nombre }}</ngb-alert>
+      </p>
+    </div>
   </div>
   <div class="form-group">
     <div class="mat-elevation-z8">
@@ -129,7 +134,7 @@
         <ng-container matColumnDef="subtotal">
           <th mat-header-cell *matHeaderCellDef> Subtotal </th>
           <td mat-cell *matCellDef="let transaction">
-            <label>{{getSubtotal(transaction) | currency:'CLP'}}</label>
+            <label>{{getSubtotal(factura, transaction) | currency:'CLP'}}</label>
           </td>
           <td mat-footer-cell *matFooterCellDef> 
             {{getNetAmount(factura) | currency : 'CLP'}}

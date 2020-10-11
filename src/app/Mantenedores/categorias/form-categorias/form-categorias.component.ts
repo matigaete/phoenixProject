@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { BusinessService } from 'src/app/Servicios/business.service';
-import { Categoria } from 'src/app/Clases/categoria';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Categoria } from 'src/app/Clases/categoria'; 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
 
@@ -41,8 +40,7 @@ export class FormCategoriasComponent implements OnInit {
   public categoria: string = 'categorias';
 
   constructor(private businessService: BusinessService,
-    private categoriasService: CategoriasService,
-    private snackBar: MatSnackBar,
+    private categoriasService: CategoriasService, 
     private dialogo: MatDialog) { }
 
   public ngOnInit(): void {

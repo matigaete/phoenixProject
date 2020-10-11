@@ -11,6 +11,7 @@ import { PersonaService } from 'src/app/Servicios/persona.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoErroresComponent } from 'src/app/Include/dialogo-errores/dialogo-errores.component';
 import { Persona } from 'src/app/Clases/persona';
+import { Ilista } from 'src/app/Interfaces/ilista';
 
 @Component({
   selector: 'app-welcome',
@@ -20,12 +21,15 @@ import { Persona } from 'src/app/Clases/persona';
 export class WelcomeComponent implements OnInit {
 
   public displayedColumns = ['insert', 'add', 'item', 'name', 'cant', 'cost', 'dcto', 'subtotal'];
-  public factura = new Factura(undefined, new Persona(undefined, undefined, undefined, 'P'), undefined, undefined, 0, 0, 0, 'C');
-  public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, false, undefined, undefined, 0, new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''))];
+  public factura = new Factura(undefined, 
+    new Persona(undefined, undefined, undefined, 'P'), undefined, undefined, 0, 0, 0, 'C');
+  public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, false, undefined, undefined, 0, 
+    new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''))];
   public dataSource = new BehaviorSubject([]);
   public chkAll: boolean = false; 
   public producto$: Observable<Producto>;
   public persona$: Observable<Persona>;
+  public alertas: Ilista[];
   public fecha: string; 
 
   constructor(private businessService: BusinessService,
@@ -51,14 +55,16 @@ export class WelcomeComponent implements OnInit {
         det.codFactura = fact.codFactura;
         det.codPersona = fact.persona.rut;
       });
-      if (fact.tipo == 'C') {
+      if (fact.tipo == 'C') { 
         this.facturaService.creaFacturaCompra(fact).subscribe(() => {
           this.businessService.getAlert('Factura creada correctamente');
           this.reset();
         });
       } else {
+        this.alertStock();
         this.facturaService.creaFacturaVenta(fact).subscribe(() => {
           this.businessService.getAlert('Factura creada correctamente');
+          this.alertStock();
           this.reset();
         });
       }
@@ -84,7 +90,8 @@ export class WelcomeComponent implements OnInit {
     } catch (error) {
       newID = 0;
     }
-    var registro: DetalleFactura = new DetalleFactura(newID, 0, 0, false, fact.codFactura, fact.persona.rut, 0, new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''));
+    var registro: DetalleFactura = new DetalleFactura(newID, 0, 0, false, fact.codFactura, fact.persona.rut, 0, 
+      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''));
     this.transactions.push(registro);
     this.factura.detalle = this.transactions;
     this.dataSource.next(this.transactions);
@@ -111,10 +118,32 @@ export class WelcomeComponent implements OnInit {
 
   // Se ejecuta al generarse la factura, limpia todos los campos
   public reset() {
-    this.transactions = [];
+    this.transactions = [new DetalleFactura(0, 0, 0, false, undefined, undefined, 0, 
+      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''))];;
     this.dataSource.next(this.transactions);
     this.factura = new Factura(undefined, undefined, undefined, undefined, 0, 0, 0, 'C');
     this.fecha = null;
+  }
+
+  // Alerta todos los productos que se encuentren bajo el stock crítico
+  public alertStock(){ 
+    var arr = [];
+    this.transactions.forEach(det => {
+      var producto = det.producto;
+      var cantidadFinal = producto.stock - det.cantidad; 
+      if (cantidadFinal <= 0) {
+        arr.push({
+          tipo: 'danger',
+          nombre: `${producto.nombre} (${producto.codigo}) se encuentra sin stock`,
+        });
+      } else if (cantidadFinal < det.producto.stockCritico) {
+        arr.push({
+          tipo: 'warning',
+          nombre: `${producto.nombre} (${producto.codigo}) bajo de stock crítico`, 
+        });
+      }
+    });
+    this.alertas = Array.from(arr);
   }
 
   // Selecciona todas las posiciones
@@ -163,8 +192,8 @@ export class WelcomeComponent implements OnInit {
     var log = [];
     var f = this.factura;
     if (f.tipo == 'C') var texto = 'Proveedor'; else texto = 'Cliente';
-    if (f.codFactura == undefined) log.push('Ingrese código de factura');
-    if (f.persona.rut == undefined) log.push(`Ingrese rut de ${texto}`);
+    if (f.codFactura == undefined || f.codFactura == '') log.push('Ingrese código de factura');
+    if (f.persona.rut == undefined || f.persona.rut == '') log.push(`Ingrese rut de ${texto}`);
     if (this.fecha == undefined) log.push('Ingrese una fecha válida');
     if (f.tipo == undefined) log.push('Ingrese tipo de factura');
     this.transactions.forEach(function (pos, index) {
@@ -187,8 +216,13 @@ export class WelcomeComponent implements OnInit {
     }
     return valor;
   }
-  public getSubtotal(d: DetalleFactura): number {
-    return d.getSubtotal(d.dcto);
+  
+  public close(alert: Ilista) {
+    this.alertas.splice(this.alertas.indexOf(alert), 1);
+  }
+
+  public getSubtotal(f: Factura, d: DetalleFactura): number {
+    return d.getSubtotal(f.tipo);
   }
 
   public getNetAmount(f: Factura): number { 

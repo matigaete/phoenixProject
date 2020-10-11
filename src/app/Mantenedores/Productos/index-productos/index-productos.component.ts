@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BusinessService } from '../../../Servicios/business.service';
 import { Ilista } from '../../../Interfaces/ilista';
-import { Producto } from 'src/app/Clases/producto';
-import { ProductosService } from 'src/app/Servicios/productos.service';
+import { Producto } from 'src/app/Clases/producto'; 
 
 @Component({
   selector: 'app-index-productos',
@@ -30,8 +29,7 @@ export class IndexProductosComponent implements OnInit {
   public jsonProducto: any;
   public productos: Producto[] = [];
 
-  constructor(private businessService: BusinessService,
-    private productoService: ProductosService) { }
+  constructor(private businessService: BusinessService) { }
 
   public ngOnInit(): void {
     this.acciones = this.businessService.getAcciones();
