@@ -11,16 +11,11 @@ if (!$jsonProducto) {
 }
 
 $bd = include_once "conexion.php";
-$sentencia = $bd->prepare(
-   "UPDATE producto 
-    SET nombre = ?, descripcion = ?, categoria = ?, 
-        stock = ?, stockCritico = ?, precioCompra = ?,
-        precioVenta = ?, activo = ?
-    WHERE codigo = ?");
+$sentencia = $bd->prepare("CALL actualiza_producto(?,?,?,?,?,?,?,?,?)");
 $resultado = $sentencia->execute([
-    $jsonProducto->_nombre, $jsonProducto->_descripcion, $jsonProducto->_tipo, 
-    $jsonProducto->_stock, $jsonProducto->_stockCritico, $jsonProducto->_precioCompra, 
-    $jsonProducto->_precioVenta, $jsonProducto->_activo, $jsonProducto->_codigo]);
+    $jsonProducto->_codigo, $jsonProducto->_nombre, $jsonProducto->_descripcion, 
+    $jsonProducto->_tipo, $jsonProducto->_stock, $jsonProducto->_stockCritico, 
+    $jsonProducto->_precioCompra, $jsonProducto->_precioVenta, $jsonProducto->_activo]);
     
 echo json_encode($resultado);
 

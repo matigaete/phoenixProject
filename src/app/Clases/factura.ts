@@ -1,28 +1,48 @@
+import { DetalleFactura } from './detalle-factura';
+import { Persona } from './persona';
+
 export class Factura {
     
     constructor(private _codFactura: string,
-        private _codPersona: string,
+        private _persona: Persona,
         private _fecha: string,
         private _hora: string,
         private _neto: number,
         private _iva: number,
         private _total: number,
-        private _tipo: string) {
-        this._codFactura = _codFactura;
-        this._codPersona = _codPersona;
+        private _tipo: string,
+        private _detalle?: DetalleFactura[]) {
+        this._codFactura = _codFactura; 
         this._fecha = _fecha;
         this._hora = _hora;
         this._total = _total;
         this._tipo = _tipo;
+        this._detalle = [];
+    }
+
+    public getNetAmount(): number {
+        try {
+            this._neto = this.detalle.map(t => (t.producto.precioVenta * t.cantidad) - t.dcto).reduce((acc, value) => acc + value, 0);
+        } catch (error) {
+            this._neto = 0;
+        }
+        if (this._neto < 0) this._neto = 0;
+        return this._neto;
+    }
+
+    public getIVA(): number {
+        this._iva = this.getNetAmount() * 0.19;
+        return this._iva;
+    }
+
+    public getTotalCost(): number {
+        this._total = this.getNetAmount() + this.getIVA();
+        return this._total;
     }
 
     public set codFactura(codFactura: string) {
         this._codFactura = codFactura;
     } 
-
-    public set codPersona(value: string) {
-        this._codPersona = value;
-    }
 
     public set fecha(value: string) {
         this._fecha = value;
@@ -48,6 +68,18 @@ export class Factura {
         this._iva = value;
     }
 
+    public set detalle(value: DetalleFactura[]) {
+        this._detalle = value;
+    }
+
+    public set persona(value: Persona) {
+        this._persona = value;
+    }
+
+    public get persona(): Persona {
+        return this._persona;
+    }
+    
     public get hora(): string {
         return this._hora;
     }
@@ -58,16 +90,12 @@ export class Factura {
 
     public get codFactura(): string {
         return this._codFactura;
-    }
-
-    public get codPersona(): string {
-        return this._codPersona;
-    }
+    } 
 
     public get fecha(): string {
         return this._fecha;
     }
-    
+
     public get tipo(): string {
         return this._tipo;
     }
@@ -78,6 +106,10 @@ export class Factura {
 
     public get iva(): number {
         return this._iva;
+    }
+
+    public get detalle(): DetalleFactura[] {
+        return this._detalle;
     }
 
 }

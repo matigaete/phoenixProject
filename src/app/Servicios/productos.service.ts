@@ -3,8 +3,7 @@ import { Producto } from '../Clases/producto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/dialogo-confirmacion.component';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog'; 
 import { UpdateProduct } from '../Interfaces/update-product';
 
 @Injectable({

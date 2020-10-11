@@ -3,11 +3,11 @@
   header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
   
   if (empty($_GET["codigo"])) {
-    exit("No existe producto");
+    exit("No existe persona");
   }
   $codigo = $_GET["codigo"];
   $bd = include_once "conexion.php";
-  $sentencia = $bd->prepare("CALL busca_producto(?)");
+  $sentencia = $bd->prepare("CALL busca_proveedor(?)");
 
   $sentencia->execute([$codigo]); 
   $producto = $sentencia->fetchObject();  
