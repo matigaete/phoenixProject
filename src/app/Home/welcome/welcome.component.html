@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="form-group">
     <div class="row">
-      <mat-radio-group [(ngModel)]="rdFactura">
+      <mat-radio-group [(ngModel)]="factura.tipo">
         <mat-radio-button value="C">Factura de compra</mat-radio-button>
         <mat-radio-button value="V">Factura de venta</mat-radio-button>
       </mat-radio-group>
@@ -10,7 +10,7 @@
       <div class="col-2">
         <mat-form-field>
           <mat-label>Nro. de factura</mat-label>
-          <input matInput [(ngModel)]="codFactura">
+          <input matInput [(ngModel)]="factura.codFactura">
           <mat-error>
             Ingrese <strong>nro. de factura</strong>
           </mat-error>
@@ -19,7 +19,7 @@
       <div class="col-2">
         <mat-form-field>
           <mat-label>{{getTipoPersona()}}</mat-label>
-          <input matInput [(ngModel)]="codPersona">
+          <input matInput [(ngModel)]="factura.persona.rut">
         </mat-form-field>
       </div>
       <div class="col-2">
@@ -34,7 +34,7 @@
   </div>
   <div class="form-group">
     <div class="mat-elevation-z8">
-      <table mat-table [dataSource]="dataSource" (change)="getTotalCost()">
+      <table mat-table [dataSource]="dataSource" (change)="getTotalCost(factura)">
         <!-- Checkbox Column -->
         <ng-container matColumnDef="insert">
           <th mat-header-cell *matHeaderCellDef="let row">
@@ -67,8 +67,8 @@
         <ng-container matColumnDef="item">
           <th mat-header-cell *matHeaderCellDef> Código Producto </th>
           <td mat-cell *matCellDef="let transaction">
-            <input type="text" class="form-control texto" [value]="transaction.idItem" [(ngModel)]="transaction.idItem"
-              name="item" (keyup)="find(transaction)">
+            <input type="text" class="form-control texto" [value]="transaction.producto.codigo" [(ngModel)]="transaction.producto.codigo"
+              name="item" (keyup)="findProduct(transaction)">
           </td>
           <td mat-footer-cell *matFooterCellDef></td>
         </ng-container>
@@ -77,8 +77,8 @@
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Nombre </th>
           <td mat-cell *matCellDef="let transaction">
-            <input readonly type="text" class="form-control texto" [value]="transaction.name"
-              [(ngModel)]="transaction.name" name="name">
+            <input readonly type="text" class="form-control texto" [value]="transaction.producto.nombre"
+              [(ngModel)]="transaction.producto.nombre" name="name">
           </td>
           <td mat-footer-cell *matFooterCellDef></td>
         </ng-container>
@@ -87,8 +87,8 @@
         <ng-container matColumnDef="cant">
           <th mat-header-cell *matHeaderCellDef> Cantidad </th>
           <td mat-cell *matCellDef="let transaction">
-            <input type="number" class="form-control numero" name="cant" [(ngModel)]="transaction.cant"
-              [value]="transaction.cant">
+            <input type="number" class="form-control numero" name="cant" [(ngModel)]="transaction.cantidad"
+              [value]="transaction.cantidad">
           </td>
           <td mat-footer-cell *matFooterCellDef></td>
         </ng-container>
@@ -97,8 +97,14 @@
         <ng-container matColumnDef="cost">
           <th mat-header-cell *matHeaderCellDef> Precio Unitario </th>
           <td mat-cell *matCellDef="let transaction">
-            <input [readonly]="rdFactura=='V'" type="number" class="form-control numero" [(ngModel)]="transaction.cost"
-              name="cost" value="{{transaction.cost}}">
+            <section *ngIf="factura.tipo=='V'">
+              <input readonly type="number" class="form-control numero" [(ngModel)]="transaction.producto.precioVenta"
+              name="cost" value="{{transaction.producto.precioVenta}}">
+            </section>
+            <section *ngIf="factura.tipo=='C'">
+              <input type="number" class="form-control numero" [(ngModel)]="transaction.producto.precioCompra"
+              name="cost" value="{{transaction.producto.precioCompra}}">
+            </section>
           </td>
           <td mat-footer-cell *matFooterCellDef> 
             Monto neto
@@ -126,11 +132,11 @@
             <label>{{getSubtotal(transaction) | currency:'CLP'}}</label>
           </td>
           <td mat-footer-cell *matFooterCellDef> 
-            {{getNetAmount() | currency : 'CLP'}}
+            {{getNetAmount(factura) | currency : 'CLP'}}
             <br>
-            {{getIVA() | currency : 'CLP'}}
+            {{getIVA(factura) | currency : 'CLP'}}
             <br>
-            {{getTotalCost() | currency : 'CLP'}}
+            {{getTotalCost(factura) | currency : 'CLP'}}
           </td>
         </ng-container>
 

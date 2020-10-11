@@ -6,10 +6,7 @@ if (!$jsonCategoria) {
     exit("No hay datos");
 }
 $bd = include_once "conexion.php";
-$sentencia = $bd->prepare(
-   "INSERT INTO categoria(tipo) 
-    VALUES (?)");
-
+$sentencia = $bd->prepare("CALL insert_categoria(?)");
 $resultado = $sentencia->execute([$jsonCategoria->_tipo]);
 
 echo json_encode([

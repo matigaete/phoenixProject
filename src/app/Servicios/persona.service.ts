@@ -1,17 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Producto } from '../Clases/producto';
+import { Injectable } from '@angular/core'; 
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/dialogo-confirmacion.component';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Factura } from '../Clases/factura';
-import { DetalleFactura } from '../Clases/detalle-factura';
+import { MatDialog } from '@angular/material/dialog';  
+import { Persona } from '../Clases/persona';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FacturaService {
+export class PersonaService {
 
   public url = environment.baseUrl;
   private _codigo: string;
@@ -35,82 +33,64 @@ export class FacturaService {
   private _mensajeCreado: string;
   private _mensajeActivado: string;
 
+  public static c_proveedor = 'P';
+  public static c_cliente = 'C';
+
   constructor(private http: HttpClient,
     private dialogo: MatDialog) {
-    this._codigo = 'Código del producto';
-    this._nombre = 'Nombre del producto';
-    this._categoria = 'Categoría del producto';
-    this._descripcion = 'Descripción del producto';
+    this._codigo = 'Código del Persona';
+    this._nombre = 'Nombre del Persona';
+    this._categoria = 'Categoría del Persona';
+    this._descripcion = 'Descripción del Persona';
     this._stock = 'Stock';
     this._stockCritico = 'Stock crítico';
     this._precioCompra = 'Precio de compra';
     this._precioVenta = 'Precio de venta';
     this._active = 'Dar de baja';
-    this._info = 'Aqui contiene la información del producto';
-    this._mensajeCodigo = 'Debe de ingresar un código para el producto';
+    this._info = 'Aqui contiene la información del Persona';
+    this._mensajeCodigo = 'Debe de ingresar un código para el Persona';
     this._mensajeDescripcion = 'Ingrese una descripción';
     this._mensajeStock = 'Stock debe ser mayor a 0';
     this._mensajePrecio = 'Ingrese un precio mayor a 0';
     this._mensajeColumnas = 'Todas las columnas están desplegadas';
-    this._mensajeBajado = 'Producto dado de baja';
-    this._mensajeActualizado = 'Producto actualizado';
-    this._mensajeCreado = 'Producto añadido';
-    this._mensajeActivado = 'Producto activado';
+    this._mensajeBajado = 'Persona dado de baja';
+    this._mensajeActualizado = 'Persona actualizado';
+    this._mensajeCreado = 'Persona añadido';
+    this._mensajeActivado = 'Persona activado';
   }
 
   //-Respuestas HTTP-------------------------------//
 
-  public getListaFacturasCompra() {
-    return this.http.get<Factura[]>(`${this.url}getPurchaseBills.php?codigo=all`);
+  public getListaPersonas() {
+    return this.http.get<Persona[]>(`${this.url}getPersons.php`);
   }
 
-  public getFacturaCompra(codigo: number | string) {
-    return this.http.get<Factura>(`${this.url}getPurchaseBill.php?codigo=${codigo}`);
+  public getPersona(persona: Persona) {
+    var response: Observable<Persona>;
+    if (persona.tipo == PersonaService.c_proveedor) {
+      response = this.http.get<Persona>(`${this.url}getProvider.php?codigo=${persona.rut}`);
+    } else {
+      response = this.http.get<Persona>(`${this.url}getClient.php?codigo=${persona.rut}`);
+    }
+    return response;
   }
 
-  public creaFacturaCompra(factura: Factura) {
-    return this.http.post(`${this.url}addPurchaseBill.php`, factura);
+  public creaPersona(persona: Persona) {
+    return this.http.post(`${this.url}addPerson.php`, persona);
   }
 
-  public actualizaFacturaCompra(factura: Factura) {
-    return this.http.put(`${this.url}updateBill.php`, factura);
-  }
-
-  public getListaDetalleCompra() {
-    return this.http.get<DetalleFactura[]>(`${this.url}getDetailBill.php?codigo=all`);
-  }
-
-  public actualizaDetalleCompra(detalle: DetalleFactura[]) {
-    return this.http.put(`${this.url}updateDetailBill.php`, detalle);
-  }
-
-  public getListaFacturasVenta() {
-    return this.http.get<Factura[]>(`${this.url}getSellBills.php?codigo=all`);
-  }
-
-  public getFacturaVenta(codigo: number | string) {
-    return this.http.get<Factura>(`${this.url}getSellBill.php?codigo=${codigo}`);
-  }
-
-  public creaFacturaVenta(factura: Factura) {
-    return this.http.post(`${this.url}addSellBill.php`, factura);
-  }
-
-  public actualizaFacturaVenta(factura: Factura) {
-    return this.http.put(`${this.url}updateBill.php`, factura);
-  }
-
-  public getListaDetalleVenta() {
-    return this.http.get<DetalleFactura[]>(`${this.url}getDetailBill.php?codigo=all`);
-  }
-
-  public actualizaDetalleVenta(detalle: DetalleFactura[]) {
-    return this.http.put(`${this.url}updateDetailBill.php`, detalle);
+  public actualizaPersona(persona: Persona) {
+    return this.http.put(`${this.url}updatePerson.php`, persona);
   }
 
   //-End Respuestas HTTP----------------------------------//
 
   //-Mensajes Dialogos-----------------------------------//
+  public bajarPersona(persona: Persona) {
+    return this.dialogo.open(DialogoConfirmacionComponent, {
+      data: `¿Realmente quieres dar de baja a ${persona.nombre}?`
+    });
+  }
 
   //-End Mensajes----------------------------------//
 
@@ -274,3 +254,4 @@ export class FacturaService {
   }
   //-End Getters-----------------------------------//
 }
+

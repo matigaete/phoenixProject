@@ -6,10 +6,11 @@ import { Producto } from 'src/app/Clases/producto';
 import { Factura } from 'src/app/Clases/factura';
 import { DetalleFactura } from 'src/app/Clases/detalle-factura';
 import { DatePipe } from '@angular/common';
-import { Transaction } from 'src/app/Interfaces/transaction';
 import { BusinessService } from 'src/app/Servicios/business.service';
+import { PersonaService } from 'src/app/Servicios/persona.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoErroresComponent } from 'src/app/Include/dialogo-errores/dialogo-errores.component';
+import { Persona } from 'src/app/Clases/persona';
 
 @Component({
   selector: 'app-welcome',
@@ -19,51 +20,46 @@ import { DialogoErroresComponent } from 'src/app/Include/dialogo-errores/dialogo
 export class WelcomeComponent implements OnInit {
 
   public displayedColumns = ['insert', 'add', 'item', 'name', 'cant', 'cost', 'dcto', 'subtotal'];
-  public transactions: Transaction[] = [
-    { idpos: 0, insert: false, idItem: '', name: '', cant: 0, dcto: 0, cost: 0 },];
+  public factura = new Factura(undefined, new Persona(undefined, undefined, undefined, 'P'), undefined, undefined, 0, 0, 0, 'C');
+  public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, false, undefined, undefined, 0, new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''))];
   public dataSource = new BehaviorSubject([]);
-  public chkAll: boolean = false;
-  public persona: string;
-  public rdFactura: string = 'C';
+  public chkAll: boolean = false; 
   public producto$: Observable<Producto>;
-  public fecha: string;
-  public codPersona: string;
-  public codFactura: string; 
-  
+  public persona$: Observable<Persona>;
+  public fecha: string; 
+
   constructor(private businessService: BusinessService,
     private productosService: ProductosService,
+    private personaService: PersonaService,
     private facturaService: FacturaService,
     private datepipe: DatePipe,
     private dialogo: MatDialog) { }
 
   public ngOnInit() {
     this.dataSource.next(this.transactions);
+    this.factura.detalle.push(this.transactions[0]);
   }
 
+  // Se validan campos vacíos antes de generar factura
   public OnSubmit() {
+    var fact = this.factura;
     var errores = this.validaCampos();
     if (!errores.length) {
-      let hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
-      let fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
-      let factura = new Factura(this.codFactura, this.codPersona, fecha, hora, this.getNetAmount(), this.getIVA(), this.getTotalCost(), this.rdFactura);
-      let detalle: DetalleFactura[] = [];
-      for (let i = 0; i < this.transactions.length; i++) {
-        const transac = this.transactions[i];
-        detalle.push(new DetalleFactura(this.codFactura, i + 1, transac.cant, transac.cost, this.getSubtotal(transac), transac.idItem, this.codPersona));
-      }
-      if (factura.tipo == 'C') {
-        this.facturaService.creaFacturaCompra(factura).subscribe(() => {
-          this.facturaService.creaDetalleCompra(detalle).subscribe(() => {
-            this.businessService.getAlert('Factura creada correctamente');
-            this.reset();
-          });
+      fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
+      fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
+      fact.detalle.forEach(det => {
+        det.codFactura = fact.codFactura;
+        det.codPersona = fact.persona.rut;
+      });
+      if (fact.tipo == 'C') {
+        this.facturaService.creaFacturaCompra(fact).subscribe(() => {
+          this.businessService.getAlert('Factura creada correctamente');
+          this.reset();
         });
       } else {
-        this.facturaService.creaFacturaVenta(factura).subscribe(() => {
-          this.facturaService.creaDetalleVenta(detalle).subscribe(() => {
-            this.businessService.getAlert('Factura creada correctamente');
-            this.reset();
-          });
+        this.facturaService.creaFacturaVenta(fact).subscribe(() => {
+          this.businessService.getAlert('Factura creada correctamente');
+          this.reset();
         });
       }
     } else {
@@ -79,17 +75,22 @@ export class WelcomeComponent implements OnInit {
     }
   }
 
+
+  //Genera nueva posición
   public btnClick() {
+    var fact = this.factura;
     try {
-      var newID = this.transactions[this.transactions.length - 1].idpos + 1;
+      var newID = this.transactions[this.transactions.length - 1].posicion + 1;
     } catch (error) {
       newID = 0;
     }
-    var registro: Transaction = { idpos: newID, insert: false, idItem: '', cant: 0, cost: 0, dcto: 0 };
+    var registro: DetalleFactura = new DetalleFactura(newID, 0, 0, false, fact.codFactura, fact.persona.rut, 0, new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''));
     this.transactions.push(registro);
+    this.factura.detalle = this.transactions;
     this.dataSource.next(this.transactions);
   }
 
+  // Limpia posiciones según las que estén marcadas
   public clear() {
     var array = [];
     this.transactions.forEach(transaction => {
@@ -100,6 +101,7 @@ export class WelcomeComponent implements OnInit {
     if (array.length < this.transactions.length) {
       this.transactions = array;
       this.dataSource.next(this.transactions);
+      this.factura.detalle = this.transactions;
       this.chkAll = false;
       this.businessService.getAlert('Posiciones seleccionadas eliminadas');
     } else {
@@ -107,90 +109,97 @@ export class WelcomeComponent implements OnInit {
     }
   }
 
+  // Se ejecuta al generarse la factura, limpia todos los campos
   public reset() {
     this.transactions = [];
     this.dataSource.next(this.transactions);
-    this.codFactura = null;
-    this.codPersona = null;
+    this.factura = new Factura(undefined, undefined, undefined, undefined, 0, 0, 0, 'C');
     this.fecha = null;
   }
 
+  // Selecciona todas las posiciones
   public selectAll() {
     this.transactions.map(transac => transac.insert = this.chkAll);
     this.dataSource.next(this.transactions);
   }
 
-  public find(datpos: Transaction) {
+
+  //Busca un producto a la BD para enlazarlo al detalle
+  public findProduct(datpos: DetalleFactura) {
     var modificado: boolean;
-    if (datpos.idItem) {
-      this.producto$ = this.productosService.getProducto(datpos.idItem);
+    var prd = datpos.producto;
+    if (prd.codigo) {
+      this.producto$ = this.productosService.getProducto(prd.codigo);
       this.producto$.forEach(producto => {
         for (let i = 0; i < this.transactions.length; i++) {
           const element = this.transactions[i];
-          if (element.idpos == datpos.idpos && producto) {
-            datpos.name = producto.nombre;
-            datpos.disp = producto.stock;
-            if (this.rdFactura == 'V') datpos.cost = producto.precioVenta;
+          if (element.posicion == datpos.posicion && producto) {
+            prd = producto;
             modificado = true;
             break;
           } else {
-            datpos.name = '';
-            if (this.rdFactura == 'V') datpos.cost = 0;
+            prd = new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, prd.codigo)
           }
         }
+        datpos.producto = prd;
       });
       if (modificado) this.dataSource.next(this.transactions);
     }
   }
 
+  //Busca un proveedor/cliente a la BD para enlazarlo a la factura
+  public findPerson(fact : Factura) {
+    var modificado: boolean;
+    var per = fact.persona;
+    if (per.rut) {
+      this.persona$ = this.personaService.getPersona(per);
+      this.persona$.forEach(persona => { per = persona });
+      if (modificado) this.dataSource.next(this.transactions);
+    }
+  }
+
+  // Validación si existe algún campo que falte por rellenar
   public validaCampos() {
-    var log = []; 
-    if (this.rdFactura == 'C') var texto = 'Proveedor'; else texto = 'Cliente';
-    if (this.codFactura == undefined) log.push('Ingrese código de factura');
-    if (this.codPersona == undefined) log.push(`Ingrese código de ${texto}`);
+    var log = [];
+    var f = this.factura;
+    if (f.tipo == 'C') var texto = 'Proveedor'; else texto = 'Cliente';
+    if (f.codFactura == undefined) log.push('Ingrese código de factura');
+    if (f.persona.rut == undefined) log.push(`Ingrese rut de ${texto}`);
     if (this.fecha == undefined) log.push('Ingrese una fecha válida');
-    if (this.rdFactura == undefined) log.push('Ingrese tipo de factura');
+    if (f.tipo == undefined) log.push('Ingrese tipo de factura');
     this.transactions.forEach(function (pos, index) {
       var msg = `Pos. ${index + 1} datos incompletos`;
       var error = false;
-      if (!pos.name) { error = true }
-      if (!pos.cant) { error = true }
-      if (!pos.cost) { error = true }
+      if (!pos.producto.nombre) { error = true }
+      if (!pos.cantidad) { error = true }
+      if (!pos.producto.precioCompra) { error = true }
       if (error) { log.push(msg) }
-    }); 
+    });
     return log;
   }
 
   public getTipoPersona() {
     var valor: string;
-    if (this.rdFactura == 'V') {
+    if (this.factura.tipo == 'V') {
       valor = 'Cliente';
     } else {
       valor = 'Proveedor';
     }
     return valor;
   }
-  public getSubtotal(t: Transaction): number {
-    var subtotal = (t.cant * t.cost) - t.dcto;
-    if (subtotal < 0) subtotal = 0;
-    return subtotal;
+  public getSubtotal(d: DetalleFactura): number {
+    return d.getSubtotal(d.dcto);
   }
 
-  public getNetAmount(): number {
-    var total: number;
-    try {
-      total = this.transactions.map(t => (t.cost * t.cant) - t.dcto).reduce((acc, value) => acc + value, 0);
-    } catch (error) {
-      total = 0;
-    }
-    return total;
+  public getNetAmount(f: Factura): number { 
+    return f.getNetAmount();
   }
 
-  public getIVA(): number {
-    return this.getNetAmount() * 0.19;
+  public getIVA(f: Factura): number { 
+    return f.getIVA();
   }
 
-  public getTotalCost(): number {
-    return this.getNetAmount() + this.getIVA();
+  public getTotalCost(f: Factura): number {
+    return f.getTotalCost();
   }
 }

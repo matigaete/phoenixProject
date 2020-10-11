@@ -10,10 +10,7 @@ if (!$jsonProducto) {
     exit("No hay datos");
 }
 $bd = include_once "conexion.php";
-$sentencia = $bd->prepare(
-   "UPDATE producto 
-    SET activo = 1
-    WHERE codigo = ?");
+$sentencia = $bd->prepare("CALL activa_producto(?)");
 $resultado = $sentencia->execute([$jsonProducto->_codigo]);
     
 echo json_encode($resultado);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-10-2020 a las 03:08:45
+-- Tiempo de generación: 11-10-2020 a las 08:30:55
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -25,6 +25,83 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `activa_producto` (IN `codProd` VARCHAR(15))  BEGIN    
+  UPDATE producto 
+    SET activo = 1
+    WHERE codigo = codProd;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_categoria` (IN `codCat` TINYINT(4), IN `nombre` VARCHAR(20))  BEGIN    
+  UPDATE categoria 
+    SET tipo = nombre
+    WHERE codigo = codCat;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_producto` (IN `codProd` VARCHAR(15), IN `nomProd` VARCHAR(50), IN `descProd` TEXT, IN `categ` TINYINT(4), IN `stock` SMALLINT(6), IN `stockC` TINYINT(4), IN `precioC` MEDIUMINT(9), IN `precioV` MEDIUMINT(9), IN `activo` TINYINT(1))  BEGIN    
+	UPDATE producto 
+    SET nombre = nomProd, descripcion = descProd, categoria = categ, 
+        stock = stock, stockCritico = stockC, precioCompra = precioC,
+        precioVenta = precioV, activo = activo
+    WHERE codigo = codProd ;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `baja_producto` (IN `codProd` VARCHAR(15))  BEGIN    
+  UPDATE producto 
+    SET activo = 0
+    WHERE codigo = codProd;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_categorias` ()  BEGIN    
+  SELECT codigo, tipo FROM categoria;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_lista_producto` ()  BEGIN    
+  SELECT p.codigo, p.nombre, p.descripcion, 
+              p.categoria AS tipo, p.stock, p.stockCritico, 
+              p.precioCompra, p.precioVenta, p.activo 
+       FROM producto AS p  
+       WHERE p.activo = true;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_producto` (IN `codProd` VARCHAR(15))  BEGIN    
+  SELECT p.nombre, p.descripcion, c.tipo, 
+         p.stock, p.stockCritico, p.precioCompra, 
+         p.precioVenta, p.activo, p.codigo
+    FROM producto AS p
+    LEFT JOIN categoria AS c ON p.categoria = c.codigo        
+    WHERE p.codigo = codProd
+      AND p.activo = true;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_productos_inactivos` ()  BEGIN    
+  SELECT p.codigo, p.nombre, c.tipo, p.stock
+       FROM producto AS p
+       LEFT JOIN categoria AS c ON p.categoria = c.codigo 
+       WHERE p.activo = false;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_productos_por_categoria` (IN `codCat` TINYINT(4))  BEGIN    
+  SELECT p.nombre, p.descripcion, p.categoria AS tipo, 
+              p.stock, p.stockCritico, p.precioCompra, 
+              p.precioVenta, p.activo, p.codigo
+      FROM producto AS p        
+      WHERE p.activo = true AND p.categoria = codCat;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_todo_productos` ()  BEGIN    
+  SELECT p.codigo, p.nombre, p.descripcion, 
+              c.tipo, p.stock, p.stockCritico, 
+              p.precioCompra, p.precioVenta, p.activo 
+       FROM producto AS p
+       LEFT JOIN categoria AS c ON p.categoria = c.codigo 
+       WHERE p.activo = true;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_categoria` (IN `nombre` VARCHAR(20))  BEGIN    
+  INSERT INTO categoria(tipo) 
+    VALUES (nombre);
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fc` (IN `codFac` VARCHAR(15), IN `codProv` VARCHAR(9), IN `codProd` VARCHAR(15), IN `cant` SMALLINT(3), IN `precioCompra` MEDIUMINT(6), IN `subtotal` MEDIUMINT(6))  BEGIN    
   DECLARE newCant SMALLINT(3); 
   INSERT INTO detalle_factura_compra
@@ -63,6 +140,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_fact_venta` (IN `codFac` VAR
   VALUES (codFac, codProv, fecha, hora, neto, iva, total);
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_producto` (IN `codProd` VARCHAR(15), IN `nomProd` VARCHAR(50), IN `descProd` TEXT, IN `categ` TINYINT(4), IN `stock` SMALLINT(6), IN `stockC` TINYINT(4), IN `precioC` MEDIUMINT(9), IN `precioV` MEDIUMINT(9))  BEGIN    
+  INSERT INTO producto VALUES (codProd,nomProd,descProd,categ,stock,stockC,precioC,precioV,1);
+END$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -94,11 +175,21 @@ INSERT INTO `categoria` (`codigo`, `tipo`) VALUES
 --
 
 CREATE TABLE `clientes` (
-  `codigo_cliente` varchar(10) NOT NULL,
+  `codigo_cliente` varchar(9) NOT NULL,
   `nombre_cliente` varchar(30) NOT NULL,
-  `direccion_cliente` varchar(40) NOT NULL,
-  `fono_cliente` varchar(9) NOT NULL,
-  `correo_cliente` varchar(30) NOT NULL
+  `direccion_cliente` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `contacto`
+--
+
+CREATE TABLE `contacto` (
+  `codigo_persona` varchar(9) NOT NULL,
+  `texto` text NOT NULL,
+  `tipo_contacto` varchar(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -136,7 +227,15 @@ INSERT INTO `detalle_factura_compra` (`codigo_factura_compra`, `codigo_proveedor
 ('1232', '132', '1234', 12, 1000, 12000),
 ('12321', '2131', '1234', 10, 1000, 9900),
 ('132312', '12312', '1234', 100, 100, 8766),
-('323', '1323', '438732', 181, 1000, 10000);
+('321123', '132312', '11111', 15, 20, 300),
+('321123', '132312', '1234', 10, 20, 250),
+('321123', '132312', '4321', 40, 1000, 195000),
+('321123', '132312', '438732', 12, 50, 2000),
+('323', '1323', '438732', 181, 1000, 10000),
+('4321', '4321', '11111', 10, 20, 250),
+('4321', '4321', '1234', 10, 20, 250),
+('4321', '4321', '438732', 10, 50, 2000),
+('44444', '444444', '1234', 1000, 20, 25000);
 
 -- --------------------------------------------------------
 
@@ -186,7 +285,10 @@ INSERT INTO `factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `fech
 ('12', '132', '2020-09-18', '22:17:55', 0, 0, 12000),
 ('123', '132', '2020-09-18', '22:15:40', 0, 0, 12000),
 ('1232', '132', '2020-09-18', '22:16:20', 0, 0, 12000),
-('132312', '12312', '2020-10-06', '20:10:51', 8766, 1666, 10432);
+('132312', '12312', '2020-10-06', '20:10:51', 8766, 1666, 10432),
+('321123', '132312', '2020-10-08', '14:19:20', 0, 0, 0),
+('4321', '4321', '2020-09-08', '16:33:50', 2500, 475, 2975),
+('44444', '444444', '2020-09-08', '16:40:43', 25000, 4750, 29750);
 
 -- --------------------------------------------------------
 
@@ -209,7 +311,8 @@ CREATE TABLE `factura_venta` (
 --
 
 INSERT INTO `factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
-('13221312', '21321', '2020-10-08', '20:15:25', 35200, 6688, 41888);
+('13221312', '21321', '2020-10-08', '20:15:25', 35200, 6688, 41888),
+('321123', '132312', '2020-10-08', '15:42:47', 22075, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -235,14 +338,14 @@ CREATE TABLE `producto` (
 
 INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`, `stockCritico`, `precioCompra`, `precioVenta`, `activo`) VALUES
 ('100000', 'dsdsada', 'sadd', 1, 10, 15, 20, 25, 0),
-('11111', 'TEST', 'dfdsfdfd', 2, 10, 15, 20, 25, 1),
+('11111', 'TEST', 'dfdsfdfd', 2, 35, 15, 20, 25, 1),
 ('12312334', 'Elevador', 'Elevador de pana para llegar a la cima del mundo', 2, 100, 1, 100000, 500000, 0),
 ('1232154', 'Compresor de prueba', 'Compresor de pana para familia de pana', 1, 10, 1, 1000, 15000, 0),
-('1234', 'TEST', 'sadddsadsa', 3, 0, 15, 20, 25, 1),
+('1234', 'TEST', 'sadddsadsa', 3, 1020, 15, 20, 25, 1),
 ('12344', 'TEST', 'sadddsadsa', 3, 10, 15, 20, 3000, 1),
 ('123441', 'TEST', 'sadddsadsa', 3, 10, 15, 20, 25, 1),
-('4321', 'Prueba de productos', 'JEJEJE', 1, 10, 0, 1000, 5000, 1),
-('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, 9, 10, 50, 200, 1),
+('4321', 'Prueba de productos', 'JEJEJE', 1, 50, 0, 1000, 5000, 1),
+('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, 31, 10, 50, 200, 1),
 ('4579843', 'Tractor', 'Pa pitiarse a todos los wones', 2, 5, 1, 500000, 5000000, 1);
 
 -- --------------------------------------------------------
@@ -252,11 +355,9 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 --
 
 CREATE TABLE `proveedores` (
-  `codigo_proveedor` varchar(10) NOT NULL,
+  `codigo_proveedor` varchar(9) NOT NULL,
   `nombre_proveedor` varchar(30) NOT NULL,
-  `direccion_proveedor` varchar(40) NOT NULL,
-  `fono_proveedor` varchar(9) NOT NULL,
-  `correo_proveedor` varchar(30) NOT NULL
+  `direccion_proveedor` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -274,6 +375,12 @@ ALTER TABLE `categoria`
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`codigo_cliente`);
+
+--
+-- Indices de la tabla `contacto`
+--
+ALTER TABLE `contacto`
+  ADD KEY `contacto_ibfk_2` (`codigo_persona`);
 
 --
 -- Indices de la tabla `detalle_factura_compra`
@@ -313,6 +420,13 @@ ALTER TABLE `categoria`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `contacto`
+--
+ALTER TABLE `contacto`
+  ADD CONSTRAINT `contacto_ibfk_1` FOREIGN KEY (`codigo_persona`) REFERENCES `clientes` (`codigo_cliente`),
+  ADD CONSTRAINT `contacto_ibfk_2` FOREIGN KEY (`codigo_persona`) REFERENCES `proveedores` (`codigo_proveedor`);
 
 --
 -- Filtros para la tabla `producto`

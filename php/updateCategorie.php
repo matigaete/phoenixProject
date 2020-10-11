@@ -11,11 +11,8 @@ if (!$jsonCategoria) {
 }
 
 $bd = include_once "conexion.php";
-$sentencia = $bd->prepare(
-   "UPDATE categoria 
-    SET tipo = ?
-    WHERE codigo = ?");
-$resultado = $sentencia->execute([$jsonCategoria->_tipo, $jsonCategoria->_codigo]);
+$sentencia = $bd->prepare("CALL actualiza_categoria(?,?)");
+$resultado = $sentencia->execute([$jsonCategoria->_codigo,$jsonCategoria->_tipo]);
     
 echo json_encode($resultado);
 

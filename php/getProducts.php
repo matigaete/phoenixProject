@@ -3,35 +3,14 @@
   header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept"); 
   $bd = include_once "conexion.php";
   if ($_GET["codigo"] == "undefined") {
-    $sentencia = $bd->query(
-      "SELECT p.codigo, p.nombre, p.descripcion, 
-              p.categoria AS tipo, p.stock, p.stockCritico, 
-              p.precioCompra, p.precioVenta, p.activo 
-       FROM producto AS p  
-       WHERE p.activo = true"); 
+    $sentencia = $bd->query("CALL busca_lista_producto()"); 
   } elseif ($_GET["codigo"] == "all") {
-    $sentencia = $bd->query(
-      "SELECT p.codigo, p.nombre, p.descripcion, 
-              c.tipo, p.stock, p.stockCritico, 
-              p.precioCompra, p.precioVenta, p.activo 
-       FROM producto AS p
-       LEFT JOIN categoria AS c ON p.categoria = c.codigo 
-       WHERE p.activo = true"); 
+    $sentencia = $bd->query("CALL busca_todo_productos()"); 
   } elseif ($_GET["codigo"] == "inactives") {
-    $sentencia = $bd->query(
-      "SELECT p.codigo, p.nombre, c.tipo, p.stock
-       FROM producto AS p
-       LEFT JOIN categoria AS c ON p.categoria = c.codigo 
-       WHERE p.activo = false"); 
+    $sentencia = $bd->query("CALL busca_productos_inactivos()"); 
   } else {
     $codigo = $_GET["codigo"];
-    $sentencia = $bd->prepare(
-      "SELECT p.nombre, p.descripcion, p.categoria AS tipo, 
-              p.stock, p.stockCritico, p.precioCompra, 
-              p.precioVenta, p.activo, p.codigo
-      FROM producto AS p        
-      WHERE p.activo = true AND p.categoria = ?");
- 
+    $sentencia = $bd->prepare("CALL busca_productos_por_categoria(?)");
     $sentencia->execute([$codigo]);  
   }
   $productos = $sentencia->fetchAll(PDO::FETCH_OBJ); 
