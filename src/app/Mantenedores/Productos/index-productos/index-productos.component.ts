@@ -14,9 +14,9 @@ import { Producto } from 'src/app/Clases/producto';
                 </ul>
               </nav>
               <div class="container">  
-                <app-create  *ngIf="option == 1" [isNew]="option"></app-create>
-                <app-search  *ngIf="option == 2" [iValor]="option"></app-search>
-                <app-search  *ngIf="option == 3" [iValor]="option"></app-search> 
+                <app-create-product  *ngIf="option == 1" [isNew]="option"></app-create-product>
+                <app-search-product  *ngIf="option == 2" [iValor]="option"></app-search-product>
+                <app-search-product  *ngIf="option == 3" [iValor]="option"></app-search-product> 
                 <app-listado *ngIf="option == 4"></app-listado> 
               </div>`,
   styles: []

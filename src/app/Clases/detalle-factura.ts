@@ -2,21 +2,18 @@ import { Producto } from './producto';
 import { Servicio } from './servicio';
 
 export class DetalleFactura {
-    
+
     constructor(private _posicion: number,
-        private _cantidad: number, 
+        private _cantidad: number,
         private _subtotal: number,
+        private _tipo: string,
         private _insert?: boolean,
-        private _codFactura?: string,
-        private _codPersona?: string,
         private _dcto?: number,
         private _producto?: Producto,
         private _servicio?: Servicio) {
         this._posicion = _posicion;
-        this._codFactura = _codFactura;
-        this._cantidad = _cantidad; 
+        this._cantidad = _cantidad;
         this._subtotal = _subtotal;
-        this._codPersona = _codPersona;
         this._producto = _producto;
         this._insert = _insert;
         this._dcto = _dcto;
@@ -26,11 +23,15 @@ export class DetalleFactura {
         if (tipo == 'C') {
             var precio = this.producto.precioCompra;
         } else {
-            precio = this.producto.precioVenta;
+            if (this.tipo == 'P') {
+                precio = this.producto.precioVenta;
+            } else {
+                precio = this.servicio.precioVenta;
+            }
         }
         try {
-            var subtotal = (this.cantidad * precio) - this.dcto;   
-        } catch(error) {
+            var subtotal = (this.cantidad * precio) - this.dcto;
+        } catch (error) {
             subtotal = 0
         }
         if (subtotal < 0) subtotal = 0;
@@ -42,17 +43,9 @@ export class DetalleFactura {
         this._posicion = posicion;
     }
 
-    public set codFactura(codFactura: string) {
-        this._codFactura = codFactura;
-    }
-
-    public set codPersona(value: string) {
-        this._codPersona = value;
-    }
-
     public set subtotal(value: number) {
         this._subtotal = value;
-    } 
+    }
 
     public set cantidad(value: number) {
         this._cantidad = value;
@@ -74,21 +67,17 @@ export class DetalleFactura {
         this._servicio = value;
     }
 
+    public set tipo(value: string) {
+        this._tipo = value;
+    }
+
     public get posicion(): number {
         return this._posicion;
     }
 
-    public get codFactura(): string {
-        return this._codFactura;
-    }
-
-    public get codPersona(): string {
-        return this._codPersona;
-    }
-
     public get subtotal(): number {
         return this._subtotal;
-    } 
+    }
 
     public get cantidad(): number {
         return this._cantidad;
@@ -108,6 +97,10 @@ export class DetalleFactura {
 
     public get servicio(): Servicio {
         return this._servicio;
+    }
+
+    public get tipo(): string {
+        return this._tipo;
     }
 
 }

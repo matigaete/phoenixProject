@@ -10,7 +10,7 @@
   $sentencia = $bd->prepare("CALL busca_proveedor(?)");
 
   $sentencia->execute([$codigo]); 
-  $producto = $sentencia->fetchObject();  
+  $proveedor = $sentencia->fetchObject();  
   
-  echo json_encode($producto);
+  echo json_encode($proveedor);
 ?>

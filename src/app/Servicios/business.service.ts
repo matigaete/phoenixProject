@@ -45,6 +45,14 @@ export class BusinessService {
       id: 2,
       nombre: 'Categorías',
       path: 'categorias',
+    }, {
+      id: 3,
+      nombre: 'Servicios',
+      path: 'servicios',
+    // }, {
+    //   id: 4,
+    //   nombre: 'Proveedores',
+    //   path: 'proveedores',
     // }, {
     //   id: 3,
     //   nombre: 'Clientes',

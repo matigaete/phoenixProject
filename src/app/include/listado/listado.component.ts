@@ -4,7 +4,6 @@ import { ProductosService } from 'src/app/Servicios/productos.service';
 import { Ilista } from 'src/app/Interfaces/ilista';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoColumnaComponent } from '../dialogo-columna/dialogo-columna.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { plainToClass } from 'class-transformer';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { BusinessService } from 'src/app/Servicios/business.service';

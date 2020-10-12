@@ -1,24 +1,24 @@
-import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core'; 
+import { Component, OnInit, Input } from '@angular/core'; 
 import { Producto } from 'src/app/Clases/producto';
 
 @Component({
-  selector: 'app-search',
+  selector: 'app-search-product',
   template:  `<div class="Container">
                 <div class="row">
                     <div class="col">
                         <app-find (filtro)="refresh($event)"></app-find>
-                        <app-lista (producto)="enviaProducto($event)" [filtro]=filtro [entrada]="'Productos'"></app-lista>
+                        <app-lista-productos (producto)="enviaProducto($event)" [filtro]=filtro></app-lista-productos>
                     </div>
                     <div class="col">
-                        <app-create *ngIf="iValor == 2"  [iProducto]="producto"></app-create>
-                        <app-info   *ngIf="iValor == 3"  [iProducto]="producto" (oValor)="enviaAccion($event)"></app-info>
+                        <app-create-product *ngIf="iValor == 2"  [iProducto]="producto"></app-create-product>
+                        <app-info-productos   *ngIf="iValor == 3"  [iProducto]="producto" (oValor)="enviaAccion($event)"></app-info-productos>
                     </div>
                 </div>
               </div>`,
   styles: []
 })
-export class SearchComponent implements OnInit {
-   
+export class SearchProductComponent implements OnInit {
+
   @Input() iValor : number;
   public filtro : number; 
   public producto : Producto;
@@ -41,3 +41,4 @@ export class SearchComponent implements OnInit {
   }
 
 }
+
