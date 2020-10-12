@@ -4,7 +4,7 @@ import { Producto } from 'src/app/Clases/producto';
 import { ProductosService } from 'src/app/Servicios/productos.service';
 
 @Component({
-  selector: 'app-info',
+  selector: 'app-info-productos',
   template: `<div class="card">
                 <div class="card-header">
                   {{productoModel.nombre}}
@@ -21,7 +21,7 @@ import { ProductosService } from 'src/app/Servicios/productos.service';
               </div>`,
   styles: []
 })
-export class InfoComponent implements OnInit {
+export class InfoProductosComponent implements OnInit {
 
   @Output() oValor = new EventEmitter<number>();
   @Input() iProducto: Producto;

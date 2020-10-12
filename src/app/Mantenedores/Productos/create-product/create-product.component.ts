@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Producto } from 'src/app/Clases/producto';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { BusinessService } from '../../../Servicios/business.service';
 import { ProductosService } from 'src/app/Servicios/productos.service';
@@ -9,11 +8,11 @@ import { Observable } from 'rxjs';
 import { Categoria } from 'src/app/Clases/categoria';
 
 @Component({
-  selector: 'app-create',
-  templateUrl: './create.component.html',
+  selector: 'app-create-product',
+  templateUrl: './create-product.component.html',
   styles: []
 })
-export class CreateComponent implements OnInit {
+export class CreateProductComponent implements OnInit {
 
   @Input() isNew: boolean;
   @Input() iProducto: Producto; 
@@ -185,3 +184,4 @@ export class CreateComponent implements OnInit {
   }
 
 }
+

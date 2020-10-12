@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-10-2020 a las 22:28:19
+-- Tiempo de generación: 12-10-2020 a las 07:24:17
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -45,6 +45,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_producto` (IN `codProd` V
     WHERE codigo = codProd ;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_servicio` (IN `codServ` VARCHAR(15), IN `nomServ` VARCHAR(50), IN `descServ` TEXT, IN `precioV` MEDIUMINT(9))  BEGIN    
+	UPDATE servicio
+    SET nombre = nomServ, descripcion = descServ, precioVenta = precioV
+    WHERE codigo = codServ ;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `baja_producto` (IN `codProd` VARCHAR(15))  BEGIN    
   UPDATE producto 
     SET activo = 0
@@ -53,6 +59,11 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_categorias` ()  BEGIN    
   SELECT codigo, tipo FROM categoria;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_cliente` (IN `rut` VARCHAR(9))  BEGIN 
+  SELECT * FROM clientes 
+    WHERE codigo_cliente = rut;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_lista_producto` ()  BEGIN    
@@ -88,6 +99,22 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_productos_por_categoria` (IN 
       WHERE p.activo = true AND p.categoria = codCat;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedor` (IN `rut` VARCHAR(9))  BEGIN    
+  SELECT * FROM proveedores 
+    WHERE codigo_proveedor = rut;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_servicio` (IN `codServ` VARCHAR(15))  BEGIN    
+  SELECT nombre, descripcion,
+         precioVenta, codigo
+    FROM servicio 
+    WHERE codigo = codServ;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_servicios` ()  BEGIN    
+  SELECT * FROM servicio;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_todo_productos` ()  BEGIN    
   SELECT p.codigo, p.nombre, p.descripcion, 
               c.tipo, p.stock, p.stockCritico, 
@@ -116,18 +143,20 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fc` (IN `codFac` VAR
     WHERE codigo = codProd; 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fv` (IN `codFac` VARCHAR(15), IN `codCli` VARCHAR(9), IN `codProd` VARCHAR(15), IN `cant` SMALLINT(3), IN `precioVenta` MEDIUMINT(6), IN `subtotal` MEDIUMINT(6))  BEGIN    
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fv` (IN `codFac` VARCHAR(15), IN `codCli` VARCHAR(9), IN `codProd` VARCHAR(15), IN `tipo` VARCHAR(1), IN `cant` SMALLINT(3), IN `precioVenta` MEDIUMINT(6), IN `subtotal` MEDIUMINT(6))  BEGIN    
   DECLARE newCant SMALLINT(3); 
   INSERT INTO detalle_factura_venta
-  VALUES (codFac, codCli, codProd, cant, precioVenta, subtotal);
+  VALUES (codFac, codCli, codProd, cant, tipo, precioVenta, subtotal);
   
-  SELECT stock INTO newCant FROM producto 
-    WHERE codigo = codProd;
-    
-  SET newCant = newCant - cant;
-	
-  UPDATE producto SET stock = newCant 
-    WHERE codigo = codProd; 
+  IF tipo = 'P' THEN
+      SELECT stock INTO newCant FROM producto 
+        WHERE codigo = codProd;
+
+      SET newCant = newCant - cant;
+
+      UPDATE producto SET stock = newCant 
+        WHERE codigo = codProd; 
+  END IF;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_fact_compra` (IN `codFac` VARCHAR(15), IN `codProv` VARCHAR(9), IN `fecha` DATE, IN `hora` TIME, IN `neto` MEDIUMINT(6), IN `iva` MEDIUMINT(6), IN `total` MEDIUMINT(6))  BEGIN     
@@ -142,6 +171,10 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_producto` (IN `codProd` VARCHAR(15), IN `nomProd` VARCHAR(50), IN `descProd` TEXT, IN `categ` TINYINT(4), IN `stock` SMALLINT(6), IN `stockC` TINYINT(4), IN `precioC` MEDIUMINT(9), IN `precioV` MEDIUMINT(9))  BEGIN    
   INSERT INTO producto VALUES (codProd,nomProd,descProd,categ,stock,stockC,precioC,precioV,1);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_servicio` (IN `codServ` VARCHAR(15), IN `nomServ` VARCHAR(50), IN `descServ` TEXT, IN `precioV` MEDIUMINT(9))  BEGIN    
+  INSERT INTO servicio VALUES (codServ,nomServ,descServ,precioV);
 END$$
 
 DELIMITER ;
@@ -166,7 +199,7 @@ INSERT INTO `categoria` (`codigo`, `tipo`) VALUES
 (2, 'Maquina'),
 (3, 'Grasas'),
 (4, 'Prueba'),
-(5, 'Nueva categoria');
+(5, 'Cambio');
 
 -- --------------------------------------------------------
 
@@ -177,19 +210,9 @@ INSERT INTO `categoria` (`codigo`, `tipo`) VALUES
 CREATE TABLE `clientes` (
   `codigo_cliente` varchar(9) NOT NULL,
   `nombre_cliente` varchar(30) NOT NULL,
-  `direccion_cliente` varchar(40) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `contacto`
---
-
-CREATE TABLE `contacto` (
-  `codigo_persona` varchar(9) NOT NULL,
-  `texto` text NOT NULL,
-  `tipo_contacto` varchar(1) NOT NULL
+  `direccion_cliente` varchar(40) NOT NULL,
+  `fono_cliente` varchar(9) NOT NULL,
+  `mail_cliente` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -248,6 +271,7 @@ CREATE TABLE `detalle_factura_venta` (
   `codigo_cliente` varchar(9) NOT NULL,
   `codigo_producto` varchar(15) NOT NULL,
   `cantidad` smallint(5) NOT NULL,
+  `tipo` varchar(1) NOT NULL,
   `precio_compra` mediumint(6) NOT NULL,
   `subtotal_factura` mediumint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -256,26 +280,18 @@ CREATE TABLE `detalle_factura_venta` (
 -- Volcado de datos para la tabla `detalle_factura_venta`
 --
 
-INSERT INTO `detalle_factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `codigo_producto`, `cantidad`, `precio_compra`, `subtotal_factura`) VALUES
-('13221312', '21321', '1234', 1412, 25, 35200),
-('12321', '321312', '12344', 10, 3000, 30000),
-('12321', '321312', '438732', 22, 200, 4400),
-('12321', '321312', '12344', 10, 3000, 30000),
-('12321', '321312', '438732', 22, 200, 4400),
-('12321', '321312', '12344', 10, 3000, 30000),
-('12321', '321312', '438732', 22, 200, 4400),
-('12321', '321312', '12344', 10, 3000, 30000),
-('12321', '321312', '438732', 22, 200, 4400),
-('12321', '321312', '12344', 10, 3000, 30000),
-('12321', '321312', '438732', 22, 200, 4400),
-('12321', '321312', '12344', 10, 3000, 30000),
-('12321', '321312', '438732', 22, 200, 4400),
-('12321', '321312', '12344', 11, 3000, 33000),
-('12321', '321312', '438732', 22, 200, 4400),
-('12321', '321312', '12344', 11, 3000, 33000),
-('12321', '321312', '438732', 22, 200, 4400),
-('12321', '321312', '12344', 11, 3000, 33000),
-('12321', '321312', '438732', 22, 200, 4400);
+INSERT INTO `detalle_factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `codigo_producto`, `cantidad`, `tipo`, `precio_compra`, `subtotal_factura`) VALUES
+('13221312', '21321', '1234', 1412, '', 25, 35200),
+('123456789', '123456789', '12345', 0, '3', 4000, 16000),
+('88888', '88888', '1234', 0, '1', 25, 250),
+('88888', '88888', '32123', 0, '1', 50000, 50000),
+('88888', '88888', '438732', 0, '5', 200, 10000),
+('999999', '999999', '12344', 0, '1', 3000, 30000),
+('999999', '999999', '12345', 0, '1', 5600, 100800),
+('999999', '999999', '32123', 0, '1', 50000, 50000),
+('10101010', '1010101', '1234', 20, 'P', 25, 500),
+('10101010', '1010101', '438732', 30, 'P', 200, 6000),
+('10101010', '1010101', '32123', 1, 'S', 50000, 50000);
 
 -- --------------------------------------------------------
 
@@ -330,7 +346,13 @@ CREATE TABLE `factura_venta` (
 
 INSERT INTO `factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
 ('13221312', '21321', '2020-10-08', '20:15:25', 35200, 6688, 41888),
-('321123', '132312', '2020-10-08', '15:42:47', 22075, 0, 0);
+('321123', '132312', '2020-10-08', '15:42:47', 22075, 0, 0),
+('123456789', '123456789', '2020-10-07', '00:42:51', 16000, 3040, 19040),
+('123456789', '123456789', '2020-10-07', '00:43:18', 16000, 3040, 19040),
+('66666', '666666', '2020-10-07', '02:10:36', 60250, 11448, 71698),
+('88888', '88888', '2020-10-07', '02:13:12', 60250, 11448, 71698),
+('999999', '999999', '2020-10-13', '02:18:04', 180800, 34352, 215152),
+('10101010', '1010101', '2020-10-11', '02:23:04', 56500, 10735, 67235);
 
 -- --------------------------------------------------------
 
@@ -359,11 +381,12 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('11111', 'TEST', 'dfdsfdfd', 2, 35, 15, 20, 25, 1),
 ('12312334', 'Elevador', 'Elevador de pana para llegar a la cima del mundo', 2, 100, 1, 100000, 500000, 0),
 ('1232154', 'Compresor de prueba', 'Compresor de pana para familia de pana', 1, 10, 1, 1000, 15000, 0),
-('1234', 'TEST', 'sadddsadsa', 3, 1020, 15, 20, 25, 1),
-('12344', 'TEST', 'sadddsadsa', 3, -83, 15, 20, 3000, 1),
+('1234', 'TEST', 'sadddsadsa', 3, 990, 15, 20, 25, 1),
+('12344', 'TEST', 'sadddsadsa', 3, 0, 15, 20, 3000, 1),
 ('123441', 'TEST', 'sadddsadsa', 3, 10, 15, 20, 25, 1),
+('12345', 'Tuerca de piedra', 'Es una pruebanomas asi que no se me ocurre descripción', 1, 29, 30, 4000, 5600, 1),
 ('4321', 'Prueba de productos', 'JEJEJE', 1, 50, 0, 1000, 5000, 1),
-('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, -167, 10, 50, 200, 1),
+('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, -49, 10, 50, 200, 1),
 ('4579843', 'Tractor', 'Pa pitiarse a todos los wones', 2, 5, 1, 500000, 5000000, 1);
 
 -- --------------------------------------------------------
@@ -375,7 +398,9 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 CREATE TABLE `proveedores` (
   `codigo_proveedor` varchar(9) NOT NULL,
   `nombre_proveedor` varchar(30) NOT NULL,
-  `direccion_proveedor` varchar(40) NOT NULL
+  `direccion_proveedor` varchar(40) NOT NULL,
+  `fono_proveedor` varchar(9) NOT NULL,
+  `mail_proveedor` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -392,6 +417,14 @@ CREATE TABLE `servicio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Volcado de datos para la tabla `servicio`
+--
+
+INSERT INTO `servicio` (`codigo`, `nombre`, `descripcion`, `precioVenta`) VALUES
+('12346', 'SERVICIO DE LAVADO', 'LAVADO EN EL ANO BIEN BUENO', 40000),
+('32123', 'Instalación de maquina', 'Dejé de pana la maquina culia', 50000);
+
+--
 -- Índices para tablas volcadas
 --
 
@@ -406,12 +439,6 @@ ALTER TABLE `categoria`
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`codigo_cliente`);
-
---
--- Indices de la tabla `contacto`
---
-ALTER TABLE `contacto`
-  ADD KEY `contacto_ibfk_2` (`codigo_persona`);
 
 --
 -- Indices de la tabla `detalle_factura_compra`
@@ -457,13 +484,6 @@ ALTER TABLE `categoria`
 --
 -- Restricciones para tablas volcadas
 --
-
---
--- Filtros para la tabla `contacto`
---
-ALTER TABLE `contacto`
-  ADD CONSTRAINT `contacto_ibfk_1` FOREIGN KEY (`codigo_persona`) REFERENCES `clientes` (`codigo_cliente`),
-  ADD CONSTRAINT `contacto_ibfk_2` FOREIGN KEY (`codigo_persona`) REFERENCES `proveedores` (`codigo_proveedor`);
 
 --
 -- Filtros para la tabla `producto`

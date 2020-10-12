@@ -26,9 +26,17 @@ export class Factura {
                 this._neto = this.detalle.map(t => (t.producto.precioCompra * t.cantidad) - t.dcto)
                 .reduce((acc, value) => acc + value, 0);
             } else {
-                this._neto = this.detalle.map(t => (t.producto.precioVenta * t.cantidad) - t.dcto)
+                this._neto = this.detalle.map((t) =>{
+                    var value = 0;
+                    if (t.tipo == 'P') {
+                        value = (t.producto.precioVenta * t.cantidad) - t.dcto;
+                    } else {
+                        value = t.servicio.precioVenta - t.dcto;
+                    }
+                    return value;
+                }) 
                 .reduce((acc, value) => acc + value, 0);
-            }
+            } 
         } catch (error) {
             this._neto = 0;
         }

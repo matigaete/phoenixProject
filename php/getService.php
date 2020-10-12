@@ -3,14 +3,14 @@
   header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
   
   if (empty($_GET["codigo"])) {
-    exit("No existe persona");
+    exit("No existe servicio");
   }
   $codigo = $_GET["codigo"];
   $bd = include_once "conexion.php";
-  $sentencia = $bd->prepare("CALL busca_cliente(?)");
+  $sentencia = $bd->prepare("CALL busca_servicio(?)");
 
   $sentencia->execute([$codigo]); 
-  $cliente = $sentencia->fetchObject();  
+  $servicio = $sentencia->fetchObject();  
   
-  echo json_encode($cliente);
+  echo json_encode($servicio);
 ?>

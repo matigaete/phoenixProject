@@ -1,5 +1,8 @@
 import { BusinessService } from './Servicios/business.service';
 import { ProductosService } from './Servicios/productos.service';
+import { ServiciosService } from './Servicios/servicios.service';
+import { PersonaService } from './Servicios/persona.service';
+import { FacturaService } from './Servicios/factura.service';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -33,13 +36,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { AppComponent } from './app.component';
 import { FooterComponent } from './include/footer/footer.component';
 import { HeaderComponent } from './include/header/header.component';
-import { IndexComponent } from './Home/index/index.component';
-import { CreateComponent } from './Mantenedores/Productos/create/create.component';
-import { SearchComponent } from './Mantenedores/Productos/search/search.component';
-import { IndexProductosComponent } from './Mantenedores/Productos/index-productos/index-productos.component';
-import { ListaComponent } from './Include/lista/lista.component';
-import { FindComponent } from './Include/find/find.component';
-import { InfoComponent } from './Include/info/info.component';
+import { IndexComponent } from './Home/index/index.component'; 
+import { FindComponent } from './Include/find/find.component'; 
 import { ListadoComponent } from './Include/listado/listado.component';
 import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { FormCategoriasComponent } from './Mantenedores/Categorias/form-categorias/form-categorias.component';
@@ -50,7 +48,18 @@ import { CategoriasService } from './Servicios/categorias.service';
 import { ProveedoresComponent } from './Mantenedores/proveedores/proveedores.component';
 import { ClientesComponent } from './Mantenedores/clientes/clientes.component';
 import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-errores.component';
-import { FacturaService } from './Servicios/factura.service'; 
+import { IndexProductosComponent } from './Mantenedores/Productos/index-productos/index-productos.component';
+import { IndexServiciosComponent } from './Mantenedores/Servicios/index-servicios/index-servicios.component';
+import { CreateServiceComponent } from './Mantenedores/Servicios/create-service/create-service.component';
+import { SearchServiceComponent } from './Mantenedores/Servicios/search-service/search-service.component';
+import { CreateProductComponent } from './Mantenedores/Productos/create-product/create-product.component';
+import { SearchProductComponent } from './Mantenedores/Productos/search-product/search-product.component';
+import { InfoProductosComponent } from './Include/info-productos/info-productos.component';
+import { InfoServiciosComponent } from './Include/info-servicios/info-servicios.component';
+import { ListaProductosComponent } from './Include/lista-productos/lista-productos.component';
+import { ListaCategoriasComponent } from './Include/lista-categorias/lista-categorias.component';
+import { ListaServiciosComponent } from './Include/lista-servicios/lista-servicios.component'; 
+
 
 @NgModule({
   declarations: [
@@ -58,12 +67,10 @@ import { FacturaService } from './Servicios/factura.service';
     FooterComponent,
     HeaderComponent,
     IndexComponent,
-    CreateComponent,
-    SearchComponent,
-    IndexProductosComponent,
-    ListaComponent,
-    FindComponent,
-    InfoComponent,
+    CreateProductComponent,
+    SearchProductComponent,
+    IndexProductosComponent, 
+    FindComponent, 
     ListadoComponent,
     WelcomeComponent,
     FormCategoriasComponent,
@@ -72,7 +79,17 @@ import { FacturaService } from './Servicios/factura.service';
     DialogoConfirmacionComponent,
     ProveedoresComponent,
     ClientesComponent,
-    DialogoErroresComponent, 
+    DialogoErroresComponent,
+    IndexServiciosComponent,
+    CreateServiceComponent,
+    SearchServiceComponent,
+    CreateProductComponent,
+    SearchProductComponent,
+    InfoProductosComponent,
+    InfoServiciosComponent,
+    ListaProductosComponent,
+    ListaCategoriasComponent,
+    ListaServiciosComponent, 
   ],
   entryComponents: [
     DialogoConfirmacionComponent,
@@ -106,7 +123,7 @@ import { FacturaService } from './Servicios/factura.service';
     MatGridListModule,
     MatCardModule
   ],
-  providers: [BusinessService, ProductosService, CategoriasService, FacturaService ,DatePipe],
+  providers: [BusinessService, ProductosService, CategoriasService, FacturaService, ServiciosService, PersonaService ,DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

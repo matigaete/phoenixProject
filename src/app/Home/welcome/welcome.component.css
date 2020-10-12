@@ -27,6 +27,10 @@ tr.mat-footer-row {
   max-width: 110px;
 }
 
+.select {
+  max-width: 140px;
+}
+
 .alertMessage {
   position: fixed;
   top: 30%;
