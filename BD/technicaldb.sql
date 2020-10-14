@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-10-2020 a las 07:24:17
+-- Tiempo de generación: 14-10-2020 a las 02:25:37
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -62,8 +62,32 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_categorias` ()  BEGIN
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_cliente` (IN `rut` VARCHAR(9))  BEGIN 
-  SELECT * FROM clientes 
+  SELECT codigo_cliente AS rut,
+  	     nombre_cliente AS nombre,
+         giro_cliente AS giro,
+         ciudad_cliente AS ciudad,
+         comuna_cliente AS comuna,
+         direccion_cliente AS direccion,
+         fono_cliente AS contacto,
+         mail_cliente AS email,
+         'C' AS tipo
+    FROM clientes 
     WHERE codigo_cliente = rut;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_clientes_por_rut` (IN `rut` VARCHAR(9))  BEGIN   
+  SELECT codigo_cliente AS rut,
+  	     nombre_cliente AS nombre,
+         giro_cliente AS giro,
+         ciudad_cliente AS ciudad,
+         comuna_cliente AS comuna,
+         direccion_cliente AS direccion,
+         fono_cliente AS contacto,
+         mail_cliente AS email,
+         'C' AS tipo
+    FROM clientes 
+    WHERE codigo_cliente LIKE rut
+    LIMIT 5;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_lista_producto` ()  BEGIN    
@@ -99,9 +123,33 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_productos_por_categoria` (IN 
       WHERE p.activo = true AND p.categoria = codCat;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedor` (IN `rut` VARCHAR(9))  BEGIN    
-  SELECT * FROM proveedores 
-    WHERE codigo_proveedor = rut;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedor` (IN `rut` VARCHAR(9))  BEGIN     
+  SELECT codigo_proveedor AS rut,
+  	     nombre_proveedor AS nombre,
+         giro_proveedor AS giro,
+         ciudad_proveedor AS ciudad,
+         comuna_proveedor AS comuna,
+         direccion_proveedor AS direccion,
+         fono_proveedor AS contacto,
+         mail_proveedor AS email,
+         'P' AS tipo
+    FROM proveedores
+    WHERE codigo_proveedor = rut; 
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedores_por_rut` (IN `rut` VARCHAR(9))  BEGIN     
+  SELECT codigo_proveedor AS rut,
+  	     nombre_proveedor AS nombre,
+         giro_proveedor AS giro,
+         ciudad_proveedor AS ciudad,
+         comuna_proveedor AS comuna,
+         direccion_proveedor AS direccion,
+         fono_proveedor AS contacto,
+         mail_proveedor AS email,
+         'P' AS tipo
+    FROM proveedores
+    WHERE codigo_proveedor LIKE rut
+    LIMIT 5; 
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_servicio` (IN `codServ` VARCHAR(15))  BEGIN    
@@ -210,10 +258,20 @@ INSERT INTO `categoria` (`codigo`, `tipo`) VALUES
 CREATE TABLE `clientes` (
   `codigo_cliente` varchar(9) NOT NULL,
   `nombre_cliente` varchar(30) NOT NULL,
+  `giro_cliente` varchar(50) NOT NULL,
+  `ciudad_cliente` varchar(30) NOT NULL,
+  `comuna_cliente` varchar(30) NOT NULL,
   `direccion_cliente` varchar(40) NOT NULL,
   `fono_cliente` varchar(9) NOT NULL,
   `mail_cliente` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`codigo_cliente`, `nombre_cliente`, `giro_cliente`, `ciudad_cliente`, `comuna_cliente`, `direccion_cliente`, `fono_cliente`, `mail_cliente`) VALUES
+('199540513', 'Matias Gaete', 'EMPRENDIMIENTO DE SOFTWARE', 'Santiago', 'San Bernardo', 'Los pistachos 2155', '966067120', 'matias.gaetep@sansano.usm.cl');
 
 -- --------------------------------------------------------
 
@@ -398,10 +456,20 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 CREATE TABLE `proveedores` (
   `codigo_proveedor` varchar(9) NOT NULL,
   `nombre_proveedor` varchar(30) NOT NULL,
+  `giro_proveedor` varchar(50) NOT NULL,
+  `ciudad_proveedor` varchar(30) NOT NULL,
+  `comuna_proveedor` varchar(30) NOT NULL,
   `direccion_proveedor` varchar(40) NOT NULL,
   `fono_proveedor` varchar(9) NOT NULL,
   `mail_proveedor` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `proveedores`
+--
+
+INSERT INTO `proveedores` (`codigo_proveedor`, `nombre_proveedor`, `giro_proveedor`, `ciudad_proveedor`, `comuna_proveedor`, `direccion_proveedor`, `fono_proveedor`, `mail_proveedor`) VALUES
+('773128493', 'TECHNICAL SERVICE', 'SERVICIO TÉCNICO AUTOMOTRIZ', 'Santiago', 'San Bernardo', 'Los pistachos 2155', '660505005', 'marcelo.gaete@text.cl');
 
 -- --------------------------------------------------------
 

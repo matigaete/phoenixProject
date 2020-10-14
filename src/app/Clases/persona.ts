@@ -2,13 +2,13 @@ export class Persona {
 
     constructor(private _rut: string,
         private _nombre: string,
-        private _giro: string,
-        private _tipo: string,
+        private _giro?: string,
+        private _tipo?: string,
         private _ciudad?: string,
         private _comuna?: string,
         private _direccion?: string,
-        private _contacto?: string[],
-        private _email?: string[]) {
+        private _contacto?: string,
+        private _email?: string) {
     }
 
     public get tipo(): string {
@@ -17,16 +17,16 @@ export class Persona {
     public set tipo(value: string) {
         this._tipo = value;
     }
-    public get email(): string[] {
+    public get email(): string {
         return this._email;
     }
-    public set email(value: string[]) {
+    public set email(value: string) {
         this._email = value;
     }
-    public get contacto(): string[] {
+    public get contacto(): string {
         return this._contacto;
     }
-    public set contacto(value: string[]) {
+    public set contacto(value: string) {
         this._contacto = value;
     }
     public get direccion(): string {

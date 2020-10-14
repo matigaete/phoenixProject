@@ -6,6 +6,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Persona } from '../Clases/persona';
 import { Observable } from 'rxjs';
 
+const c_proveedor = 'P';
+const c_cliente = 'C';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -33,9 +36,6 @@ export class PersonaService {
   private _mensajeCreado: string;
   private _mensajeActivado: string;
 
-  public static c_proveedor = 'P';
-  public static c_cliente = 'C';
-
   constructor(private http: HttpClient,
     private dialogo: MatDialog) {
     this._codigo = 'Código del Persona';
@@ -61,13 +61,25 @@ export class PersonaService {
 
   //-Respuestas HTTP-------------------------------//
 
-  public getListaPersonas() {
-    return this.http.get<Persona[]>(`${this.url}getPersons.php`);
+  public getListaClientes() {
+    return this.http.get<Persona[]>(`${this.url}getClients.php`);
+  }
+
+  public getListaProveedores() {
+    return this.http.get<Persona[]>(`${this.url}getProviders.php`);
+  }
+
+  public getClientesFiltro(codigo:string) {
+    return this.http.get<Persona[]>(`${this.url}getClientsFilter.php?codigo=${codigo}`);
+  }
+
+  public getProveedoresFiltro(codigo:string) {
+    return this.http.get<Persona[]>(`${this.url}getProvidersFilter.php?codigo=${codigo}`);
   }
 
   public getPersona(persona: Persona) {
     var response: Observable<Persona>;
-    if (persona.tipo == PersonaService.c_proveedor) {
+    if (persona.tipo == c_proveedor) {
       response = this.http.get<Persona>(`${this.url}getProvider.php?codigo=${persona.rut}`);
     } else {
       response = this.http.get<Persona>(`${this.url}getClient.php?codigo=${persona.rut}`);
