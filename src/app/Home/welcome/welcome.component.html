@@ -11,15 +11,6 @@
         <mat-form-field>
           <mat-label>Nro. de factura</mat-label>
           <input matInput [(ngModel)]="factura.codFactura">
-          <mat-error>
-            Ingrese <strong>nro. de factura</strong>
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="col-2">
-        <mat-form-field>
-          <mat-label>{{getTipoPersona()}}</mat-label>
-          <input matInput [(ngModel)]="factura.persona.rut">
         </mat-form-field>
       </div>
       <div class="col-2">
@@ -29,6 +20,30 @@
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
+      </div>
+      <div class="col-2">
+        <section *ngIf="factura.tipo=='C'">
+          <mat-form-field>
+            <input type="text" placeholder="Proveedor" matInput [formControl]="myControl" [matAutocomplete]="auto"
+              [(ngModel)]="factura.persona.rut" (keyup)="buscaProveedor(factura.persona.rut)">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let option of proveedores$ | async" [value]="option.rut">
+                {{option.rut}} : {{option.nombre}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </section>
+        <section *ngIf="factura.tipo=='V'">
+          <mat-form-field>
+            <input type="text" placeholder="Cliente" matInput [formControl]="myControl" [matAutocomplete]="auto"
+              [(ngModel)]="factura.persona.rut" (keyup)="buscaCliente(factura.persona.rut)">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let option of clientes$ | async" [value]="option.rut">
+                {{option.rut}} : {{option.nombre}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </section>
       </div>
     </div>
     <div class="col-7 alertMessage">
@@ -96,11 +111,11 @@
           <td mat-cell *matCellDef="let transaction">
             <section *ngIf="transaction.tipo=='P'">
               <input readonly type="text" class="form-control texto" [value]="transaction.producto.nombre"
-              [(ngModel)]="transaction.producto.nombre" name="name">
+                [(ngModel)]="transaction.producto.nombre" name="name">
             </section>
             <section *ngIf="transaction.tipo=='S'">
               <input readonly type="text" class="form-control texto" [value]="transaction.servicio.nombre"
-              [(ngModel)]="transaction.servicio.nombre" name="name">
+                [(ngModel)]="transaction.servicio.nombre" name="name">
             </section>
           </td>
           <td mat-footer-cell *matFooterCellDef></td>

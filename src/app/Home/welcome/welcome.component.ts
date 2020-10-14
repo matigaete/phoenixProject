@@ -15,6 +15,10 @@ import { Persona } from 'src/app/Clases/persona';
 import { Ilista } from 'src/app/Interfaces/ilista';
 import { Servicio } from 'src/app/Clases/servicio';
 
+import { FormControl } from '@angular/forms';
+import { map, startWith } from 'rxjs/operators';
+import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
+
 const c_producto = 'P';
 const c_servicio = 'S';
 const c_fctocompra = 'C';
@@ -31,7 +35,7 @@ export class WelcomeComponent implements OnInit {
 
   public displayedColumns = ['insert', 'add', 'item', 'name', 'cant', 'cost', 'dcto', 'subtotal'];
   public factura = new Factura(undefined,
-    new Persona(undefined, undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
+    new Persona(undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
   public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
     new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''),
     new Servicio(undefined, undefined, 0, ''))];
@@ -40,8 +44,14 @@ export class WelcomeComponent implements OnInit {
   public producto$: Observable<Producto>;
   public servicio$: Observable<Servicio>;
   public persona$: Observable<Persona>;
+  public clientes$: Observable<Persona[]>;
+  public proveedores$: Observable<Persona[]>;
+  public filteredOptions: Observable<string[]>;
   public alertas: Ilista[];
   public fecha: string;
+  public myControl = new FormControl();
+
+  options: string[] = ['One', 'Two', 'Three'];
 
   constructor(private businessService: BusinessService,
     private productosService: ProductosService,
@@ -54,34 +64,28 @@ export class WelcomeComponent implements OnInit {
   public ngOnInit() {
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
+    this.clientes$ = this.personaService.getClientesFiltro('%');
+    this.proveedores$ = this.personaService.getProveedoresFiltro('%');
+  }
+
+  public buscaCliente(codigo: string) {
+    this.clientes$ = this.personaService.getClientesFiltro(codigo + '%');
+  }
+
+  public buscaProveedor(codigo: string) {
+    this.proveedores$ = this.personaService.getProveedoresFiltro(codigo + '%');
   }
 
   // Se validan campos vacíos antes de generar factura
   public OnSubmit() {
-    var fact = this.factura;
     var errores = this.validaCampos();
     if (!errores.length) {
-      fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
-      fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
-      fact.detalle.forEach(det => {
-        if (det.tipo == c_producto) {
-          det.servicio = undefined;
-        } else {
-          det.producto = undefined;
-        }
-      });
-      if (fact.tipo == c_fctocompra) {
-        this.facturaService.creaFacturaCompra(fact).subscribe(() => {
-          this.businessService.getAlert('Factura creada correctamente');
-          this.reset();
+      this.dialogo.open(DialogoConfirmacionComponent, {
+        data: 'Desea generar la factura?'
+      }).afterClosed()
+      .subscribe((confirmado: boolean) => {
+          if (confirmado) this.generaFactura();
         });
-      } else {
-        this.facturaService.creaFacturaVenta(fact).subscribe(() => {
-          this.businessService.getAlert('Factura creada correctamente');
-          this.alertStock();
-          this.reset();
-        });
-      }
     } else {
       this.dialogo.open(DialogoErroresComponent, {
         data: errores
@@ -95,6 +99,30 @@ export class WelcomeComponent implements OnInit {
     }
   }
 
+  public generaFactura() {
+    var fact = this.factura;
+    fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
+    fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
+    fact.detalle.forEach(det => {
+      if (det.tipo == c_producto) {
+        det.servicio = undefined;
+      } else {
+        det.producto = undefined;
+      }
+    });
+    if (fact.tipo == c_fctocompra) {
+      this.facturaService.creaFacturaCompra(fact).subscribe(() => {
+        this.businessService.getAlert('Factura creada correctamente');
+        this.reset();
+      });
+    } else {
+      this.facturaService.creaFacturaVenta(fact).subscribe(() => {
+        this.businessService.getAlert('Factura creada correctamente');
+        this.alertStock();
+        this.reset();
+      });
+    }
+  }
 
   //Genera nueva posición
   public btnClick() {
@@ -132,7 +160,7 @@ export class WelcomeComponent implements OnInit {
 
   // Se ejecuta al generarse la factura, limpia todos los campos
   public reset() {
-    this.transactions = [new DetalleFactura(0, 0, 0, '', false, 0,
+    this.transactions = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
       new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''))];;
     this.dataSource.next(this.transactions);
     this.factura = new Factura(undefined,
@@ -174,7 +202,6 @@ export class WelcomeComponent implements OnInit {
     this.transactions.map(transac => transac.insert = this.chkAll);
     this.dataSource.next(this.transactions);
   }
-
 
   //Busca un producto a la BD para enlazarlo al detalle
   public findProduct(datpos: DetalleFactura) {
@@ -222,17 +249,6 @@ export class WelcomeComponent implements OnInit {
     }
   }
 
-  //Busca un proveedor/cliente a la BD para enlazarlo a la factura
-  public findPerson(fact: Factura) {
-    var modificado: boolean;
-    var per = fact.persona;
-    if (per.rut) {
-      this.persona$ = this.personaService.getPersona(per);
-      this.persona$.forEach(persona => { per = persona });
-      if (modificado) this.dataSource.next(this.transactions);
-    }
-  }
-
   // Validación si existe algún campo que falte por rellenar
   public validaCampos() {
     var log = [];
@@ -256,16 +272,6 @@ export class WelcomeComponent implements OnInit {
       if (error) { log.push(msg) }
     });
     return log;
-  }
-
-  public getTipoPersona() {
-    var valor: string;
-    if (this.factura.tipo == c_fctoventa) {
-      valor = 'Cliente';
-    } else {
-      valor = 'Proveedor';
-    }
-    return valor;
   }
 
   // Switch para cambio de producto a servicio (cantidad fijada en 1)

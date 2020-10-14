@@ -3,15 +3,16 @@ import { ProductosService } from './Servicios/productos.service';
 import { ServiciosService } from './Servicios/servicios.service';
 import { PersonaService } from './Servicios/persona.service';
 import { FacturaService } from './Servicios/factura.service';
+import { CategoriasService } from './Servicios/categorias.service'; 
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common'; 
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -32,27 +33,22 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { AppComponent } from './app.component';
-import { FooterComponent } from './include/footer/footer.component';
-import { HeaderComponent } from './include/header/header.component';
-import { IndexComponent } from './Home/index/index.component'; 
-import { FindComponent } from './Include/find/find.component'; 
+import { FooterComponent } from './include/footer/footer.component'; 
+import { IndexComponent } from './Home/index/index.component';
+import { FindComponent } from './Include/find/find.component';
 import { ListadoComponent } from './Include/listado/listado.component';
-import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { FormCategoriasComponent } from './Mantenedores/Categorias/form-categorias/form-categorias.component';
-import { IndexCategoriasComponent } from './Mantenedores/Categorias/index-categorias/index-categorias.component';
-import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-columna.component';
 import { WelcomeComponent } from './Home/welcome/welcome.component';
-import { CategoriasService } from './Servicios/categorias.service';
-import { ProveedoresComponent } from './Mantenedores/proveedores/proveedores.component';
-import { ClientesComponent } from './Mantenedores/clientes/clientes.component';
-import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-errores.component';
+import { IndexCategoriasComponent } from './Mantenedores/Categorias/index-categorias/index-categorias.component';
 import { IndexProductosComponent } from './Mantenedores/Productos/index-productos/index-productos.component';
 import { IndexServiciosComponent } from './Mantenedores/Servicios/index-servicios/index-servicios.component';
+import { IndexPersonComponent } from './Mantenedores/Personas/index-person/index-person.component';
 import { CreateServiceComponent } from './Mantenedores/Servicios/create-service/create-service.component';
-import { SearchServiceComponent } from './Mantenedores/Servicios/search-service/search-service.component';
 import { CreateProductComponent } from './Mantenedores/Productos/create-product/create-product.component';
+import { SearchServiceComponent } from './Mantenedores/Servicios/search-service/search-service.component';
 import { SearchProductComponent } from './Mantenedores/Productos/search-product/search-product.component';
 import { InfoProductosComponent } from './Include/info-productos/info-productos.component';
 import { InfoServiciosComponent } from './Include/info-servicios/info-servicios.component';
@@ -60,25 +56,26 @@ import { ListaProductosComponent } from './Include/lista-productos/lista-product
 import { ListaCategoriasComponent } from './Include/lista-categorias/lista-categorias.component';
 import { ListaServiciosComponent } from './Include/lista-servicios/lista-servicios.component'; 
 
+import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-columna.component';
+import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dialogo-confirmacion.component';
+import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-errores.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    FooterComponent,
-    HeaderComponent,
+    FooterComponent, 
     IndexComponent,
     CreateProductComponent,
     SearchProductComponent,
-    IndexProductosComponent, 
-    FindComponent, 
+    IndexProductosComponent,
+    FindComponent,
     ListadoComponent,
     WelcomeComponent,
     FormCategoriasComponent,
     IndexCategoriasComponent,
     DialogoColumnaComponent,
-    DialogoConfirmacionComponent,
-    ProveedoresComponent,
-    ClientesComponent,
+    DialogoConfirmacionComponent, 
     DialogoErroresComponent,
     IndexServiciosComponent,
     CreateServiceComponent,
@@ -90,6 +87,7 @@ import { ListaServiciosComponent } from './Include/lista-servicios/lista-servici
     ListaProductosComponent,
     ListaCategoriasComponent,
     ListaServiciosComponent, 
+    IndexPersonComponent,
   ],
   entryComponents: [
     DialogoConfirmacionComponent,
@@ -101,6 +99,7 @@ import { ListaServiciosComponent } from './Include/lista-servicios/lista-servici
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     MatSnackBarModule,
     MatDialogModule,
@@ -121,9 +120,11 @@ import { ListaServiciosComponent } from './Include/lista-servicios/lista-servici
     MatRadioModule,
     MatButtonToggleModule,
     MatGridListModule,
-    MatCardModule
+    MatCardModule,
+    MatAutocompleteModule
   ],
-  providers: [BusinessService, ProductosService, CategoriasService, FacturaService, ServiciosService, PersonaService ,DatePipe],
+  providers: [BusinessService, ProductosService, CategoriasService, 
+    FacturaService, ServiciosService, PersonaService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

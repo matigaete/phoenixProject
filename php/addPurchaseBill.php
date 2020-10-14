@@ -10,7 +10,7 @@ $bd = include_once "conexion.php";
 $sentencia = $bd->prepare("CALL insert_fact_compra(?,?,?,?,?,?,?)");
 
 $resultado = $sentencia->execute([
-    $jsonFactura->_codFactura, $jsonFactura->persona->_rut, $jsonFactura->_fecha,
+    $jsonFactura->_codFactura, $jsonFactura->_persona->_rut, $jsonFactura->_fecha,
     $jsonFactura->_hora, $jsonFactura->_neto, $jsonFactura->_iva, $jsonFactura->_total
 ]);
 
@@ -19,7 +19,7 @@ foreach ($jsonFactura->_detalle as $detalle) { //foreach element in $arr
     $sentencia = $bd->prepare("CALL insert_detalle_fc(?,?,?,?,?,?)");
 
     $resultado = $sentencia->execute([
-        $jsonFactura->_codFactura, $jsonFactura->persona->_rut,
+        $jsonFactura->_codFactura, $jsonFactura->_persona->_rut,
         $detalle->_producto->codigo, $detalle->_cantidad,
         $detalle->_producto->precioCompra, $detalle->_subtotal
     ]);

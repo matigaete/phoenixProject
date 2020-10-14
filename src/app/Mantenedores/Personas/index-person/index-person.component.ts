@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-proveedores',
-  templateUrl: './proveedores.component.html',
-  styleUrls: ['./proveedores.component.css']
+  selector: 'app-index-person',
+  templateUrl: './index-person.component.html',
+  styleUrls: ['./index-person.component.css']
 })
-export class ProveedoresComponent implements OnInit {
+export class IndexPersonComponent implements OnInit {
 
   typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins'];
 
