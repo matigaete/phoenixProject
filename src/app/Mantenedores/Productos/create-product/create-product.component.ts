@@ -29,8 +29,7 @@ export class CreateProductComponent implements OnInit {
   public precioCompra: string;
   public precioVenta: string;
   public chkBaja: boolean;
-  public chkAuto: boolean;
-  public multiplierPrice: number;
+  public chkAuto: boolean; 
 
   public aceptar: string;
   public active: string;
@@ -38,10 +37,8 @@ export class CreateProductComponent implements OnInit {
 
   public errorCodigo: boolean;
   public errorNombre: boolean;
-  public errorDescripcion: boolean;
-  public errorStock: boolean;
-  public errorStockCritico: boolean;
-  public errorPrecioCompra: boolean;
+  public errorDescripcion: boolean; 
+  public errorStockCritico: boolean; 
   public errorPrecioVenta: boolean;
 
   public mensajeCodigo: string;
@@ -67,8 +64,7 @@ export class CreateProductComponent implements OnInit {
     this.aceptar = this.businessService.aceptar;
     this.active = this.productoService.active;
     this.errorCodigo = this.errorNombre = this.errorDescripcion =
-      this.errorStock = this.errorStockCritico = this.errorPrecioCompra =
-      this.errorPrecioVenta = this.businessService.error;
+      this.errorStockCritico =  this.errorPrecioVenta = this.businessService.error;
     this.mensajeCodigo = this.productoService.mensajeCodigo;
     this.mensajeDescripcion = this.productoService.mensajeDescripcion;
     this.mensajeNombre = this.businessService.mensajeNombre;
@@ -80,20 +76,17 @@ export class CreateProductComponent implements OnInit {
     if (this.iProducto !== undefined) {
       this.productoModel = this.iProducto[0];
       this.errorCodigo = this.errorNombre = this.errorDescripcion =
-        this.errorStock = this.errorStockCritico = this.errorPrecioCompra =
-        this.errorPrecioVenta = !this.businessService.error;
+        this.errorStockCritico = this.errorPrecioVenta = !this.businessService.error;
     }
   }
 
   public OnSubmit() {
     if (!this.errorCodigo && !this.errorNombre && !this.errorDescripcion &&
-      !this.errorStock && !this.errorStockCritico &&
-      !this.errorPrecioCompra && !this.errorPrecioVenta) {
+        !this.errorStockCritico && !this.errorPrecioVenta) {
       if (this.isNew) {
         this.productoService.creaProducto(this.productoModel).subscribe(() => {
           this.businessService.getAlert(this.productoService.mensajeCreado);
-          this.productoModel = new Producto('', 1, '', 0, 0, 0, 0, 0, false, '');
-          this.multiplierPrice = null;
+          this.productoModel = new Producto('', 1, '', 0, 0, 0, 0, 0, false, ''); 
           this.chkAuto = false;
         })
       } else {

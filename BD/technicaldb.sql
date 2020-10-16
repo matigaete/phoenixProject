@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-10-2020 a las 21:42:33
+-- Tiempo de generación: 17-10-2020 a las 01:05:12
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -98,14 +98,17 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_lista_producto` ()  BEGIN
        WHERE p.activo = true;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_producto` (IN `codProd` VARCHAR(15))  BEGIN    
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_producto` (IN `codProd` VARCHAR(15))  BEGIN          
   SELECT p.nombre, p.descripcion, c.tipo, 
-         p.stock, p.stockCritico, p.precioCompra, 
-         p.precioVenta, p.activo, p.codigo
+  		 p.stock, p.stockCritico, r.precio AS precioCompra, 
+         MAX(r.fecha) AS ultimoFechaPrecio, p.precioVenta, 
+         p.activo, p.codigo
     FROM producto AS p
-    LEFT JOIN categoria AS c ON p.categoria = c.codigo        
+    INNER JOIN precio AS r ON p.codigo = r.codigo_producto
+    INNER JOIN categoria AS c ON p.categoria = c.codigo 
     WHERE p.codigo = codProd
-      AND p.activo = true;
+      AND p.activo = true
+    GROUP BY p.codigo;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_productos_inactivos` ()  BEGIN    
@@ -117,10 +120,13 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_productos_por_categoria` (IN `codCat` TINYINT(4))  BEGIN    
   SELECT p.nombre, p.descripcion, p.categoria AS tipo, 
-              p.stock, p.stockCritico, p.precioCompra, 
-              p.precioVenta, p.activo, p.codigo
-      FROM producto AS p        
-      WHERE p.activo = true AND p.categoria = codCat;
+         p.stock, p.stockCritico, r.precio AS precioCompra, 
+         MAX(r.fecha) AS ultimoFechaPrecio, p.precioVenta, 
+         p.activo, p.codigo
+    FROM producto AS p
+    INNER JOIN precio AS r ON p.codigo = r.codigo_producto
+    WHERE p.activo = true AND p.categoria = codCat
+    GROUP BY p.codigo;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedor` (IN `rut` VARCHAR(9))  BEGIN     
@@ -179,15 +185,22 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fc` (IN `codFac` VARCHAR(15), IN `codProv` VARCHAR(9), IN `codProd` VARCHAR(15), IN `cant` SMALLINT(3), IN `precioCompra` MEDIUMINT(6), IN `subtotal` MEDIUMINT(6))  BEGIN    
   DECLARE newCant SMALLINT(3); 
+  DECLARE newPrice MEDIUMINT(6); 
+  DECLARE tasa DECIMAL(10,2);
   INSERT INTO detalle_factura_compra
   VALUES (codFac, codProv, codProd, cant, precioCompra, subtotal);
   
-  SELECT stock INTO newCant FROM producto 
+  SELECT stock, tasaCambio INTO newCant, tasa FROM producto 
     WHERE codigo = codProd;
     
   SET newCant = newCant + cant;
+  SET newPrice = precioCompra + precioCompra * tasa;
 	
-  UPDATE producto SET stock = newCant 
+  INSERT INTO precio (codigo_producto, fecha, precio)
+	VALUES (codProd, CURDATE(), precioCompra);
+  
+  UPDATE producto SET stock = newCant,
+  				      precioVenta = newPrice
     WHERE codigo = codProd; 
 END$$
 
@@ -295,6 +308,7 @@ CREATE TABLE `detalle_factura_compra` (
 --
 
 INSERT INTO `detalle_factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `codigo_producto`, `cantidad`, `precio_compra`, `subtotal_factura`) VALUES
+('1', '773128493', 'codtest', 10, 1500, 15000),
 ('11', '11', '1234', 5, 1000, 5000),
 ('11', '120', '11111', 3, 1000, 3000),
 ('11', '120', '1234', 6, 1000, 6000),
@@ -374,6 +388,7 @@ CREATE TABLE `factura_compra` (
 --
 
 INSERT INTO `factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
+('1', '773128493', '2001-01-01', '20:03:32', 0, 0, 0),
 ('11', '120', '2020-09-08', '21:20:34', 0, 0, 96500),
 ('113212', '12312', '2020-10-05', '20:16:31', 129100, 24529, 153629),
 ('12', '132', '2020-09-18', '22:17:55', 0, 0, 12000),
@@ -432,7 +447,11 @@ CREATE TABLE `precio` (
 --
 
 INSERT INTO `precio` (`codigo`, `codigo_producto`, `fecha`, `precio`) VALUES
-(2, 'codtest', '2020-10-14', 1000);
+(2, 'codtest', '2020-10-14', 1000),
+(3, 'codtest', '2020-10-16', 1500),
+(4, 'codtest', '2020-10-17', 2000),
+(5, 'dsads', '2020-10-16', 0),
+(6, 'codtest', '2020-10-16', 1500);
 
 -- --------------------------------------------------------
 
@@ -468,7 +487,8 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('4321', 'Prueba de productos', 'JEJEJE', 1, 50, 0, '0.00', 5000, 1),
 ('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, -49, 10, '0.00', 200, 1),
 ('4579843', 'Tractor', 'Pa pitiarse a todos los wones', 2, 5, 1, '0.00', 5000000, 1),
-('codtest', 'Nombre de producto', 'Pruebaaa', 1, 0, 5, '0.20', 2000, 1);
+('codtest', 'Nombre de producto', 'Pruebaaa', 1, 10, 5, '0.20', 1800, 1),
+('dsads', 'dsadsa', 'dsadas', 1, 0, 10, '10.00', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -559,7 +579,8 @@ ALTER TABLE `factura_venta`
 -- Indices de la tabla `precio`
 --
 ALTER TABLE `precio`
-  ADD PRIMARY KEY (`codigo`,`codigo_producto`,`fecha`);
+  ADD PRIMARY KEY (`codigo`,`codigo_producto`,`fecha`),
+  ADD KEY `producto_ibfk_2` (`codigo_producto`);
 
 --
 -- Indices de la tabla `producto`
@@ -594,11 +615,17 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `precio`
 --
 ALTER TABLE `precio`
-  MODIFY `codigo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `codigo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `precio`
+--
+ALTER TABLE `precio`
+  ADD CONSTRAINT `producto_ibfk_2` FOREIGN KEY (`codigo_producto`) REFERENCES `producto` (`codigo`);
 
 --
 -- Filtros para la tabla `producto`
