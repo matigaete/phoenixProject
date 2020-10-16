@@ -25,7 +25,7 @@ export class InfoProductosComponent implements OnInit {
 
   @Output() oValor = new EventEmitter<number>();
   @Input() iProducto: Producto;
-  public productoModel = new Producto('','','',0,0,0,0,false,'')
+  public productoModel = new Producto('','','',0,0,0,0,0,false,'')
   public modificar: string;
   public disabled: string;
 

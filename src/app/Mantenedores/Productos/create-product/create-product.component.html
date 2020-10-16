@@ -31,8 +31,8 @@
     </div>
     <div class="form-group">
       <label>{{stock}}</label>
-      <input type="number" [ngClass]="formControlStock()" name="stock" [(ngModel)]="productoModel.stock"
-        (ngModelChange)="validaStock($event)" [value]="productoModel.stock">
+      <input type="number" class="form-control" name="stock" [(ngModel)]="productoModel.stock"
+        [value]="productoModel.stock">
       <div class="invalid-feedback">
         {{mensajeStock}}
       </div>
@@ -48,8 +48,8 @@
     </div>
     <div class="form-group">
       <label>{{precioCompra}}</label>
-      <input type="number" [ngClass]="formControlPrecioCompra()" name="precioCompra"
-        [(ngModel)]="productoModel.precioCompra" (ngModelChange)="validaPrecioCompra($event); calculaValor();"
+      <input type="number" class="form-control" name="precioCompra"
+        [(ngModel)]="productoModel.precioCompra" (ngModelChange)="calculaValor();"
         [value]="productoModel.precioCompra">
       <div class="invalid-feedback">
         {{mensajePrecio}}
@@ -63,8 +63,8 @@
       </div>
       <div class="col-3">
         <input [readOnly]="!chkAuto" type="number" class="form-control" name="multiplierPrice"
-          [(ngModel)]="multiplierPrice" (ngModelChange)="calculaValor(); validaPrecioVenta($event);"
-          [value]="multiplierPrice">
+          [(ngModel)]="productoModel.tasaCambio" (ngModelChange)="calculaValor(); validaPrecioVenta($event);"
+          [value]="productoModel.tasaCambio">
       </div>
     </div>
     <div class="form-group">

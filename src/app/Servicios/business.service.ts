@@ -98,15 +98,6 @@ export class BusinessService {
     return error;
   }
 
-  public getProductos(): Producto[] {
-    return [new Producto('Compresor de prueba', 'Herramienta',
-      'Compresor de pana para familia de pana', 10, 1, 1000, 3000, true, 1),
-    new Producto('Elevador', 'Maquina',
-      'PA SUBIR A LA CIMA DEL MUNDO', 3, 1, 10000, 50000, true, 2),
-    new Producto('Aceite', 'Herramienta',
-      'Pa hacer unas papas d pana', 100, 10, 100, 30000, true, 3),
-    ]
-  }
   //-End listas----------------------------------//
 
   //-Funciones-----------------------------------//
@@ -125,17 +116,6 @@ export class BusinessService {
     for (let i = 0; i < acciones.length; i++) {
       acciones[i].current = null;
     }
-  }
-
-  public filtrarProductos(productos: Producto[], filtro: string): Producto[] {
-    productos = this.getProductos();
-    var aux = new Array;
-    for (let i = 0; i < productos.length; i++) {
-      if (productos[i].tipo == filtro) {
-        aux.push(productos[i]);
-      }
-    }
-    return aux;
   }
 
   public getAlert(message: string){

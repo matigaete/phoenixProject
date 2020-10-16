@@ -2,7 +2,7 @@ import { DetalleFactura } from './detalle-factura';
 import { Persona } from './persona';
 
 export class Factura {
-    
+
     constructor(private _codFactura: string,
         private _persona: Persona,
         private _fecha: string,
@@ -12,7 +12,7 @@ export class Factura {
         private _total: number,
         private _tipo: string,
         private _detalle?: DetalleFactura[]) {
-        this._codFactura = _codFactura; 
+        this._codFactura = _codFactura;
         this._fecha = _fecha;
         this._hora = _hora;
         this._total = _total;
@@ -20,13 +20,30 @@ export class Factura {
         this._detalle = [];
     }
 
+    public generaFactura(): boolean {
+        let compra: boolean;
+        this.detalle.forEach(det => {
+            if (det.tipo == 'P') {
+                det.servicio = undefined;
+            } else {
+                det.producto = undefined;
+            }
+        });
+        if (this.tipo == 'C') {
+            compra = true;
+        } else {
+            compra = false;
+        }
+        return compra;
+    }
+
     public getNetAmount(): number {
         try {
             if (this._tipo == 'C') {
-                this._neto = this.detalle.map(t => (t.producto.precioCompra * t.cantidad) - t.dcto)
-                .reduce((acc, value) => acc + value, 0);
+                this._neto = this.detalle.map(t => (t.producto.precioCompra[0].precio * t.cantidad) - t.dcto)
+                    .reduce((acc, value) => acc + value, 0);
             } else {
-                this._neto = this.detalle.map((t) =>{
+                this._neto = this.detalle.map((t) => {
                     var value = 0;
                     if (t.tipo == 'P') {
                         value = (t.producto.precioVenta * t.cantidad) - t.dcto;
@@ -34,9 +51,9 @@ export class Factura {
                         value = t.servicio.precioVenta - t.dcto;
                     }
                     return value;
-                }) 
-                .reduce((acc, value) => acc + value, 0);
-            } 
+                })
+                    .reduce((acc, value) => acc + value, 0);
+            }
         } catch (error) {
             this._neto = 0;
         }
@@ -56,7 +73,7 @@ export class Factura {
 
     public set codFactura(codFactura: string) {
         this._codFactura = codFactura;
-    } 
+    }
 
     public set fecha(value: string) {
         this._fecha = value;
@@ -93,7 +110,7 @@ export class Factura {
     public get persona(): Persona {
         return this._persona;
     }
-    
+
     public get hora(): string {
         return this._hora;
     }
@@ -104,7 +121,7 @@ export class Factura {
 
     public get codFactura(): string {
         return this._codFactura;
-    } 
+    }
 
     public get fecha(): string {
         return this._fecha;

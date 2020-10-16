@@ -14,10 +14,9 @@ import { DialogoErroresComponent } from 'src/app/Include/dialogo-errores/dialogo
 import { Persona } from 'src/app/Clases/persona';
 import { Ilista } from 'src/app/Interfaces/ilista';
 import { Servicio } from 'src/app/Clases/servicio';
-
 import { FormControl } from '@angular/forms';
-import { map, startWith } from 'rxjs/operators';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
+import { DateAdapter } from '@angular/material/core';
 
 const c_producto = 'P';
 const c_servicio = 'S';
@@ -33,14 +32,15 @@ const c_cliente = 'C';
 })
 export class WelcomeComponent implements OnInit {
 
-  public displayedColumns = ['insert', 'add', 'item', 'name', 'cant', 'cost', 'dcto', 'subtotal'];
+  public displayedColumns = ['insert', 'add', 'item', 'name', 'cant', 'disp', 'cost', 'dcto', 'subtotal'];
   public factura = new Factura(undefined,
     new Persona(undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
   public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
-    new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''),
+    new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''),
     new Servicio(undefined, undefined, 0, ''))];
   public dataSource = new BehaviorSubject([]);
   public chkAll: boolean = false;
+  public errorStock: boolean;
   public producto$: Observable<Producto>;
   public servicio$: Observable<Servicio>;
   public persona$: Observable<Persona>;
@@ -59,13 +59,15 @@ export class WelcomeComponent implements OnInit {
     private personaService: PersonaService,
     private facturaService: FacturaService,
     private datepipe: DatePipe,
-    private dialogo: MatDialog) { }
+    private dialogo: MatDialog,
+    private dateAdapter: DateAdapter<Date>) { }
 
   public ngOnInit() {
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
     this.clientes$ = this.personaService.getClientesFiltro('%');
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
+    this.dateAdapter.setLocale('en-GB');
   }
 
   public buscaCliente(codigo: string) {
@@ -83,7 +85,7 @@ export class WelcomeComponent implements OnInit {
       this.dialogo.open(DialogoConfirmacionComponent, {
         data: 'Desea generar la factura?'
       }).afterClosed()
-      .subscribe((confirmado: boolean) => {
+        .subscribe((confirmado: boolean) => {
           if (confirmado) this.generaFactura();
         });
     } else {
@@ -103,19 +105,12 @@ export class WelcomeComponent implements OnInit {
     var fact = this.factura;
     fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
     fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
-    fact.detalle.forEach(det => {
-      if (det.tipo == c_producto) {
-        det.servicio = undefined;
-      } else {
-        det.producto = undefined;
-      }
-    });
-    if (fact.tipo == c_fctocompra) {
+    if (fact.generaFactura()) { // Si es verdadero es factura de compra
       this.facturaService.creaFacturaCompra(fact).subscribe(() => {
-        this.businessService.getAlert('Factura creada correctamente');
+        this.businessService.getAlert('Insumos actualizados correctamente');
         this.reset();
       });
-    } else {
+    } else {                    // Factura de venta
       this.facturaService.creaFacturaVenta(fact).subscribe(() => {
         this.businessService.getAlert('Factura creada correctamente');
         this.alertStock();
@@ -132,7 +127,7 @@ export class WelcomeComponent implements OnInit {
       newID = 0;
     }
     var registro: DetalleFactura = new DetalleFactura(newID, 0, 0, c_producto, false, 0,
-      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''),
+      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''),
       new Servicio(undefined, undefined, 0, ''));
     this.transactions.push(registro);
     this.factura.detalle = this.transactions;
@@ -161,7 +156,7 @@ export class WelcomeComponent implements OnInit {
   // Se ejecuta al generarse la factura, limpia todos los campos
   public reset() {
     this.transactions = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
-      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''))];;
+      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''))];;
     this.dataSource.next(this.transactions);
     this.factura = new Factura(undefined,
       new Persona('', undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
@@ -217,7 +212,7 @@ export class WelcomeComponent implements OnInit {
             modificado = true;
             break;
           } else {
-            prd = new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, prd.codigo)
+            prd = new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, prd.codigo)
           }
         }
         datpos.producto = prd;
@@ -264,6 +259,7 @@ export class WelcomeComponent implements OnInit {
       if (pos.tipo == c_producto) {
         if (!pos.producto.nombre) { error = true }
         if (!pos.producto.precioCompra) { error = true }
+        if (pos.cantidad > pos.producto.stock && f.tipo == c_fctoventa) log.push(`No puede exceder al stock actual de posición ${index + 1}`);
       } else {
         if (!pos.servicio.nombre) { error = true }
         if (!pos.servicio.precioVenta) { error = true }
@@ -309,4 +305,9 @@ export class WelcomeComponent implements OnInit {
   public getTotalCost(f: Factura): number {
     return f.getTotalCost();
   }
+
+  public formControlStock() { 
+    return this.businessService.getFormControl(this.errorStock);
+  }
+
 }

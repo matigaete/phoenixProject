@@ -2,7 +2,7 @@
   <div class="form-group">
     <div class="row">
       <mat-radio-group [(ngModel)]="factura.tipo" (ngModelChange)="cambiaCompra(factura)">
-        <mat-radio-button value="C">Factura de compra</mat-radio-button>
+        <mat-radio-button value="C">Ingreso Insumos por factura</mat-radio-button>
         <mat-radio-button value="V">Factura de venta</mat-radio-button>
       </mat-radio-group>
     </div>
@@ -127,6 +127,16 @@
           <td mat-cell *matCellDef="let transaction">
             <input [readOnly]="transaction.tipo=='S'" type="number" class="form-control numero" name="cant"
               [(ngModel)]="transaction.cantidad" [value]="transaction.cantidad">
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <!-- Disponible Column -->
+        <ng-container matColumnDef="disp">
+          <th mat-header-cell *matHeaderCellDef> Disponible </th>
+          <td mat-cell *matCellDef="let transaction">
+            <input readOnly type="number" class="form-control numero" name="cant"
+              [(ngModel)]="transaction.producto.stock" [value]="transaction.producto.stock">
           </td>
           <td mat-footer-cell *matFooterCellDef></td>
         </ng-container>

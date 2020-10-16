@@ -6,6 +6,7 @@ import { ProductosService } from 'src/app/Servicios/productos.service';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { Observable } from 'rxjs';
 import { Categoria } from 'src/app/Clases/categoria';
+import { Precio } from 'src/app/Clases/precio';
 
 @Component({
   selector: 'app-create-product',
@@ -15,9 +16,9 @@ import { Categoria } from 'src/app/Clases/categoria';
 export class CreateProductComponent implements OnInit {
 
   @Input() isNew: boolean;
-  @Input() iProducto: Producto; 
+  @Input() iProducto: Producto;
 
-  public productoModel: Producto = new Producto('', 1, '', 0, 0, 0, 0, false, '');;
+  public productoModel: Producto = new Producto('', 1, '', 0, 0, 0, 0, 0, false, '');;
 
   public codigo: string;
   public nombre: string;
@@ -91,7 +92,7 @@ export class CreateProductComponent implements OnInit {
       if (this.isNew) {
         this.productoService.creaProducto(this.productoModel).subscribe(() => {
           this.businessService.getAlert(this.productoService.mensajeCreado);
-          this.productoModel = new Producto('', 1, '', 0, 0, 0, 0, false, '');
+          this.productoModel = new Producto('', 1, '', 0, 0, 0, 0, 0, false, '');
           this.multiplierPrice = null;
           this.chkAuto = false;
         })
@@ -117,13 +118,8 @@ export class CreateProductComponent implements OnInit {
   }
 
   public calculaValor() {
-    try {
-      if (this.chkAuto) {
-        var percent = this.multiplierPrice / 100;
-        var pCompra = this.productoModel.precioCompra;
-        this.productoModel.precioVenta = pCompra + (pCompra * percent);
-      }
-    } catch (error) {
+    if (this.chkAuto) {
+      this.productoModel.getValorAutomatico();
     }
   }
 
@@ -139,16 +135,8 @@ export class CreateProductComponent implements OnInit {
     return this.businessService.getFormControl(this.errorDescripcion);
   }
 
-  public formControlStock() {
-    return this.businessService.getFormControl(this.errorStock);
-  }
-
   public formControlStockCritico() {
     return this.businessService.getFormControl(this.errorStockCritico);
-  }
-
-  public formControlPrecioCompra() {
-    return this.businessService.getFormControl(this.errorPrecioCompra);
   }
 
   public formControlPrecioVenta() {
@@ -167,16 +155,8 @@ export class CreateProductComponent implements OnInit {
     this.errorDescripcion = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaStock(campo: any) {
-    this.errorStock = this.businessService.validaCampo(campo, this.errorCodigo);
-  }
-
   public validaStockCritico(campo: any) {
     this.errorStockCritico = this.businessService.validaCampo(campo, this.errorCodigo);
-  }
-
-  public validaPrecioCompra(campo: any) {
-    this.errorPrecioCompra = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
   public validaPrecioVenta(campo: any) {

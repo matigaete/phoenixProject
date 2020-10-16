@@ -19,6 +19,7 @@ export class IndexComponent implements OnInit {
     this.acciones = this.businessService.getMantenedores();
     this.inicio = this.businessService.inicio;
     this.action = this.businessService.action; 
+    this.redirect('index');
   }
 
   public redirect(path: string): void {
