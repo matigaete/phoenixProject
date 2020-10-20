@@ -49,10 +49,10 @@ export class BusinessService {
       id: 3,
       nombre: 'Servicios',
       path: 'servicios',
-    // }, {
-    //   id: 4,
-    //   nombre: 'Proveedores',
-    //   path: 'proveedores',
+    }, {
+      id: 4,
+      nombre: 'Personas',
+      path: 'personas',
     // }, {
     //   id: 3,
     //   nombre: 'Clientes',

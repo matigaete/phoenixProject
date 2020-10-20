@@ -40,7 +40,7 @@ export class Factura {
     public getNetAmount(): number {
         try {
             if (this._tipo == 'C') {
-                this._neto = this.detalle.map(t => (t.producto.precioCompra[0].precio * t.cantidad) - t.dcto)
+                this._neto = this.detalle.map(t => (t.producto.precioCompra * t.cantidad) - t.dcto)
                     .reduce((acc, value) => acc + value, 0);
             } else {
                 this._neto = this.detalle.map((t) => {

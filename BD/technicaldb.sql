@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-10-2020 a las 01:05:12
+-- Tiempo de generación: 20-10-2020 a las 04:45:03
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -92,16 +92,18 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_lista_producto` ()  BEGIN    
   SELECT p.codigo, p.nombre, p.descripcion, 
-              p.categoria AS tipo, p.stock, p.stockCritico, 
-              p.precioCompra, p.precioVenta, p.activo 
+  		 p.categoria AS tipo, p.stock, p.stockCritico, 
+         MAX(r.precio) AS precioCompra, p.precioVenta, p.activo
        FROM producto AS p  
-       WHERE p.activo = true;
+       INNER JOIN precio AS r ON r.codigo_producto = p.codigo
+       WHERE p.activo = true
+       GROUP BY p.codigo;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_producto` (IN `codProd` VARCHAR(15))  BEGIN          
   SELECT p.nombre, p.descripcion, c.tipo, 
-  		 p.stock, p.stockCritico, r.precio AS precioCompra, 
-         MAX(r.fecha) AS ultimoFechaPrecio, p.precioVenta, 
+  		 p.stock, p.stockCritico, MAX(r.precio) AS precioCompra, 
+         p.precioVenta, 
          p.activo, p.codigo
     FROM producto AS p
     INNER JOIN precio AS r ON p.codigo = r.codigo_producto
@@ -120,8 +122,8 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_productos_por_categoria` (IN `codCat` TINYINT(4))  BEGIN    
   SELECT p.nombre, p.descripcion, p.categoria AS tipo, 
-         p.stock, p.stockCritico, r.precio AS precioCompra, 
-         MAX(r.fecha) AS ultimoFechaPrecio, p.precioVenta, 
+         p.stock, p.stockCritico, MAX(r.precio) AS precioCompra, 
+         p.precioVenta, 
          p.activo, p.codigo
     FROM producto AS p
     INNER JOIN precio AS r ON p.codigo = r.codigo_producto
@@ -171,11 +173,13 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_todo_productos` ()  BEGIN    
   SELECT p.codigo, p.nombre, p.descripcion, 
-              c.tipo, p.stock, p.stockCritico, 
-              p.precioCompra, p.precioVenta, p.activo 
-       FROM producto AS p
-       LEFT JOIN categoria AS c ON p.categoria = c.codigo 
-       WHERE p.activo = true;
+  		 c.tipo, p.stock, p.stockCritico, 
+         MAX(r.precio) AS precioCompra, p.precioVenta, p.activo
+       FROM producto AS p  
+       INNER JOIN precio AS r ON r.codigo_producto = p.codigo
+       INNER JOIN categoria AS c ON p.categoria = c.codigo 
+       WHERE p.activo = true
+       GROUP BY p.codigo;     
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_categoria` (IN `nombre` VARCHAR(20))  BEGIN    
@@ -187,14 +191,24 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fc` (IN `codFac` VAR
   DECLARE newCant SMALLINT(3); 
   DECLARE newPrice MEDIUMINT(6); 
   DECLARE tasa DECIMAL(10,2);
+  DECLARE maxPrecio MEDIUMINT(6);
+  
   INSERT INTO detalle_factura_compra
   VALUES (codFac, codProv, codProd, cant, precioCompra, subtotal);
   
   SELECT stock, tasaCambio INTO newCant, tasa FROM producto 
     WHERE codigo = codProd;
     
+  SELECT MAX(precio) INTO maxPrecio FROM precio 
+  	WHERE codigo_producto = codProd;
+  
+  IF precioCompra < maxPrecio THEN
+  	SET newPrice = maxPrecio + maxPrecio * (tasa / 100);
+  ELSE
+  	SET newPrice = precioCompra + precioCompra * (tasa / 100);
+  END IF;
+  
   SET newCant = newCant + cant;
-  SET newPrice = precioCompra + precioCompra * tasa;
 	
   INSERT INTO precio (codigo_producto, fecha, precio)
 	VALUES (codProd, CURDATE(), precioCompra);
@@ -323,16 +337,22 @@ INSERT INTO `detalle_factura_compra` (`codigo_factura_compra`, `codigo_proveedor
 ('12312', '1233', '438732', 90, 1000, 90000),
 ('1232', '132', '1234', 12, 1000, 12000),
 ('12321', '2131', '1234', 10, 1000, 9900),
+('1234', '773128493', 'dsads', 100, 4000, 400000),
 ('132312', '12312', '1234', 100, 100, 8766),
+('2', '773128493', 'dsads', 100, 3000, 300000),
+('3', '773128493', 'dsads', 10, 3000, 30000),
 ('321123', '132312', '11111', 15, 20, 300),
 ('321123', '132312', '1234', 10, 20, 250),
 ('321123', '132312', '4321', 40, 1000, 195000),
 ('321123', '132312', '438732', 12, 50, 2000),
 ('323', '1323', '438732', 181, 1000, 10000),
+('4', '773128493', 'd', 10, 1000, 10000),
+('4', '773128493', 'dsads', 10, 4500, 45000),
 ('4321', '4321', '11111', 10, 20, 250),
 ('4321', '4321', '1234', 10, 20, 250),
 ('4321', '4321', '438732', 10, 50, 2000),
-('44444', '444444', '1234', 1000, 20, 25000);
+('44444', '444444', '1234', 1000, 20, 25000),
+('6', '773128493', 'dsads', 10, 5000, 50000);
 
 -- --------------------------------------------------------
 
@@ -355,11 +375,14 @@ CREATE TABLE `detalle_factura_venta` (
 --
 
 INSERT INTO `detalle_factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `codigo_producto`, `cantidad`, `tipo`, `precio_compra`, `subtotal_factura`) VALUES
+('1', '199540513', 'dsads', 125, 'P', 5500, 687500),
 ('10101010', '1010101', '1234', 20, 'P', 25, 500),
 ('10101010', '1010101', '32123', 1, 'S', 50000, 50000),
 ('10101010', '1010101', '438732', 30, 'P', 200, 6000),
 ('123456789', '123456789', '12345', 0, '3', 4000, 16000),
 ('13221312', '21321', '1234', 1412, '', 25, 35200),
+('2', '199540513', '32123', 1, 'S', 50000, 50000),
+('2', '199540513', 'dsads', 5, 'P', 5500, 27500),
 ('88888', '88888', '1234', 0, '1', 25, 250),
 ('88888', '88888', '32123', 0, '1', 50000, 50000),
 ('88888', '88888', '438732', 0, '5', 200, 10000),
@@ -394,10 +417,16 @@ INSERT INTO `factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `fech
 ('12', '132', '2020-09-18', '22:17:55', 0, 0, 12000),
 ('123', '132', '2020-09-18', '22:15:40', 0, 0, 12000),
 ('1232', '132', '2020-09-18', '22:16:20', 0, 0, 12000),
+('1234', '773128493', '2020-10-19', '13:19:47', 400000, 76000, 476000),
 ('132312', '12312', '2020-10-06', '20:10:51', 8766, 1666, 10432),
+('2', '773128493', '2020-10-17', '15:35:34', 0, 0, 0),
+('3', '773128493', '2020-10-18', '16:16:07', 30000, 5700, 35700),
 ('321123', '132312', '2020-10-08', '14:19:20', 0, 0, 0),
+('4', '773128493', '2020-10-18', '16:17:40', 45000, 8550, 53550),
+('4', '773128493', '2020-10-18', '17:06:29', 10000, 1900, 11900),
 ('4321', '4321', '2020-09-08', '16:33:50', 2500, 475, 2975),
-('44444', '444444', '2020-09-08', '16:40:43', 25000, 4750, 29750);
+('44444', '444444', '2020-09-08', '16:40:43', 25000, 4750, 29750),
+('6', '773128493', '2020-10-19', '13:15:18', 50000, 9500, 59500);
 
 -- --------------------------------------------------------
 
@@ -420,10 +449,12 @@ CREATE TABLE `factura_venta` (
 --
 
 INSERT INTO `factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
+('1', '199540513', '2020-10-19', '13:16:33', 687500, 130625, 818125),
 ('10101010', '1010101', '2020-10-11', '02:23:04', 56500, 10735, 67235),
 ('123456789', '123456789', '2020-10-07', '00:42:51', 16000, 3040, 19040),
 ('123456789', '123456789', '2020-10-07', '00:43:18', 16000, 3040, 19040),
 ('13221312', '21321', '2020-10-08', '20:15:25', 35200, 6688, 41888),
+('2', '199540513', '2020-10-19', '13:18:56', 77500, 14725, 92225),
 ('321123', '132312', '2020-10-08', '15:42:47', 22075, 0, 0),
 ('66666', '666666', '2020-10-07', '02:10:36', 60250, 11448, 71698),
 ('88888', '88888', '2020-10-07', '02:13:12', 60250, 11448, 71698),
@@ -451,7 +482,14 @@ INSERT INTO `precio` (`codigo`, `codigo_producto`, `fecha`, `precio`) VALUES
 (3, 'codtest', '2020-10-16', 1500),
 (4, 'codtest', '2020-10-17', 2000),
 (5, 'dsads', '2020-10-16', 0),
-(6, 'codtest', '2020-10-16', 1500);
+(6, 'codtest', '2020-10-16', 1500),
+(7, 'dsads', '2020-10-17', 3000),
+(8, 'dsads', '2020-10-17', 3000),
+(9, 'dsads', '2020-10-17', 4500),
+(10, 'd', '2020-10-17', 0),
+(11, 'd', '2020-10-17', 1000),
+(12, 'dsads', '2020-10-19', 5000),
+(13, 'dsads', '2020-10-19', 4000);
 
 -- --------------------------------------------------------
 
@@ -488,7 +526,8 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, -49, 10, '0.00', 200, 1),
 ('4579843', 'Tractor', 'Pa pitiarse a todos los wones', 2, 5, 1, '0.00', 5000000, 1),
 ('codtest', 'Nombre de producto', 'Pruebaaa', 1, 10, 5, '0.20', 1800, 1),
-('dsads', 'dsadsa', 'dsadas', 1, 0, 10, '10.00', 0, 1);
+('d', 'd', 'd', 2, 10, 10, '10.00', 1100, 1),
+('dsads', 'dsadsa', 'dsadas', 1, 100, 10, '10.00', 5500, 1);
 
 -- --------------------------------------------------------
 
@@ -615,7 +654,7 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `precio`
 --
 ALTER TABLE `precio`
-  MODIFY `codigo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `codigo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Restricciones para tablas volcadas

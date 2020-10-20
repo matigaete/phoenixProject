@@ -32,9 +32,12 @@ const c_cliente = 'C';
 })
 export class WelcomeComponent implements OnInit {
 
-  public displayedColumns = ['insert', 'add', 'item', 'name', 'cant', 'disp', 'cost', 'dcto', 'subtotal'];
+  public principalColumns = ['insert', 'add', 'item', 'name', 'cant'];
+  public dispColumn = ['disp'];
+  public dynamicColumns = ['cost', 'dcto', 'subtotal'];
+  public displayedColumns = [];
   public factura = new Factura(undefined,
-    new Persona(undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
+    new Persona(undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctoventa);
   public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
     new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''),
     new Servicio(undefined, undefined, 0, ''))];
@@ -45,13 +48,10 @@ export class WelcomeComponent implements OnInit {
   public servicio$: Observable<Servicio>;
   public persona$: Observable<Persona>;
   public clientes$: Observable<Persona[]>;
-  public proveedores$: Observable<Persona[]>;
-  public filteredOptions: Observable<string[]>;
+  public proveedores$: Observable<Persona[]>; 
   public alertas: Ilista[];
   public fecha: string;
   public myControl = new FormControl();
-
-  options: string[] = ['One', 'Two', 'Three'];
 
   constructor(private businessService: BusinessService,
     private productosService: ProductosService,
@@ -67,6 +67,7 @@ export class WelcomeComponent implements OnInit {
     this.factura.detalle.push(this.transactions[0]);
     this.clientes$ = this.personaService.getClientesFiltro('%');
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
+    this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
     this.dateAdapter.setLocale('en-GB');
   }
 
@@ -284,9 +285,11 @@ export class WelcomeComponent implements OnInit {
       fact.persona.tipo = c_proveedor;
       fact.detalle.forEach(det => {
         det.tipo = c_producto;
-      });
+      })
+      this.displayedColumns = this.principalColumns.concat(this.dynamicColumns);
     } else {
       fact.persona.tipo = c_cliente;
+      this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
     }
   }
 

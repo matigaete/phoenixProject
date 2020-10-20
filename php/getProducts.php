@@ -13,6 +13,6 @@
     $sentencia = $bd->prepare("CALL busca_productos_por_categoria(?)");
     $sentencia->execute([$codigo]);  
   }
-  $productos = $sentencia->fetchAll(PDO::FETCH_OBJ); 
+  $productos = $sentencia->fetchAll(PDO::FETCH_OBJ);  
   echo json_encode($productos);
 ?>

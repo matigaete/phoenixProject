@@ -77,14 +77,12 @@ export class PersonaService {
     return this.http.get<Persona[]>(`${this.url}getProvidersFilter.php?codigo=${codigo}`);
   }
 
-  public getPersona(persona: Persona) {
-    var response: Observable<Persona>;
-    if (persona.tipo == c_proveedor) {
-      response = this.http.get<Persona>(`${this.url}getProvider.php?codigo=${persona.rut}`);
-    } else {
-      response = this.http.get<Persona>(`${this.url}getClient.php?codigo=${persona.rut}`);
-    }
-    return response;
+  public getCliente(codigo: string) {
+    return this.http.get<Persona>(`${this.url}getClient.php?codigo=${codigo}`);
+  }
+
+  public getProveedor(codigo: string) { 
+    return this.http.get<Persona>(`${this.url}getProvider.php?codigo=${codigo}`);
   }
 
   public creaPersona(persona: Persona) {

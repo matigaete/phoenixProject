@@ -1,35 +1,116 @@
-<mat-grid-list cols="2" rowHeight="2:2">
-    <mat-grid-tile>
+<div class="Container">
+  <div class="row">
+    <div class="col">
       <mat-card class="example-card">
         <mat-card-header>
-          <div mat-card-avatar class="example-header-image"></div>
-          <mat-card-title>Shiba Inu</mat-card-title>
-          <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+          <div mat-card-avatar><mat-icon>contact_mail</mat-icon></div> 
+          <mat-card-title>Complete el formulario</mat-card-title> 
         </mat-card-header>
-        <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
         <mat-card-content>
-          <p>
-            The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-            A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-            bred for hunting.
-          </p>
+          <mat-form-field hintLabel="Rut sin puntos y con guión" appearance="fill">
+            <mat-label>Rut de Razón Social/Persona</mat-label>
+            <input matInput #rut maxlength="10" placeholder="12345678-9" required [formControl]="validaRut"
+            [(ngModel)]="personaModel.rut" [value]="personaModel.rut">
+            <mat-hint align="end">{{rut.value?.length || 0}}/10</mat-hint>
+            <mat-error *ngIf="validaRut.invalid">{{getErrorRut()}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="lef" hintLabel="Max 30 caracteres" appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput #nombre maxlength="30" placeholder="Marcelo Gaete" required [formControl]="validaNombre"
+            [(ngModel)]="personaModel.nombre" [value]="personaModel.nombre">
+            <mat-hint align="end">{{nombre.value?.length || 0}}/30</mat-hint>
+            <mat-error *ngIf="validaNombre.invalid">{{getErrorNombre()}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Max 50 caracteres" appearance="fill">
+            <mat-label>Giro</mat-label>
+            <textarea matInput #giro maxlength="50" placeholder="SERVICIO TÉCNICO"
+            [(ngModel)]="personaModel.giro" [value]="personaModel.giro"></textarea>
+            <mat-hint align="end">{{giro.value?.length || 0}}/50</mat-hint> 
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Región</mat-label>
+            <mat-select required>
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+            <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Ciudad</mat-label>
+            <mat-select required [(ngModel)]="personaModel.ciudad" [value]="personaModel.ciudad">
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+            <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Comuna</mat-label>
+            <mat-select required [(ngModel)]="personaModel.comuna" [value]="personaModel.comuna">
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+            <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Max 30 caracteres" appearance="fill">
+            <mat-label>Dirección</mat-label>
+            <input matInput #direccion maxlength="30" placeholder="Los pistachos 2155" required [formControl]="validaDireccion"
+            [(ngModel)]="personaModel.direccion" [value]="personaModel.direccion">
+            <mat-hint align="end">{{direccion.value?.length || 0}}/30</mat-hint>
+            <mat-error *ngIf="validaDireccion.invalid">{{getErrorDireccion()}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field hintLabel="Max 9 caracteres" appearance="fill">
+            <mat-label>Teléfono</mat-label>
+            <input matInput #fono maxlength="9" placeholder="987654321" [formControl]="validaFono"
+            [(ngModel)]="personaModel.contacto" [value]="personaModel.contacto">
+            <mat-hint align="end">{{fono.value?.length || 0}}/9</mat-hint> 
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="correo@ejemplo.com" [formControl]="validaEmail" required
+            [(ngModel)]="personaModel.email" [value]="personaModel.email">
+            <mat-error *ngIf="validaEmail.invalid">{{getErrorEmail()}}</mat-error>
+          </mat-form-field>
+          <br>
+          <mat-radio-group aria-label="Tipo de pesona"
+          [(ngModel)]="personaModel.tipo" [value]="personaModel.tipo">
+            <mat-radio-button value="C">Cliente</mat-radio-button>
+            <mat-radio-button value="P">Proveedor</mat-radio-button>
+          </mat-radio-group>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-button>LIKE</button>
-          <button mat-button>SHARE</button>
+          <button mat-button (click)="onSubmit()">Aceptar</button>
+          <button mat-button (click)="nuevaPersona()">Nueva Persona</button>
         </mat-card-actions>
       </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile>
-      <mat-selection-list #shoes [multiple]="false">
-        <mat-list-option *ngFor="let shoe of typesOfShoes" [value]="shoe">
-          {{shoe}}
-        </mat-list-option>
-      </mat-selection-list>
-      
-      <p>
-        Option selected: {{shoes.selectedOptions.selected[0]?.value}}
-      </p>
-    </mat-grid-tile> 
-  </mat-grid-list>
-  
+    </div>
+    <div class="col">
+      <mat-card class="card-extend">
+        <mat-card-header> 
+          <mat-card-title>Lista de personas</mat-card-title> 
+        </mat-card-header>
+        <mat-card-content>
+          <select multiple class="form-control"> 
+          </select>
+        </mat-card-content> 
+      </mat-card>
+      <br>
+      <mat-card class="card-extend">
+        <mat-card-header>
+          <div mat-card-avatar><mat-icon>help</mat-icon></div>
+          <mat-card-title>Información</mat-card-title> 
+        </mat-card-header>
+        <mat-card-content>
+          - Creación de persona: para la creación de una persona, ingrese los valores en los campos correspondintes
+          <br>
+          - Modificación de persona: para modificar una persona, selecciona una persona de la lista, ajusta los valores
+          y luego pulsa aceptar
+        </mat-card-content> 
+      </mat-card>
+    </div>
+  </div>
+</div>
