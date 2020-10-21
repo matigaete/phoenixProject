@@ -59,6 +59,10 @@ import { ListaServiciosComponent } from './Include/lista-servicios/lista-servici
 import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-columna.component';
 import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-errores.component';
+import { CreatePersonComponent } from './Mantenedores/Personas/create-person/create-person.component';
+import { InfoPersonasComponent } from './Include/info-personas/info-personas.component';
+import { ListaClientesComponent } from './Include/lista-clientes/lista-clientes.component';
+import { ListaProveedoresComponent } from './Include/lista-proveedores/lista-proveedores.component';
 
 
 @NgModule({
@@ -87,7 +91,7 @@ import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-error
     ListaProductosComponent,
     ListaCategoriasComponent,
     ListaServiciosComponent, 
-    IndexPersonComponent,
+    IndexPersonComponent, CreatePersonComponent, InfoPersonasComponent, ListaClientesComponent, ListaProveedoresComponent,
   ],
   entryComponents: [
     DialogoConfirmacionComponent,

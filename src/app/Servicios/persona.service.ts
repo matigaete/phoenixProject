@@ -5,6 +5,9 @@ import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/di
 import { MatDialog } from '@angular/material/dialog';  
 import { Persona } from '../Clases/persona';
 import { Observable } from 'rxjs';
+import { Region } from '../Clases/region';
+import { Provincia } from '../Clases/provincia';
+import { Comuna } from '../Clases/comuna';
 
 const c_proveedor = 'P';
 const c_cliente = 'C';
@@ -60,6 +63,18 @@ export class PersonaService {
   }
 
   //-Respuestas HTTP-------------------------------//
+
+  public getRegiones() {
+    return this.http.get<Region[]>(`${this.url}getRegiones.php`);
+  }
+
+  public getProvincias(id: number) {
+    return this.http.get<Provincia[]>(`${this.url}getProvincias.php?codigo=${id}`);
+  }
+
+  public getComunas(id: number) {
+    return this.http.get<Comuna[]>(`${this.url}getComunas.php?codigo=${id}`);
+  }
 
   public getListaClientes() {
     return this.http.get<Persona[]>(`${this.url}getClients.php`);
