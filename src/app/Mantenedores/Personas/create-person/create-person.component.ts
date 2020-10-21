@@ -33,7 +33,7 @@ export class CreatePersonComponent implements OnInit {
   public validaNombre = new FormControl('', [Validators.required]);
   public validaDireccion = new FormControl('', [Validators.required]);
   public validaFono = new FormControl('', [Validators.maxLength(9)]);
-  public personaModel: Persona = new Persona('', '', '', '', '', '', '', '', '');
+  public personaModel: Persona = new Persona('', '', '', 'P', 0, 0, 0, '');
   public regiones$: Observable<Region[]>;
   public provincias$: Observable<Provincia[]>;
   public comunas$: Observable<Comuna[]>;
@@ -49,7 +49,7 @@ export class CreatePersonComponent implements OnInit {
   }
 
   nuevaPersona(): void {
-    this.personaModel = new Persona('', '', '', '', '', '', '', '', '');
+    this.personaModel = new Persona('', '', '', 'P', 0, 0, 0, '');
   }
 
   actualizaProvincia(id: number): void {

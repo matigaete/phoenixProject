@@ -27,7 +27,7 @@ import { PersonaService } from 'src/app/Servicios/persona.service';
 
 export class IndexPersonComponent implements OnInit {
 
-  public personaModel: Persona = new Persona('', '', '', '', '', '', '', '', '');
+  public personaModel: Persona;
   public regiones$: Observable<Region[]>;
   public provincias$: Observable<Provincia[]>;
   public comunas$: Observable<Comuna[]>;

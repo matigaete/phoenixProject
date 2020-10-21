@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Persona } from 'src/app/Clases/persona';
+import { PersonaService } from 'src/app/Servicios/persona.service';
 
 @Component({
   selector: 'app-lista-clientes',
@@ -7,8 +10,9 @@ import { Component, OnInit } from '@angular/core';
                   <mat-card-title>Lista de Clientes</mat-card-title>
               </mat-card-header>
               <mat-card-content>
-                  <select multiple class="form-control">
-                  </select>
+                <select multiple class="form-control" [(ngModel)]="oPersona" (ngModelChange)="enviaCliente($event)">
+                  <option [ngValue]="p" *ngFor="let p of (clientes$ | async)">{{p.nombre}}</option> 
+                </select>
               </mat-card-content>
             </mat-card>
             <br>`,
@@ -16,9 +20,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListaClientesComponent implements OnInit {
 
-  constructor() { }
+  @Output() oPersona = new EventEmitter<Persona>();
+  public clientes$: Observable<Persona[]>; 
+
+  constructor(private personaService: PersonaService) { }
 
   ngOnInit(): void {
+    this.clientes$ = this.personaService.getClientesFiltro('%');
+  }
+
+  enviaCliente(persona: Persona){
+
   }
 
 }

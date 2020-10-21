@@ -11,7 +11,7 @@ import { Producto } from 'src/app/Clases/producto';
                     </div>
                     <div class="col">
                         <app-create-product *ngIf="iValor == 2"  [iProducto]="producto"></app-create-product>
-                        <app-info-productos   *ngIf="iValor == 3"  [iProducto]="producto" (oValor)="enviaAccion($event)"></app-info-productos>
+                        <app-info-productos *ngIf="iValor == 3"  [iProducto]="producto" (oValor)="enviaAccion($event)"></app-info-productos>
                     </div>
                 </div>
               </div>`,
