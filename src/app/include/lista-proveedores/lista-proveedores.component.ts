@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { plainToClass } from 'class-transformer';
+import { Observable } from 'rxjs';
+import { Persona } from 'src/app/Clases/persona';
+import { PersonaService } from 'src/app/Servicios/persona.service';
 
 @Component({
   selector: 'app-lista-proveedores',
@@ -7,7 +11,8 @@ import { Component, OnInit } from '@angular/core';
                 <mat-card-title>Lista de proveedores</mat-card-title>
               </mat-card-header>
               <mat-card-content>
-                <select multiple class="form-control">
+              <select multiple class="form-control" [(ngModel)]="selectedP" (ngModelChange)="enviaProveedor($event)">
+                  <option [ngValue]="p" *ngFor="let p of (proveedores$ | async)">{{p.rut | rut}} - {{p.nombre}}</option> 
                 </select>
               </mat-card-content>
             </mat-card>
@@ -16,9 +21,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListaProveedoresComponent implements OnInit {
 
-  constructor() { }
+  @Output() oPersona = new EventEmitter<Persona>();
+  public selectedP = Persona;
+  public proveedores$: Observable<Persona[]>; 
+
+  constructor(private personaService: PersonaService) { }
 
   ngOnInit(): void {
+    this.proveedores$ = this.personaService.getListaProveedores();
+  }
+
+  enviaProveedor(event: any){
+    let persona = plainToClass(Persona, event);
+    this.oPersona.emit(persona);
   }
 
 }

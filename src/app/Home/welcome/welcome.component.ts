@@ -17,6 +17,7 @@ import { Servicio } from 'src/app/Clases/servicio';
 import { FormControl } from '@angular/forms';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { DateAdapter } from '@angular/material/core';
+import jsPDF from 'jspdf';
 
 const c_producto = 'P';
 const c_servicio = 'S';
@@ -48,7 +49,7 @@ export class WelcomeComponent implements OnInit {
   public servicio$: Observable<Servicio>;
   public persona$: Observable<Persona>;
   public clientes$: Observable<Persona[]>;
-  public proveedores$: Observable<Persona[]>; 
+  public proveedores$: Observable<Persona[]>;
   public alertas: Ilista[];
   public fecha: string;
   public myControl = new FormControl();
@@ -81,6 +82,7 @@ export class WelcomeComponent implements OnInit {
 
   // Se validan campos vacíos antes de generar factura
   public OnSubmit() {
+    console.log(this.factura);
     var errores = this.validaCampos();
     if (!errores.length) {
       this.dialogo.open(DialogoConfirmacionComponent, {
@@ -115,6 +117,7 @@ export class WelcomeComponent implements OnInit {
       this.facturaService.creaFacturaVenta(fact).subscribe(() => {
         this.businessService.getAlert('Factura creada correctamente');
         this.alertStock();
+        this.generarPDF();
         this.reset();
       });
     }
@@ -309,8 +312,189 @@ export class WelcomeComponent implements OnInit {
     return f.getTotalCost();
   }
 
-  public formControlStock() { 
+  public formControlStock() {
     return this.businessService.getFormControl(this.errorStock);
+  }
+
+  public generarPDF() {
+    var doc = new jsPDF();
+
+    var nombre = this.factura.total.toString();
+    var direccion = this.factura.persona.direccion;
+    var rfc = this.factura.persona.email;
+    var totales = this.factura.total;
+    var fecha = this.factura.fecha;
+
+    //Seccion superior derecha
+    //Palabra factura parte superior derecha
+    doc.text('FACTURA', 170, 20);
+    //Rectangulo folio fiscal
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(125, 30, 80, 10, 1, 1, 'F');
+    doc.setFontSize(7);
+    doc.text('Folio fiscal', 126, 33);
+    doc.text('D6498A3E-4BCD-4AE0-B377-B49C831D4E7C', 126, 37,);
+    //Rectangulo serie
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(125, 42, 20, 7, 1, 1, 'F');
+    doc.setFontSize(7);
+    doc.text('Serie', 126, 46,);
+    doc.text('B', 136, 46,);
+    //Rectangulo No.de factura
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(150, 42, 55, 7, 1, 1, 'F');
+    doc.setFontSize(7);
+    doc.text('No de factura', 151, 46);
+    doc.text('98985', 171, 46);
+    //Rectangulo lugar expedicion
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(125, 52, 80, 10, 1, 1, 'F');
+    doc.setFontSize(7);
+    doc.text('Expedida en', 126, 55);
+    doc.text('Chihuahua,Chihuahua,MX', 126, 60);
+    //Rectangulo no.certificado
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(125, 64, 80, 10, 1, 1, 'F');
+    doc.setFontSize(7);
+    doc.text('No. de certificado', 126, 67,);
+    doc.text('00001000000201882158', 126, 71,);
+
+    //Rectangulo fecha
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(125, 76, 80, 10, 1, 1, 'F');
+    doc.text('Fecha y hora', 126, 79,);
+    doc.setFontSize(7);
+    // doc.fromHTML(fecha, 126, 80, { 'width': 80 });
+
+    //Rectangulo pagos
+    doc.setDrawColor('070');
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(125, 88, 80, 7, 1, 1, 'F');
+    doc.text('Pago en una sola exhibicion', 126, 93,);
+    //Rectangulo metodo de pago
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(125, 98, 38, 22, 1, 1, 'F');
+    doc.text('Metodo de pago', 126, 101);
+    doc.text('Efectivo', 126, 109);
+    //Rectangulo cuenta
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(167, 98, 38, 22, 1, 1, 'F');
+    doc.text('Cuenta', 168, 101);
+    doc.text('NO APLICA', 168, 109);
+
+    //Seccion superior izquierda
+
+    doc.setFontSize(10);
+    doc.text('Cyberpuerta S.A. de C.V.', 10, 50);
+    doc.text('R.F.C. CYB080602JSA', 10, 55);
+    doc.text('El Carmen 531 , Col. Camino Real, Zapopan Jalisco,México, C.P. 45040', 10, 60);
+    doc.text('Régimen General de Ley Personas Morales', 10, 65);
+    doc.setFontSize(7);
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(10, 73, 70, 22, 1, 1, 'F');
+    doc.text('Nombre del cliente', 11, 76);
+    doc.text(nombre, 11, 79); 
+
+    //RFC
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(85, 73, 35, 22, 1, 1, 'F');
+    doc.text('RFC', 86, 76);
+    // doc.fromHTML(rfc, 87, 79, { 'width': 65 });
+    //Domicilio
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(10, 98, 109, 22, 1, 1, 'F');
+    doc.text('Domicilio', 11, 101);
+    // doc.fromHTML(direccion, 11, 104, { 'width': 65 });
+
+    //Detalle de productos
+    doc.setLineWidth(0.25);
+    doc.line(10, 125, 205, 125);
+    doc.text('Cant.', 10, 130);
+    doc.text('Descripcion', 23, 130);
+    doc.text('P.Unitario', 157, 130);
+    doc.text('Importe', 185, 130);
+    doc.setLineWidth(0.25);
+    doc.line(10, 133, 205, 133);
+
+    //Lista de productos
+    doc.setFontSize(7);
+
+    for (let i = 0; i < this.factura.detalle.length; i++) {
+      const pos = this.factura.detalle[i];
+      // doc.cell(10, 133, 10, 7, pos.cantidad.toString(), 1, i);
+      // doc.cell(22, 133, 135, 7, pos.producto.nombre, 2, '');
+      // doc.cell(115, 133, 25, 7, pos.producto.precioVenta.toString(), 3, '');
+    }
+
+    //Cantidades de factura
+    doc.setFontSize(8);
+    doc.setLineWidth(0.25);
+    doc.line(10, 190, 205, 190);
+    //doc.text(10,195,'Cantidad con letra');  
+
+
+    // doc.fromHTML(totales.toString(), 160, 195, { 'width': 60 });
+
+
+
+    doc.setLineWidth(0.25);
+    doc.line(10, 215, 205, 215);
+
+    //Sellos digitales y qr
+
+    doc.setFontSize(7);
+    //Sello digital
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(60, 220, 145, 19, 1, 1, 'F');
+    doc.text('Sello digital', 61, 223);
+    doc.text('MYosIfg2eMviGCRPbIP4tXwXjP+ubkn+QYy9Dvsq2wX4nwKx3dC9/Eyy874xjsvW8obrrM', 61, 227);
+    doc.text('M2nhvtkeutGnx5DcYXRylJ8redA3/WPkNPZg3cVwktLihzbHd+VDD2L5NNezvfsg03Bqy8', 61, 231);
+    doc.text('8P8a5Ag4k4kWYBZnrvkrm/XGsJIQy9dBc=', 61, 235);
+    //Sello del SAT
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(60, 241, 145, 19, 1, 1, 'F');
+    doc.text('Sello del SAT', 61, 244);
+    doc.text('B1jM64aAjZOb7/k3u0a+08/wHrmjlATgGEnDlTUL4kILwLlOrO1aZnlfSE2RWVqWrSj333', 61, 249);
+    doc.text('3n587yizKgyKLYzgchn+zM3LoGJrB47ufYoJQrjKZpwp8SRqX0kHRA6YUDopiZpZAw+OQs', 61, 253);
+    doc.text('FaxT4DSZ4BzFW530t55aVUjSCWCiVUGs=', 61, 257);
+    //Cadena orignal del complemento de certificacion digital del SAT
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(10, 263, 195, 15, 1, 1, 'F');
+    doc.text('Cadena original del complemento de certificacion digital del SAT', 11, 266);
+    doc.text('||1.0|87c43498-33fe-420f-9ec0-a4a331ea76e1|2015-01-01T10:34:08|MYosIfg2eMviGCRPbIP4tXwXjP+ubkn+QYy9Dvsq2wX4nwKx3dC9/Eyy874xjsvW8obrrM2nhvtkeut', 11, 270);
+    doc.text('Gnx5DcYXRylJ8redA3/WPkNPZg3cVwktLihzbHd+VDD2L5NNezvfsg03Bqy8P8a5Ag4k4kWYBZnrvkrm/XGsJIQy9dBc=|00001000000203430011||', 11, 275);
+    //No. de Serie del Certificado del SAT
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(10, 280, 96, 9, 1, 1, 'F');
+    doc.text('No. de Serie del Certificado del SAT', 11, 283);
+    doc.text('00001000000300209963', 11, 287);
+    //Fecha y hora de certificación
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.roundedRect(109, 280, 96, 9, 1, 1, 'F');
+    doc.text('Fecha y hora de certificación', 110, 283);
+    doc.setFontSize(6);
+    // doc.fromHTML(fecha, 110, 282, { 'width': 80 });
+
+    // doc.addImage(imgData, 'JPEG', 10, 217, 45, 45);
+
+    doc.save('test.pdf');
+    doc.output('dataurlnewwindow');
   }
 
 }

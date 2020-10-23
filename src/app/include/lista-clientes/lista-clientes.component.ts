@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
 import { Persona } from 'src/app/Clases/persona';
 import { PersonaService } from 'src/app/Servicios/persona.service';
@@ -10,8 +11,8 @@ import { PersonaService } from 'src/app/Servicios/persona.service';
                   <mat-card-title>Lista de Clientes</mat-card-title>
               </mat-card-header>
               <mat-card-content>
-                <select multiple class="form-control" [(ngModel)]="oPersona" (ngModelChange)="enviaCliente($event)">
-                  <option [ngValue]="p" *ngFor="let p of (clientes$ | async)">{{p.nombre}}</option> 
+                <select multiple class="form-control" [(ngModel)]="selectedC" (ngModelChange)="enviaCliente($event)">
+                  <option [ngValue]="c" *ngFor="let c of (clientes$ | async)">{{c.rut | rut}} - {{c.nombre}}</option> 
                 </select>
               </mat-card-content>
             </mat-card>
@@ -21,16 +22,18 @@ import { PersonaService } from 'src/app/Servicios/persona.service';
 export class ListaClientesComponent implements OnInit {
 
   @Output() oPersona = new EventEmitter<Persona>();
+  public selectedC = Persona;
   public clientes$: Observable<Persona[]>; 
 
   constructor(private personaService: PersonaService) { }
 
   ngOnInit(): void {
-    this.clientes$ = this.personaService.getClientesFiltro('%');
+    this.clientes$ = this.personaService.getListaClientes();
   }
 
-  enviaCliente(persona: Persona){
-
+  enviaCliente(event: any){
+    let persona = plainToClass(Persona, event);
+    this.oPersona.emit(persona);
   }
 
 }

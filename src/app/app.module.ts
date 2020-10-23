@@ -3,16 +3,16 @@ import { ProductosService } from './Servicios/productos.service';
 import { ServiciosService } from './Servicios/servicios.service';
 import { PersonaService } from './Servicios/persona.service';
 import { FacturaService } from './Servicios/factura.service';
-import { CategoriasService } from './Servicios/categorias.service'; 
+import { CategoriasService } from './Servicios/categorias.service';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DatePipe } from '@angular/common'; 
+import { DatePipe } from '@angular/common';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -36,7 +36,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { AppComponent } from './app.component';
-import { FooterComponent } from './include/footer/footer.component'; 
+import { FooterComponent } from './include/footer/footer.component';
 import { IndexComponent } from './Home/index/index.component';
 import { FindComponent } from './Include/find/find.component';
 import { ListadoComponent } from './Include/listado/listado.component';
@@ -54,7 +54,7 @@ import { InfoProductosComponent } from './Include/info-productos/info-productos.
 import { InfoServiciosComponent } from './Include/info-servicios/info-servicios.component';
 import { ListaProductosComponent } from './Include/lista-productos/lista-productos.component';
 import { ListaCategoriasComponent } from './Include/lista-categorias/lista-categorias.component';
-import { ListaServiciosComponent } from './Include/lista-servicios/lista-servicios.component'; 
+import { ListaServiciosComponent } from './Include/lista-servicios/lista-servicios.component';
 
 import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-columna.component';
 import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dialogo-confirmacion.component';
@@ -63,12 +63,13 @@ import { CreatePersonComponent } from './Mantenedores/Personas/create-person/cre
 import { InfoPersonasComponent } from './Include/info-personas/info-personas.component';
 import { ListaClientesComponent } from './Include/lista-clientes/lista-clientes.component';
 import { ListaProveedoresComponent } from './Include/lista-proveedores/lista-proveedores.component';
+import { RutPipe } from './Pipes/rut.pipe'; 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    FooterComponent, 
+    FooterComponent,
     IndexComponent,
     CreateProductComponent,
     SearchProductComponent,
@@ -79,7 +80,7 @@ import { ListaProveedoresComponent } from './Include/lista-proveedores/lista-pro
     FormCategoriasComponent,
     IndexCategoriasComponent,
     DialogoColumnaComponent,
-    DialogoConfirmacionComponent, 
+    DialogoConfirmacionComponent,
     DialogoErroresComponent,
     IndexServiciosComponent,
     CreateServiceComponent,
@@ -90,8 +91,12 @@ import { ListaProveedoresComponent } from './Include/lista-proveedores/lista-pro
     InfoServiciosComponent,
     ListaProductosComponent,
     ListaCategoriasComponent,
-    ListaServiciosComponent, 
-    IndexPersonComponent, CreatePersonComponent, InfoPersonasComponent, ListaClientesComponent, ListaProveedoresComponent,
+    ListaServiciosComponent,
+    IndexPersonComponent, 
+    CreatePersonComponent, 
+    InfoPersonasComponent, 
+    ListaClientesComponent, 
+    ListaProveedoresComponent, RutPipe,  
   ],
   entryComponents: [
     DialogoConfirmacionComponent,
@@ -127,7 +132,7 @@ import { ListaProveedoresComponent } from './Include/lista-proveedores/lista-pro
     MatCardModule,
     MatAutocompleteModule
   ],
-  providers: [BusinessService, ProductosService, CategoriasService, 
+  providers: [BusinessService, ProductosService, CategoriasService,
     FacturaService, ServiciosService, PersonaService, DatePipe],
   bootstrap: [AppComponent]
 })
