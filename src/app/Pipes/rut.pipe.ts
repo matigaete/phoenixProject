@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class RutPipe implements PipeTransform {
 
-  transform(value: string, ...args: unknown[]): unknown {
+  transform(value: string, ...args: string[]): string {
     let rut = value.replace(/\./g, '').replace('-', '');
 
     if (rut.match(/^(\d{2})(\d{3}){2}(\w{1})$/)) {

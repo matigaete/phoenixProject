@@ -17,6 +17,7 @@ import { Servicio } from 'src/app/Clases/servicio';
 import { FormControl } from '@angular/forms';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { DateAdapter } from '@angular/material/core';
+import { RutPipe } from 'src/app/Pipes/rut.pipe';
 import jsPDF from 'jspdf';
 
 const c_producto = 'P';
@@ -37,7 +38,7 @@ export class WelcomeComponent implements OnInit {
   public dispColumn = ['disp'];
   public dynamicColumns = ['cost', 'dcto', 'subtotal'];
   public displayedColumns = [];
-  public factura = new Factura(undefined,
+  public factura = new Factura('0',
     new Persona(undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctoventa);
   public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
     new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''),
@@ -60,6 +61,7 @@ export class WelcomeComponent implements OnInit {
     private personaService: PersonaService,
     private facturaService: FacturaService,
     private datepipe: DatePipe,
+    private rutPipe: RutPipe,
     private dialogo: MatDialog,
     private dateAdapter: DateAdapter<Date>) { }
 
@@ -82,7 +84,7 @@ export class WelcomeComponent implements OnInit {
 
   // Se validan campos vacíos antes de generar factura
   public OnSubmit() {
-    console.log(this.factura);
+    this.getPersona(); 
     var errores = this.validaCampos();
     if (!errores.length) {
       this.dialogo.open(DialogoConfirmacionComponent, {
@@ -99,7 +101,7 @@ export class WelcomeComponent implements OnInit {
       // errores.forEach((message, index) => {
       //   setTimeout(() => {
       //     this.businessService.getAlert(message);
-      //   }, index * (timeOut + 200)); // 500 => timeout between two messages
+      //   }, index * (timeOut + 350)); // 500 => timeout between two messages
       // });
     }
   }
@@ -162,7 +164,7 @@ export class WelcomeComponent implements OnInit {
     this.transactions = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
       new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''))];;
     this.dataSource.next(this.transactions);
-    this.factura = new Factura(undefined,
+    this.factura = new Factura('0',
       new Persona('', undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
     this.factura.detalle.push(this.transactions[0]);
     this.fecha = null;
@@ -252,7 +254,7 @@ export class WelcomeComponent implements OnInit {
   public validaCampos() {
     var log = [];
     var f = this.factura;
-    if (f.tipo == c_cliente) var texto = 'Proveedor'; else texto = 'Cliente';
+    if (f.tipo == c_cliente) var texto = 'Proveedor'; else texto = 'Cliente'; 
     if (f.codFactura == undefined || f.codFactura == '') log.push('Ingrese código de factura');
     if (f.persona.rut == undefined || f.persona.rut == '') log.push(`Ingrese rut de ${texto}`);
     if (this.fecha == undefined) log.push('Ingrese una fecha válida');
@@ -292,208 +294,182 @@ export class WelcomeComponent implements OnInit {
       this.displayedColumns = this.principalColumns.concat(this.dynamicColumns);
     } else {
       fact.persona.tipo = c_cliente;
+      fact.codFactura = '0';
       this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
     }
   }
-
+  // Obtiene el subtotal por posición
   public getSubtotal(f: Factura, d: DetalleFactura): number {
     return d.getSubtotal(f.tipo);
   }
 
+  // Obtiene el monto neto de la factura
   public getNetAmount(f: Factura): number {
     return f.getNetAmount();
   }
 
+  // Obtiene el IVA del monto neto
   public getIVA(f: Factura): number {
     return f.getIVA();
   }
 
+  // Suma del neto + IVA
   public getTotalCost(f: Factura): number {
     return f.getTotalCost();
   }
 
-  public formControlStock() {
-    return this.businessService.getFormControl(this.errorStock);
+  //Verifica si el rut ingresado existe
+  public getPersona(): boolean {
+    var existe: boolean = false;
+    if (this.factura.tipo == c_fctoventa) {
+      this.persona$ = this.personaService.getCliente(this.factura.persona.rut);
+    } else {
+      this.persona$ = this.personaService.getProveedor(this.factura.persona.rut);
+    }
+    this.persona$.forEach(per => {
+      if (per) {
+        this.factura.persona = per;
+        existe = true;
+      }
+    });
+    return existe; 
   }
 
+  // Genera el PDF 
   public generarPDF() {
     var doc = new jsPDF();
-
-    var nombre = this.factura.total.toString();
+    var img = new Image();
+    var rut = this.rutPipe.transform(this.factura.persona.rut);
+    var nombre = this.factura.persona.nombre;
+    var giro = this.factura.persona.giro;
     var direccion = this.factura.persona.direccion;
-    var rfc = this.factura.persona.email;
-    var totales = this.factura.total;
+    var provincia = this.factura.persona.provincia;
+    var comuna = this.factura.persona.comuna;
+    var contacto = this.factura.persona.contacto;
+    var email = this.factura.persona.email;
+    var neto = this.factura.neto.toString();
+    var iva = this.factura.iva.toString();
+    var total = this.factura.total.toString();
     var fecha = this.factura.fecha;
-
-    //Seccion superior derecha
-    //Palabra factura parte superior derecha
-    doc.text('FACTURA', 170, 20);
-    //Rectangulo folio fiscal
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(125, 30, 80, 10, 1, 1, 'F');
-    doc.setFontSize(7);
-    doc.text('Folio fiscal', 126, 33);
-    doc.text('D6498A3E-4BCD-4AE0-B377-B49C831D4E7C', 126, 37,);
-    //Rectangulo serie
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(125, 42, 20, 7, 1, 1, 'F');
-    doc.setFontSize(7);
-    doc.text('Serie', 126, 46,);
-    doc.text('B', 136, 46,);
-    //Rectangulo No.de factura
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(150, 42, 55, 7, 1, 1, 'F');
-    doc.setFontSize(7);
-    doc.text('No de factura', 151, 46);
-    doc.text('98985', 171, 46);
-    //Rectangulo lugar expedicion
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(125, 52, 80, 10, 1, 1, 'F');
-    doc.setFontSize(7);
-    doc.text('Expedida en', 126, 55);
-    doc.text('Chihuahua,Chihuahua,MX', 126, 60);
-    //Rectangulo no.certificado
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(125, 64, 80, 10, 1, 1, 'F');
-    doc.setFontSize(7);
-    doc.text('No. de certificado', 126, 67,);
-    doc.text('00001000000201882158', 126, 71,);
-
-    //Rectangulo fecha
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(125, 76, 80, 10, 1, 1, 'F');
-    doc.text('Fecha y hora', 126, 79,);
-    doc.setFontSize(7);
-    // doc.fromHTML(fecha, 126, 80, { 'width': 80 });
-
-    //Rectangulo pagos
-    doc.setDrawColor('070');
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(125, 88, 80, 7, 1, 1, 'F');
-    doc.text('Pago en una sola exhibicion', 126, 93,);
-    //Rectangulo metodo de pago
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(125, 98, 38, 22, 1, 1, 'F');
-    doc.text('Metodo de pago', 126, 101);
-    doc.text('Efectivo', 126, 109);
-    //Rectangulo cuenta
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(167, 98, 38, 22, 1, 1, 'F');
-    doc.text('Cuenta', 168, 101);
-    doc.text('NO APLICA', 168, 109);
+    var nroFactura = this.factura.codFactura;
 
     //Seccion superior izquierda
-
+    img.src = 'assets/Serviciotecnico-1.jpg'
+    doc.addImage(img, 'JPEG', 10, 10, 40, 40);
+    doc.setFontSize(13);
+    doc.setFont("Helvetica", "bold"); //negrita
+    doc.text('TECHNICAL SERVICE M & G SPA', 51, 13);
     doc.setFontSize(10);
-    doc.text('Cyberpuerta S.A. de C.V.', 10, 50);
-    doc.text('R.F.C. CYB080602JSA', 10, 55);
-    doc.text('El Carmen 531 , Col. Camino Real, Zapopan Jalisco,México, C.P. 45040', 10, 60);
-    doc.text('Régimen General de Ley Personas Morales', 10, 65);
-    doc.setFontSize(7);
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(10, 73, 70, 22, 1, 1, 'F');
-    doc.text('Nombre del cliente', 11, 76);
-    doc.text(nombre, 11, 79); 
+    doc.setFont('Helvetica', 'normal');
+    doc.text('Giro: SERV. TEC. COM. REP. DE EQUIPOS,', 51, 18);
+    doc.text('REPUESTOS E INSUMOS AUTOMOTRICES', 51, 23);
+    doc.text('Email: MGAETE@TECHNICAL.SERVICE.CL', 51, 28);
+    doc.text('Telefono: 947149483', 51, 33);
+    doc.text('TIPO DE VENTA: DEL GIRO', 51, 38);
 
-    //RFC
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(85, 73, 35, 22, 1, 1, 'F');
-    doc.text('RFC', 86, 76);
-    // doc.fromHTML(rfc, 87, 79, { 'width': 65 });
-    //Domicilio
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(10, 98, 109, 22, 1, 1, 'F');
-    doc.text('Domicilio', 11, 101);
-    // doc.fromHTML(direccion, 11, 104, { 'width': 65 });
+    //Datos del cliente
+    doc.rect(10, 53, 120, 40, 'S');
+    doc.text('SEÑOR(ES):', 11, 57);
+    doc.text(nombre, 35, 57);
+    // Rut
+    doc.text('R.U.T:', 11, 62);
+    doc.text(rut, 35, 62);
+    // Giro
+    doc.text('GIRO:', 11, 67);
+    doc.text(giro, 35, 67);
+    // Dirección
+    doc.text('DIRECCIÓN:', 11, 72);
+    doc.text(direccion, 35, 72);
+    // Comuna
+    doc.text('COMUNA:', 11, 77);
+    doc.text(comuna, 35, 77);
+    // Ciudad
+    doc.text('CIUDAD:', 66, 77);
+    doc.text(provincia, 85, 77);
+    // Telefono
+    doc.text('CONTACTO:', 11, 82);
+    doc.text(`${contacto} / ${email}`, 35, 82);
+    // Método de pago
+    doc.text('TIPO DE:', 11, 87);
+    doc.text('COMPRA:', 11, 92);
+    doc.text('Del giro', 35, 92);
 
-    //Detalle de productos
+    //Seccion superior derecha 
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.rect(130, 5, 66, 35, 'S');
+    doc.setFontSize(13);
+    doc.setFont("Helvetica", "bold"); //negrita
+    doc.text('R.U.T.:77.132.092-9', 139, 13);
+    doc.text('FACTURA ELECTRÓNICA', 134, 25);
+    doc.text('N°' + nroFactura, 157, 37);
+    doc.text('S.I.I. - SAN BERNARDO', 132, 45);
+    doc.setFont('Helvetica', 'normal');
+    doc.text('Fecha emisión: ' + fecha, 132, 55);
+
+    //Detalle de factura
     doc.setLineWidth(0.25);
-    doc.line(10, 125, 205, 125);
-    doc.text('Cant.', 10, 130);
-    doc.text('Descripcion', 23, 130);
-    doc.text('P.Unitario', 157, 130);
-    doc.text('Importe', 185, 130);
+    doc.setFontSize(10);
+    doc.line(10, 95, 355, 95);
+    doc.line(10, 95, 10, 105);
+    doc.text('Código.', 11, 100);
+    doc.line(35, 95, 35, 105);
+    doc.text('Descripción', 55, 100);
+    doc.line(100, 95, 100, 105);
+    doc.text('Cantidad', 105, 100);
+    doc.line(125, 95, 125, 105);
+    doc.text('Precio', 130, 100);
+    doc.line(145, 95, 145, 105);
+    doc.text('%Impto', 150, 100);
+    doc.text('Adic', 150, 105);
+    doc.line(165, 95, 165, 105);
+    doc.text('%Desc.', 165, 100);
+    doc.line(185, 95, 185, 105);
+    doc.text('Valor', 190, 100);
+    doc.line(10, 95, 10, 105);
     doc.setLineWidth(0.25);
-    doc.line(10, 133, 205, 133);
+    doc.line(10, 105, 355, 105);
 
     //Lista de productos
     doc.setFontSize(7);
+    var cord = 110;
+    this.factura.detalle.forEach(pos => {
+      doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
+      doc.text(pos.producto.descripcion, 40, cord);  //Descripción
+      doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad
+      doc.text(pos.producto.precioVenta.toString(), 133, cord);      //Precio
+      // doc.text('%Impto', 150, cord);      //%Impuesto
+      doc.text(pos.dcto.toString(), 180, cord);      //%Descuento
+      doc.text(pos.subtotal.toString(), 190, cord);       //Subtotal
+      cord = cord + 5;
+    });
 
-    for (let i = 0; i < this.factura.detalle.length; i++) {
-      const pos = this.factura.detalle[i];
-      // doc.cell(10, 133, 10, 7, pos.cantidad.toString(), 1, i);
-      // doc.cell(22, 133, 135, 7, pos.producto.nombre, 2, '');
-      // doc.cell(115, 133, 25, 7, pos.producto.precioVenta.toString(), 3, '');
-    }
-
-    //Cantidades de factura
-    doc.setFontSize(8);
+    //Pie de factura
+    doc.setFontSize(12);
     doc.setLineWidth(0.25);
-    doc.line(10, 190, 205, 190);
-    //doc.text(10,195,'Cantidad con letra');  
+    doc.rect(10, 230, 190, 60, 'S');
 
+    img.src = 'assets/timbre_electronico.jpg'
+    doc.addImage(img, 'JPEG', 15, 240, 80, 40);
 
-    // doc.fromHTML(totales.toString(), 160, 195, { 'width': 60 });
-
-
+    doc.rect(100, 235, 100, 40, 'S');
+    // Monto neto
+    doc.text('MONTO NETO:', 125, 240);
+    doc.text(`$ ${neto}`, 175, 240);
+    // IVA
+    doc.text('I.V.A. 19%:', 125, 245);
+    doc.text(`$ ${iva}`, 175, 245);
+    // Impuesto
+    // doc.text('IMPUESTO ADICIONAL:', 125, 250);
+    // doc.text('$ 0', 175, 250);
+    // Total
+    doc.text('TOTAL:', 125, 255);
+    doc.text(`$ ${total}`, 175, 255);
 
     doc.setLineWidth(0.25);
-    doc.line(10, 215, 205, 215);
+    doc.line(10, 215, 355, 215);
 
-    //Sellos digitales y qr
-
-    doc.setFontSize(7);
-    //Sello digital
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(60, 220, 145, 19, 1, 1, 'F');
-    doc.text('Sello digital', 61, 223);
-    doc.text('MYosIfg2eMviGCRPbIP4tXwXjP+ubkn+QYy9Dvsq2wX4nwKx3dC9/Eyy874xjsvW8obrrM', 61, 227);
-    doc.text('M2nhvtkeutGnx5DcYXRylJ8redA3/WPkNPZg3cVwktLihzbHd+VDD2L5NNezvfsg03Bqy8', 61, 231);
-    doc.text('8P8a5Ag4k4kWYBZnrvkrm/XGsJIQy9dBc=', 61, 235);
-    //Sello del SAT
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(60, 241, 145, 19, 1, 1, 'F');
-    doc.text('Sello del SAT', 61, 244);
-    doc.text('B1jM64aAjZOb7/k3u0a+08/wHrmjlATgGEnDlTUL4kILwLlOrO1aZnlfSE2RWVqWrSj333', 61, 249);
-    doc.text('3n587yizKgyKLYzgchn+zM3LoGJrB47ufYoJQrjKZpwp8SRqX0kHRA6YUDopiZpZAw+OQs', 61, 253);
-    doc.text('FaxT4DSZ4BzFW530t55aVUjSCWCiVUGs=', 61, 257);
-    //Cadena orignal del complemento de certificacion digital del SAT
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(10, 263, 195, 15, 1, 1, 'F');
-    doc.text('Cadena original del complemento de certificacion digital del SAT', 11, 266);
-    doc.text('||1.0|87c43498-33fe-420f-9ec0-a4a331ea76e1|2015-01-01T10:34:08|MYosIfg2eMviGCRPbIP4tXwXjP+ubkn+QYy9Dvsq2wX4nwKx3dC9/Eyy874xjsvW8obrrM2nhvtkeut', 11, 270);
-    doc.text('Gnx5DcYXRylJ8redA3/WPkNPZg3cVwktLihzbHd+VDD2L5NNezvfsg03Bqy8P8a5Ag4k4kWYBZnrvkrm/XGsJIQy9dBc=|00001000000203430011||', 11, 275);
-    //No. de Serie del Certificado del SAT
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(10, 280, 96, 9, 1, 1, 'F');
-    doc.text('No. de Serie del Certificado del SAT', 11, 283);
-    doc.text('00001000000300209963', 11, 287);
-    //Fecha y hora de certificación
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.roundedRect(109, 280, 96, 9, 1, 1, 'F');
-    doc.text('Fecha y hora de certificación', 110, 283);
-    doc.setFontSize(6);
-    // doc.fromHTML(fecha, 110, 282, { 'width': 80 });
-
-    // doc.addImage(imgData, 'JPEG', 10, 217, 45, 45);
-
-    doc.save('test.pdf');
+    // doc.save('test.pdf');
     doc.output('dataurlnewwindow');
   }
 

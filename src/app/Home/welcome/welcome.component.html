@@ -7,12 +7,14 @@
       </mat-radio-group>
     </div>
     <div class="row">
+      <section *ngIf="factura.tipo=='C'"> 
       <div class="col-2">
         <mat-form-field>
           <mat-label>Nro. de factura</mat-label>
           <input matInput [(ngModel)]="factura.codFactura">
         </mat-form-field>
       </div>
+    </section>
       <div class="col-2">
         <mat-form-field>
           <mat-label>Fecha de factura</mat-label>

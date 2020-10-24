@@ -133,7 +133,7 @@ import { RutPipe } from './Pipes/rut.pipe';
     MatAutocompleteModule
   ],
   providers: [BusinessService, ProductosService, CategoriasService,
-    FacturaService, ServiciosService, PersonaService, DatePipe],
+    FacturaService, ServiciosService, PersonaService, DatePipe, RutPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

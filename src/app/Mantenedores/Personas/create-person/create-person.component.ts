@@ -35,7 +35,7 @@ export class CreatePersonComponent implements OnInit {
   public validaNombre = new FormControl('', [Validators.required]);
   public validaDireccion = new FormControl('', [Validators.required]);
   public validaFono = new FormControl('', [Validators.maxLength(9)]);
-  public personaModel: Persona = new Persona('', '', '', 'P', 0, 0, 0, '');
+  public personaModel: Persona = new Persona('', '', '', 'P', '', '', '', '');
   public regiones$: Observable<Region[]>;
   public provincias$: Observable<Provincia[]>;
   public comunas$: Observable<Comuna[]>;
@@ -63,7 +63,7 @@ export class CreatePersonComponent implements OnInit {
     if (this.isNew) {
       this.personaService.creaPersona(this.personaModel).subscribe(() => {
         this.businessService.getAlert(this.personaService.mensajeCreado);
-        this.personaModel = new Persona('', '', '', 'P', 0, 0, 0, '');
+        this.personaModel = new Persona('', '', '', 'P', '', '', '', '');
         this.isNew = true;
       })
     } else { 
@@ -74,7 +74,7 @@ export class CreatePersonComponent implements OnInit {
   }
 
   public nuevaPersona(): void {
-    this.personaModel = new Persona('', '', '', 'P', 0, 0, 0, '');
+    this.personaModel = new Persona('', '', '', 'P', '', '', '', '');
     this.isNew = true;
   }
 

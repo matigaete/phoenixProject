@@ -4,24 +4,24 @@ export class Persona {
         private _nombre: string,
         private _giro?: string,
         private _tipo?: string,
-        private _region?: number,
-        private _provincia?: number,
-        private _comuna?: number,
+        private _region?: string,
+        private _provincia?: string,
+        private _comuna?: string,
         private _direccion?: string,
         private _contacto?: string,
         private _email?: string) {
     }
 
-    public get provincia(): number {
+    public get provincia(): string{
         return this._provincia;
     }
-    public set provincia(value: number) {
+    public set provincia(value: string) {
         this._provincia = value;
     }
-    public get region(): number {
+    public get region(): string{
         return this._region;
     }
-    public set region(value: number) {
+    public set region(value: string) {
         this._region = value;
     }
     public get tipo(): string {
@@ -48,10 +48,10 @@ export class Persona {
     public set direccion(value: string) {
         this._direccion = value;
     }
-    public get comuna(): number {
+    public get comuna(): string{
         return this._comuna;
     }
-    public set comuna(value: number) {
+    public set comuna(value: string) {
         this._comuna = value;
     }
     public get giro(): string {
