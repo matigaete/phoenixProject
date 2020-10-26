@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-10-2020 a las 05:07:00
+-- Tiempo de generación: 26-10-2020 a las 22:57:04
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -37,6 +37,23 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_categoria` (IN `codCat` T
     WHERE codigo = codCat;
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_persona` (IN `rut` VARCHAR(9), IN `nom` VARCHAR(30), IN `giro` VARCHAR(50), IN `region` INT(11), IN `provincia` INT(11), IN `comuna` INT(11), IN `direccion` VARCHAR(40), IN `fono` VARCHAR(9), IN `mail` TEXT, IN `tipo` VARCHAR(1))  BEGIN    
+	IF tipo = 'P' THEN
+    	UPDATE proveedores
+        SET nombre_proveedor = nom, giro_proveedor = giro, region_proveedor = region, 
+            provincia_proveedor = provincia, comuna_proveedor = comuna, direccion_proveedor = direccion,
+            fono_proveedor = fono, mail_proveedor = mail
+        WHERE codigo_proveedor = rut ;
+    ELSE
+    	UPDATE clientes
+        SET nombre_cliente = nom, giro_cliente = giro, region_cliente = region, 
+            provincia_cliente = provincia, comuna_cliente = comuna, direccion_cliente = direccion,
+            fono_cliente = fono, mail_cliente = mail
+        WHERE codigo_cliente = rut ;
+    END IF;
+	
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_producto` (IN `codProd` VARCHAR(15), IN `nomProd` VARCHAR(50), IN `descProd` TEXT, IN `categ` TINYINT(4), IN `stock` SMALLINT(6), IN `stockC` TINYINT(4), IN `precioC` MEDIUMINT(9), IN `precioV` MEDIUMINT(9), IN `activo` TINYINT(1))  BEGIN    
 	UPDATE producto 
     SET nombre = nomProd, descripcion = descProd, categoria = categ, 
@@ -62,25 +79,43 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_categorias` ()  BEGIN
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_cliente` (IN `rut` VARCHAR(9))  BEGIN 
+  SELECT c.codigo_cliente AS rut,
+  	     c.nombre_cliente AS nombre,
+         c.giro_cliente AS giro,
+         r.region AS region,
+         p.provincia AS provincia,
+         x.comuna AS comuna,
+         c.direccion_cliente AS direccion,
+         c.fono_cliente AS contacto,
+         c.mail_cliente AS email,
+         'C' AS tipo
+    FROM clientes AS c
+    INNER JOIN regiones AS r ON c.region_cliente = r.id
+    INNER JOIN provincias AS p ON c.provincia_cliente = p.id 
+    INNER JOIN comunas AS x ON c.comuna_cliente = x.id 
+    WHERE codigo_cliente = rut;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_clientes` ()  BEGIN 
   SELECT codigo_cliente AS rut,
   	     nombre_cliente AS nombre,
          giro_cliente AS giro,
-         ciudad_cliente AS ciudad,
+         region_cliente AS region,
+         provincia_cliente AS provincia,
          comuna_cliente AS comuna,
          direccion_cliente AS direccion,
          fono_cliente AS contacto,
          mail_cliente AS email,
          'C' AS tipo
-    FROM clientes 
-    WHERE codigo_cliente = rut;
+    FROM clientes;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_clientes_por_rut` (IN `rut` VARCHAR(9))  BEGIN   
   SELECT codigo_cliente AS rut,
   	     nombre_cliente AS nombre,
-         giro_cliente AS giro,
-         ciudad_cliente AS ciudad,
-         comuna_cliente AS comuna,
+         giro_cliente AS giro, 
+         region_cliente AS region,
+         provincia_cliente AS provincia,
          direccion_cliente AS direccion,
          fono_cliente AS contacto,
          mail_cliente AS email,
@@ -135,25 +170,44 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_productos_por_categoria` (IN 
     GROUP BY p.codigo;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedor` (IN `rut` VARCHAR(9))  BEGIN     
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedor` (IN `rut` VARCHAR(9))  BEGIN      
+  SELECT p.codigo_proveedor AS rut,
+  	     p.nombre_proveedor AS nombre,
+         p.giro_proveedor AS giro,
+         r.region AS region,
+         x.provincia AS provincia,
+         c.comuna AS comuna,
+         p.direccion_proveedor AS direccion,
+         p.fono_proveedor AS contacto,
+         p.mail_proveedor AS email,
+         'P' AS tipo
+    FROM proveedores AS p
+    INNER JOIN regiones AS r ON c.region_cliente = r.id
+    INNER JOIN provincias AS x ON c.provincia_cliente = p.id 
+    INNER JOIN comunas AS c ON c.comuna_cliente = x.id 
+    WHERE p.codigo_proveedor = rut;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedores` ()  BEGIN     
   SELECT codigo_proveedor AS rut,
   	     nombre_proveedor AS nombre,
          giro_proveedor AS giro,
-         ciudad_proveedor AS ciudad,
+         region_proveedor AS region,
+         provincia_proveedor AS provincia,
          comuna_proveedor AS comuna,
          direccion_proveedor AS direccion,
          fono_proveedor AS contacto,
          mail_proveedor AS email,
          'P' AS tipo
-    FROM proveedores
-    WHERE codigo_proveedor = rut; 
+    FROM proveedores; 
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedores_por_rut` (IN `rut` VARCHAR(9))  BEGIN     
   SELECT codigo_proveedor AS rut,
   	     nombre_proveedor AS nombre,
          giro_proveedor AS giro,
-         ciudad_proveedor AS ciudad,
+         region_proveedor AS region,
+         provincia_proveedor AS provincia,
          comuna_proveedor AS comuna,
          direccion_proveedor AS direccion,
          fono_proveedor AS contacto,
@@ -256,6 +310,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_fact_venta` (IN `codFac` VAR
   VALUES (codFac, codProv, fecha, hora, neto, iva, total);
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_persona` (IN `rut` VARCHAR(9), IN `nom` VARCHAR(30), IN `giro` VARCHAR(50), IN `region` INT(11), IN `provincia` INT(11), IN `comuna` INT(11), IN `direccion` VARCHAR(40), IN `fono` VARCHAR(9), IN `mail` TEXT, IN `tipo` VARCHAR(1))  BEGIN    
+	IF tipo = 'P' THEN
+  		INSERT INTO proveedores VALUES (rut,nom,giro,region,provincia,comuna,direccion,fono,email);
+  	ELSE 
+    	INSERT INTO clientes VALUES (rut,nom,giro,region,provincia,comuna,direccion,fono,email);
+	END IF;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_producto` (IN `codProd` VARCHAR(15), IN `nomProd` VARCHAR(50), IN `descProd` TEXT, IN `categ` TINYINT(4), IN `stock` SMALLINT(6), IN `stockC` TINYINT(4), IN `precioC` MEDIUMINT(9), IN `tasaCambio` DECIMAL(10,2), IN `precioV` MEDIUMINT(9))  BEGIN    
   INSERT INTO producto VALUES (codProd,nomProd,descProd,categ,stock,stockC,tasaCambio,precioV,1);
   INSERT INTO precio (codigo_producto, fecha, precio)
@@ -313,7 +375,7 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`codigo_cliente`, `nombre_cliente`, `giro_cliente`, `region_cliente`, `provincia_cliente`, `comuna_cliente`, `direccion_cliente`, `fono_cliente`, `mail_cliente`) VALUES
-('199540513', 'Matias Gaete', 'EMPRENDIMIENTO DE SOFTWARE', 0, 0, 0, 'Los pistachos 2155', '966067120', 'matias.gaetep@sansano.usm.cl');
+('199540513', 'Matias Gaete', 'EMPRENDIMIENTO DE SOFTWARE', 1, 1, 1, 'Los pistachos 2155', '966067120', 'matias.gaetep@sansano.usm.cl');
 
 -- --------------------------------------------------------
 
@@ -752,14 +814,41 @@ CREATE TABLE `detalle_factura_venta` (
 --
 
 INSERT INTO `detalle_factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `codigo_producto`, `cantidad`, `tipo`, `precio_compra`, `subtotal_factura`) VALUES
+('0', '199540513', 'd', 1, 'P', 1100, 1100),
 ('1', '199540513', 'dsads', 125, 'P', 5500, 687500),
 ('10101010', '1010101', '1234', 20, 'P', 25, 500),
 ('10101010', '1010101', '32123', 1, 'S', 50000, 50000),
 ('10101010', '1010101', '438732', 30, 'P', 200, 6000),
+('111111111111', '199540513', '12346', 1, 'S', 40000, 40000),
+('12222', '199540513', 'd', 1, 'P', 1100, 1100),
+('1234', '199540513', '12346', 1, 'S', 40000, 40000),
+('12345', '773128493', '12346', 1, 'S', 40000, 40000),
 ('123456789', '123456789', '12345', 0, '3', 4000, 16000),
 ('13221312', '21321', '1234', 1412, '', 25, 35200),
 ('2', '199540513', '32123', 1, 'S', 50000, 50000),
 ('2', '199540513', 'dsads', 5, 'P', 5500, 27500),
+('321123', '199540513', '12346', 1, 'S', 40000, 40000),
+('354635', '199540513', '12346', 1, 'S', 40000, 40000),
+('431423', '199540513', '12346', 1, 'S', 40000, 40000),
+('43543', '199540513', '12346', 1, 'S', 40000, 40000),
+('454556', '199540513', '12346', 1, 'S', 40000, 40000),
+('45456555', '199540513', '12346', 1, 'S', 40000, 40000),
+('45465645', '199540513', '12346', 1, 'S', 40000, 40000),
+('54645', '199540513', '12346', 1, 'S', 40000, 40000),
+('54645', '199540513', 'd', 1, 'P', 1100, 1100),
+('5555554', '199540513', '12346', 1, 'S', 40000, 40000),
+('56445', '199540513', '12346', 1, 'S', 40000, 40000),
+('632143', '199540513', '12346', 1, 'S', 40000, 40000),
+('63415653', '199540513', '12346', 1, 'S', 40000, 40000),
+('645645666', '199540513', '12346', 1, 'S', 40000, 40000),
+('6465321', '199540513', '12346', 1, 'S', 40000, 40000),
+('65426313', '199540513', '12346', 1, 'S', 40000, 40000),
+('654632', '199540513', '12346', 1, 'S', 40000, 40000),
+('65465', '199540513', '12346', 1, 'S', 40000, 40000),
+('6546545163', '199540513', '12346', 1, 'S', 40000, 40000),
+('77454', '199540513', '12346', 1, 'S', 40000, 40000),
+('775657', '773128493', '12346', 1, 'S', 40000, 40000),
+('7756571', '199540513', 'd', 1, 'P', 1100, 1100),
 ('88888', '88888', '1234', 0, '1', 25, 250),
 ('88888', '88888', '32123', 0, '1', 50000, 50000),
 ('88888', '88888', '438732', 0, '5', 200, 10000),
@@ -826,14 +915,41 @@ CREATE TABLE `factura_venta` (
 --
 
 INSERT INTO `factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
+('0', '199540513', '2020-10-24', '13:41:58', 1100, 209, 1309),
+('0', '199540513', '2020-10-26', '16:31:30', 2200, 418, 2618),
 ('1', '199540513', '2020-10-19', '13:16:33', 687500, 130625, 818125),
 ('10101010', '1010101', '2020-10-11', '02:23:04', 56500, 10735, 67235),
+('111111111111', '199540513', '2020-10-23', '01:33:28', 40000, 7600, 47600),
+('12222', '199540513', '2020-10-23', '19:04:24', 1100, 209, 1309),
+('1234', '199540513', '2020-10-15', '00:43:00', 40000, 7600, 47600),
+('12345', '773128493', '2020-10-23', '00:44:56', 40000, 7600, 47600),
 ('123456789', '123456789', '2020-10-07', '00:42:51', 16000, 3040, 19040),
 ('123456789', '123456789', '2020-10-07', '00:43:18', 16000, 3040, 19040),
 ('13221312', '21321', '2020-10-08', '20:15:25', 35200, 6688, 41888),
 ('2', '199540513', '2020-10-19', '13:18:56', 77500, 14725, 92225),
 ('321123', '132312', '2020-10-08', '15:42:47', 22075, 0, 0),
+('321123', '199540513', '2020-10-15', '00:51:08', 40000, 7600, 47600),
+('354635', '199540513', '2020-10-23', '01:55:40', 40000, 7600, 47600),
+('431423', '199540513', '2020-10-23', '01:44:34', 40000, 7600, 47600),
+('43543', '199540513', '2020-10-23', '01:38:29', 40000, 7600, 47600),
+('454556', '199540513', '2020-10-23', '01:36:02', 40000, 7600, 47600),
+('45456555', '199540513', '2020-10-23', '01:16:42', 40000, 7600, 47600),
+('45465645', '199540513', '2020-10-23', '01:42:51', 40000, 7600, 47600),
+('54645', '199540513', '2020-10-23', '18:58:00', 41100, 7809, 48909),
+('5555554', '199540513', '2020-10-23', '00:55:32', 40000, 7600, 47600),
+('56445', '199540513', '2020-10-23', '01:56:58', 40000, 7600, 47600),
+('632143', '199540513', '2020-10-23', '01:57:48', 40000, 7600, 47600),
+('63415653', '199540513', '2020-10-23', '01:58:46', 40000, 7600, 47600),
+('645645666', '199540513', '2020-10-23', '01:05:10', 40000, 7600, 47600),
+('6465321', '199540513', '2020-10-23', '01:54:55', 40000, 7600, 47600),
+('65426313', '199540513', '2020-10-23', '01:07:40', 40000, 7600, 47600),
+('654632', '199540513', '2020-10-23', '01:40:50', 40000, 7600, 47600),
+('65465', '199540513', '2020-10-23', '00:59:37', 40000, 7600, 47600),
+('6546545163', '199540513', '2020-10-23', '01:05:29', 40000, 7600, 47600),
 ('66666', '666666', '2020-10-07', '02:10:36', 60250, 11448, 71698),
+('77454', '199540513', '2020-10-23', '01:15:49', 40000, 7600, 47600),
+('775657', '773128493', '2020-10-23', '01:34:20', 40000, 7600, 47600),
+('7756571', '199540513', '2020-10-23', '19:06:38', 1100, 209, 1309),
 ('88888', '88888', '2020-10-07', '02:13:12', 60250, 11448, 71698),
 ('999999', '999999', '2020-10-13', '02:18:04', 180800, 34352, 215152);
 
@@ -903,7 +1019,7 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, -49, 10, '0.00', 200, 1),
 ('4579843', 'Tractor', 'Pa pitiarse a todos los wones', 2, 5, 1, '0.00', 5000000, 1),
 ('codtest', 'Nombre de producto', 'Pruebaaa', 1, 10, 5, '0.20', 1800, 1),
-('d', 'd', 'd', 2, 10, 10, '10.00', 1100, 1),
+('d', 'd', 'd', 2, 6, 10, '10.00', 1100, 1),
 ('dsads', 'dsadsa', 'dsadas', 1, 100, 10, '10.00', 5500, 1);
 
 -- --------------------------------------------------------
