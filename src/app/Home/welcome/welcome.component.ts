@@ -7,6 +7,7 @@ import { Producto } from 'src/app/Clases/producto';
 import { Factura } from 'src/app/Clases/factura';
 import { DetalleFactura } from 'src/app/Clases/detalle-factura';
 import { DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { BusinessService } from 'src/app/Servicios/business.service';
 import { PersonaService } from 'src/app/Servicios/persona.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -38,7 +39,7 @@ export class WelcomeComponent implements OnInit {
   public dispColumn = ['disp'];
   public dynamicColumns = ['cost', 'dcto', 'subtotal'];
   public displayedColumns = [];
-  public factura = new Factura('0',
+  public factura = new Factura(0,
     new Persona(undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctoventa);
   public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
     new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''),
@@ -46,6 +47,7 @@ export class WelcomeComponent implements OnInit {
   public dataSource = new BehaviorSubject([]);
   public chkAll: boolean = false;
   public errorStock: boolean;
+  public ultimaFactura: number;
   public producto$: Observable<Producto>;
   public servicio$: Observable<Servicio>;
   public persona$: Observable<Persona>;
@@ -61,6 +63,7 @@ export class WelcomeComponent implements OnInit {
     private personaService: PersonaService,
     private facturaService: FacturaService,
     private datepipe: DatePipe,
+    private currencypipe: CurrencyPipe,
     private rutPipe: RutPipe,
     private dialogo: MatDialog,
     private dateAdapter: DateAdapter<Date>) { }
@@ -68,6 +71,7 @@ export class WelcomeComponent implements OnInit {
   public ngOnInit() {
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
+    this.facturaService.getUltimaFactura().subscribe(nro => this.ultimaFactura = nro.cod); 
     this.clientes$ = this.personaService.getClientesFiltro('%');
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
     this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
@@ -84,9 +88,9 @@ export class WelcomeComponent implements OnInit {
 
   // Se validan campos vacíos antes de generar factura
   public OnSubmit() {
-    this.getPersona(); 
     var errores = this.validaCampos();
     if (!errores.length) {
+      this.getPersona();
       this.dialogo.open(DialogoConfirmacionComponent, {
         data: 'Desea generar la factura?'
       }).afterClosed()
@@ -108,6 +112,8 @@ export class WelcomeComponent implements OnInit {
 
   public generaFactura() {
     var fact = this.factura;
+    (fact.codFactura == undefined || fact.codFactura == 0) && fact.tipo == c_fctoventa 
+    ? fact.codFactura = ++this.ultimaFactura : 0;
     fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
     fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
     if (fact.generaFactura()) { // Si es verdadero es factura de compra
@@ -117,10 +123,10 @@ export class WelcomeComponent implements OnInit {
       });
     } else {                    // Factura de venta
       this.facturaService.creaFacturaVenta(fact).subscribe(() => {
-        this.businessService.getAlert('Factura creada correctamente');
         this.alertStock();
         this.generarPDF();
-        this.reset();
+        this.reset(); 
+        this.businessService.getAlert('Factura creada correctamente');
       });
     }
   }
@@ -164,8 +170,9 @@ export class WelcomeComponent implements OnInit {
     this.transactions = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
       new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''))];;
     this.dataSource.next(this.transactions);
-    this.factura = new Factura('0',
-      new Persona('', undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
+    this.factura.tipo == c_fctoventa ? this.ultimaFactura++ : 0;
+    this.factura = new Factura(this.ultimaFactura,
+      new Persona('', undefined, undefined, c_cliente), undefined, undefined, 0, 0, 0, c_fctoventa);
     this.factura.detalle.push(this.transactions[0]);
     this.fecha = null;
   }
@@ -223,7 +230,7 @@ export class WelcomeComponent implements OnInit {
         }
         datpos.producto = prd;
       });
-      if (modificado) this.dataSource.next(this.transactions);
+      modificado ? this.dataSource.next(this.transactions) : 0;
     }
   }
 
@@ -246,7 +253,7 @@ export class WelcomeComponent implements OnInit {
         }
         datpos.servicio = srv;
       });
-      if (modificado) this.dataSource.next(this.transactions);
+      modificado ? this.dataSource.next(this.transactions) : 0;
     }
   }
 
@@ -254,24 +261,27 @@ export class WelcomeComponent implements OnInit {
   public validaCampos() {
     var log = [];
     var f = this.factura;
-    if (f.tipo == c_cliente) var texto = 'Proveedor'; else texto = 'Cliente'; 
-    if (f.codFactura == undefined || f.codFactura == '') log.push('Ingrese código de factura');
-    if (f.persona.rut == undefined || f.persona.rut == '') log.push(`Ingrese rut de ${texto}`);
-    if (this.fecha == undefined) log.push('Ingrese una fecha válida');
-    if (f.tipo == undefined) log.push('Ingrese tipo de factura');
+    var texto: string;
+    f.tipo == c_cliente ? texto = 'Proveedor' : texto = 'Cliente';
+    (f.codFactura == undefined || f.codFactura == 0) && f.tipo == c_fctocompra 
+    ? log.push('Ingrese código de factura') : 0;
+    f.persona.rut == undefined || f.persona.rut == '' ? log.push(`Ingrese rut de ${texto}`) : 0;
+    this.fecha == undefined ? log.push('Ingrese una fecha válida') : 0;
+    f.tipo == undefined ? log.push('Ingrese tipo de factura') : 0;
     this.transactions.forEach(function (pos, index) {
       var msg = `Pos. ${index + 1} datos incompletos`;
       var error = false;
       if (pos.tipo == c_producto) {
-        if (!pos.producto.nombre) { error = true }
-        if (!pos.producto.precioCompra) { error = true }
-        if (pos.cantidad > pos.producto.stock && f.tipo == c_fctoventa) log.push(`No puede exceder al stock actual de posición ${index + 1}`);
+        !pos.producto.nombre ? error = true : 0;
+        !pos.producto.precioCompra ? error = true : 0;
+        pos.cantidad > pos.producto.stock && f.tipo == c_fctoventa 
+        ? log.push(`No puede exceder al stock actual de posición ${index + 1}`) : 0;
       } else {
-        if (!pos.servicio.nombre) { error = true }
-        if (!pos.servicio.precioVenta) { error = true }
+        !pos.servicio.nombre ? error = true : 0;
+        !pos.servicio.precioVenta ? error = true : 0;
       }
-      if (!pos.cantidad) { error = true }
-      if (error) { log.push(msg) }
+      !pos.cantidad ? error = true : 0;
+      error ? log.push(msg) : 0;
     });
     return log;
   }
@@ -279,9 +289,7 @@ export class WelcomeComponent implements OnInit {
   // Switch para cambio de producto a servicio (cantidad fijada en 1)
   public asignaCantidad(det: DetalleFactura) {
     det.cantidad = 0;
-    if (det.tipo == c_servicio) {
-      det.cantidad = 1;
-    }
+    det.tipo == c_servicio ? det.cantidad = 1 : 0;
   }
 
   // Al cambiar a factura de compra todas las posiciones se colocan de tipo P(producto)
@@ -294,7 +302,7 @@ export class WelcomeComponent implements OnInit {
       this.displayedColumns = this.principalColumns.concat(this.dynamicColumns);
     } else {
       fact.persona.tipo = c_cliente;
-      fact.codFactura = '0';
+      fact.codFactura = this.ultimaFactura;
       this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
     }
   }
@@ -319,8 +327,7 @@ export class WelcomeComponent implements OnInit {
   }
 
   //Verifica si el rut ingresado existe
-  public getPersona(): boolean {
-    var existe: boolean = false;
+  public getPersona(): void {
     if (this.factura.tipo == c_fctoventa) {
       this.persona$ = this.personaService.getCliente(this.factura.persona.rut);
     } else {
@@ -329,10 +336,12 @@ export class WelcomeComponent implements OnInit {
     this.persona$.forEach(per => {
       if (per) {
         this.factura.persona = per;
-        existe = true;
       }
     });
-    return existe; 
+  }
+
+  public convierteCLP(valor : number) : string{
+    return this.currencypipe.transform(valor, 'CLP', 'symbol-narrow').toString();
   }
 
   // Genera el PDF 
@@ -347,11 +356,11 @@ export class WelcomeComponent implements OnInit {
     var comuna = this.factura.persona.comuna;
     var contacto = this.factura.persona.contacto;
     var email = this.factura.persona.email;
-    var neto = this.factura.neto.toString();
-    var iva = this.factura.iva.toString();
-    var total = this.factura.total.toString();
-    var fecha = this.factura.fecha;
-    var nroFactura = this.factura.codFactura;
+    var neto = this.convierteCLP(this.factura.neto);
+    var iva = this.convierteCLP(this.factura.iva);
+    var total = this.convierteCLP(this.factura.total);
+    var fecha = this.datepipe.transform(new Date(this.fecha), 'dd-MM-yyyy');
+    var nroFactura = this.factura.codFactura.toString();
 
     //Seccion superior izquierda
     img.src = 'assets/Serviciotecnico-1.jpg'
@@ -437,10 +446,11 @@ export class WelcomeComponent implements OnInit {
       doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
       doc.text(pos.producto.descripcion, 40, cord);  //Descripción
       doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad
-      doc.text(pos.producto.precioVenta.toString(), 133, cord);      //Precio
+      doc.text(this.convierteCLP(pos.producto.precioVenta), 133, cord);      //Precio
+      
       // doc.text('%Impto', 150, cord);      //%Impuesto
       doc.text(pos.dcto.toString(), 180, cord);      //%Descuento
-      doc.text(pos.subtotal.toString(), 190, cord);       //Subtotal
+      doc.text(this.convierteCLP(pos.subtotal), 190, cord);       //Subtotal
       cord = cord + 5;
     });
 
@@ -455,22 +465,22 @@ export class WelcomeComponent implements OnInit {
     doc.rect(100, 235, 100, 40, 'S');
     // Monto neto
     doc.text('MONTO NETO:', 125, 240);
-    doc.text(`$ ${neto}`, 175, 240);
+    doc.text(neto, 175, 240);
     // IVA
     doc.text('I.V.A. 19%:', 125, 245);
-    doc.text(`$ ${iva}`, 175, 245);
+    doc.text(iva, 175, 245);
     // Impuesto
     // doc.text('IMPUESTO ADICIONAL:', 125, 250);
     // doc.text('$ 0', 175, 250);
     // Total
     doc.text('TOTAL:', 125, 255);
-    doc.text(`$ ${total}`, 175, 255);
+    doc.text(total, 175, 255);
 
     doc.setLineWidth(0.25);
     doc.line(10, 215, 355, 215);
 
-    // doc.save('test.pdf');
-    doc.output('dataurlnewwindow');
+    doc.save(`${nroFactura} - ${nombre}.pdf`);
+    // doc.output('dataurlnewwindow');
   }
 
 }

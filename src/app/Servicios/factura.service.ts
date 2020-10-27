@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Producto } from '../Clases/producto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/dialogo-confirmacion.component';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Factura } from '../Clases/factura';
 import { DetalleFactura } from '../Clases/detalle-factura';
 
@@ -35,8 +31,7 @@ export class FacturaService {
   private _mensajeCreado: string;
   private _mensajeActivado: string;
 
-  constructor(private http: HttpClient,
-    private dialogo: MatDialog) {
+  constructor(private http: HttpClient) {
     this._codigo = 'Código del producto';
     this._nombre = 'Nombre del producto';
     this._categoria = 'Categoría del producto';
@@ -66,6 +61,10 @@ export class FacturaService {
 
   public getFacturaCompra(codigo: number | string) {
     return this.http.get<Factura>(`${this.url}getPurchaseBill.php?codigo=${codigo}`);
+  }
+
+  public getUltimaFactura() {
+    return this.http.get<{cod: number}>(`${this.url}getLastBill.php`);
   }
 
   public creaFacturaCompra(factura: Factura) {

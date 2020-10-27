@@ -12,7 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -133,7 +133,7 @@ import { RutPipe } from './Pipes/rut.pipe';
     MatAutocompleteModule
   ],
   providers: [BusinessService, ProductosService, CategoriasService,
-    FacturaService, ServiciosService, PersonaService, DatePipe, RutPipe],
+    FacturaService, ServiciosService, PersonaService, DatePipe, RutPipe, CurrencyPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

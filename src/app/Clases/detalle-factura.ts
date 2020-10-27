@@ -20,6 +20,7 @@ export class DetalleFactura {
     }
 
     public getSubtotal(tipo: string): number {
+        this.dcto <= 100 ? this.dcto : this.dcto = 100;
         if (tipo == 'C') {
             var precio = this.producto.precioCompra;
         } else {
@@ -30,7 +31,7 @@ export class DetalleFactura {
             }
         }
         try {
-            var subtotal = (this.cantidad * precio) - this.dcto;
+            var subtotal = (this.cantidad * precio) - ((this.cantidad * precio) * (this.dcto/100));
         } catch (error) {
             subtotal = 0
         }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-10-2020 a las 22:57:04
+-- Tiempo de generación: 27-10-2020 a las 02:18:43
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -182,9 +182,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_proveedor` (IN `rut` VARCHAR(
          p.mail_proveedor AS email,
          'P' AS tipo
     FROM proveedores AS p
-    INNER JOIN regiones AS r ON c.region_cliente = r.id
-    INNER JOIN provincias AS x ON c.provincia_cliente = p.id 
-    INNER JOIN comunas AS c ON c.comuna_cliente = x.id 
+    INNER JOIN regiones AS r ON p.region_proveedor = r.id
+    INNER JOIN provincias AS x ON p.provincia_proveedor = x.id 
+    INNER JOIN comunas AS c ON p.comuna_proveedor = c.id 
     WHERE p.codigo_proveedor = rut;
 END$$
 
@@ -248,6 +248,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_todo_productos` ()  BEGIN
        GROUP BY p.codigo;     
 END$$
 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `busca_ultima_factura` ()  BEGIN    
+  SELECT MAX(codigo_factura_venta) AS cod FROM factura_venta;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_categoria` (IN `nombre` VARCHAR(20))  BEGIN    
   INSERT INTO categoria(tipo) 
     VALUES (nombre);
@@ -284,12 +288,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fc` (IN `codFac` VAR
     WHERE codigo = codProd; 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fv` (IN `codFac` VARCHAR(15), IN `codCli` VARCHAR(9), IN `codProd` VARCHAR(15), IN `tipo` VARCHAR(1), IN `cant` SMALLINT(3), IN `precioVenta` MEDIUMINT(6), IN `subtotal` MEDIUMINT(6))  BEGIN    
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_detalle_fv` (IN `codFac` INT(5), IN `codCli` VARCHAR(9), IN `codProd` VARCHAR(15), IN `tipo` VARCHAR(1), IN `cant` SMALLINT(3), IN `precioVenta` MEDIUMINT(6), IN `subtotal` MEDIUMINT(6))  BEGIN    
   DECLARE newCant SMALLINT(3); 
   INSERT INTO detalle_factura_venta
   VALUES (codFac, codCli, codProd, cant, tipo, precioVenta, subtotal);
-  
-  IF tipo = 'P' THEN
+  IF tipo = "P" THEN
       SELECT stock INTO newCant FROM producto 
         WHERE codigo = codProd;
 
@@ -305,7 +308,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_fact_compra` (IN `codFac` VA
   VALUES (codFac, codProv, fecha, hora, neto, iva, total);
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_fact_venta` (IN `codFac` VARCHAR(15), IN `codProv` VARCHAR(9), IN `fecha` DATE, IN `hora` TIME, IN `neto` MEDIUMINT(6), IN `iva` MEDIUMINT(6), IN `total` MEDIUMINT(6))  BEGIN     
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_fact_venta` (IN `codFac` INT(5), IN `codProv` VARCHAR(9), IN `fecha` DATE, IN `hora` TIME, IN `neto` MEDIUMINT(6), IN `iva` MEDIUMINT(6), IN `total` MEDIUMINT(6))  BEGIN     
   INSERT INTO factura_venta
   VALUES (codFac, codProv, fecha, hora, neto, iva, total);
 END$$
@@ -762,6 +765,8 @@ CREATE TABLE `detalle_factura_compra` (
 
 INSERT INTO `detalle_factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `codigo_producto`, `cantidad`, `precio_compra`, `subtotal_factura`) VALUES
 ('1', '773128493', 'codtest', 10, 1500, 15000),
+('1000', '773128493', 'd', 100, 1000, 100000),
+('1010', '773128493', 'd', 100, 1000, 100000),
 ('11', '11', '1234', 5, 1000, 5000),
 ('11', '120', '11111', 3, 1000, 3000),
 ('11', '120', '1234', 6, 1000, 6000),
@@ -800,7 +805,7 @@ INSERT INTO `detalle_factura_compra` (`codigo_factura_compra`, `codigo_proveedor
 --
 
 CREATE TABLE `detalle_factura_venta` (
-  `codigo_factura_venta` varchar(15) NOT NULL,
+  `codigo_factura_venta` int(5) NOT NULL,
   `codigo_cliente` varchar(9) NOT NULL,
   `codigo_producto` varchar(15) NOT NULL,
   `cantidad` smallint(5) NOT NULL,
@@ -814,47 +819,18 @@ CREATE TABLE `detalle_factura_venta` (
 --
 
 INSERT INTO `detalle_factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `codigo_producto`, `cantidad`, `tipo`, `precio_compra`, `subtotal_factura`) VALUES
-('0', '199540513', 'd', 1, 'P', 1100, 1100),
-('1', '199540513', 'dsads', 125, 'P', 5500, 687500),
-('10101010', '1010101', '1234', 20, 'P', 25, 500),
-('10101010', '1010101', '32123', 1, 'S', 50000, 50000),
-('10101010', '1010101', '438732', 30, 'P', 200, 6000),
-('111111111111', '199540513', '12346', 1, 'S', 40000, 40000),
-('12222', '199540513', 'd', 1, 'P', 1100, 1100),
-('1234', '199540513', '12346', 1, 'S', 40000, 40000),
-('12345', '773128493', '12346', 1, 'S', 40000, 40000),
-('123456789', '123456789', '12345', 0, '3', 4000, 16000),
-('13221312', '21321', '1234', 1412, '', 25, 35200),
-('2', '199540513', '32123', 1, 'S', 50000, 50000),
-('2', '199540513', 'dsads', 5, 'P', 5500, 27500),
-('321123', '199540513', '12346', 1, 'S', 40000, 40000),
-('354635', '199540513', '12346', 1, 'S', 40000, 40000),
-('431423', '199540513', '12346', 1, 'S', 40000, 40000),
-('43543', '199540513', '12346', 1, 'S', 40000, 40000),
-('454556', '199540513', '12346', 1, 'S', 40000, 40000),
-('45456555', '199540513', '12346', 1, 'S', 40000, 40000),
-('45465645', '199540513', '12346', 1, 'S', 40000, 40000),
-('54645', '199540513', '12346', 1, 'S', 40000, 40000),
-('54645', '199540513', 'd', 1, 'P', 1100, 1100),
-('5555554', '199540513', '12346', 1, 'S', 40000, 40000),
-('56445', '199540513', '12346', 1, 'S', 40000, 40000),
-('632143', '199540513', '12346', 1, 'S', 40000, 40000),
-('63415653', '199540513', '12346', 1, 'S', 40000, 40000),
-('645645666', '199540513', '12346', 1, 'S', 40000, 40000),
-('6465321', '199540513', '12346', 1, 'S', 40000, 40000),
-('65426313', '199540513', '12346', 1, 'S', 40000, 40000),
-('654632', '199540513', '12346', 1, 'S', 40000, 40000),
-('65465', '199540513', '12346', 1, 'S', 40000, 40000),
-('6546545163', '199540513', '12346', 1, 'S', 40000, 40000),
-('77454', '199540513', '12346', 1, 'S', 40000, 40000),
-('775657', '773128493', '12346', 1, 'S', 40000, 40000),
-('7756571', '199540513', 'd', 1, 'P', 1100, 1100),
-('88888', '88888', '1234', 0, '1', 25, 250),
-('88888', '88888', '32123', 0, '1', 50000, 50000),
-('88888', '88888', '438732', 0, '5', 200, 10000),
-('999999', '999999', '12344', 0, '1', 3000, 30000),
-('999999', '999999', '12345', 0, '1', 5600, 100800),
-('999999', '999999', '32123', 0, '1', 50000, 50000);
+(1, '199540513', 'd', 10, 'P', 1100, 11000),
+(2, '199540513', 'd', 1, 'P', 1100, 1100),
+(3, '199540513', 'd', 89, 'P', 1100, 39160),
+(31, '199540513', 'd', 10, 'P', 1100, 11000),
+(32, '199540513', 'd', 1, 'P', 1100, 1100),
+(33, '199540513', 'd', 1, 'P', 1100, 1100),
+(34, '199540513', 'd', 1, 'P', 1100, 1100),
+(35, '199540513', 'd', 1, 'P', 1100, 1100),
+(36, '199540513', 'd', 1, 'P', 1100, 1100),
+(37, '199540513', 'd', 1, 'P', 1100, 1100),
+(38, '199540513', 'd', 1, 'P', 1100, 1100),
+(39, '199540513', 'd', 1, 'P', 1100, 1100);
 
 -- --------------------------------------------------------
 
@@ -878,6 +854,8 @@ CREATE TABLE `factura_compra` (
 
 INSERT INTO `factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
 ('1', '773128493', '2001-01-01', '20:03:32', 0, 0, 0),
+('1000', '773128493', '2020-10-26', '21:30:32', 100000, 19000, 119000),
+('1010', '773128493', '2020-10-26', '21:49:54', 100000, 19000, 119000),
 ('11', '120', '2020-09-08', '21:20:34', 0, 0, 96500),
 ('113212', '12312', '2020-10-05', '20:16:31', 129100, 24529, 153629),
 ('12', '132', '2020-09-18', '22:17:55', 0, 0, 12000),
@@ -901,7 +879,7 @@ INSERT INTO `factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `fech
 --
 
 CREATE TABLE `factura_venta` (
-  `codigo_factura_venta` varchar(15) NOT NULL,
+  `codigo_factura_venta` int(5) NOT NULL,
   `codigo_cliente` varchar(9) NOT NULL,
   `fecha_factura` date NOT NULL,
   `hora_factura` time NOT NULL,
@@ -915,43 +893,23 @@ CREATE TABLE `factura_venta` (
 --
 
 INSERT INTO `factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
-('0', '199540513', '2020-10-24', '13:41:58', 1100, 209, 1309),
-('0', '199540513', '2020-10-26', '16:31:30', 2200, 418, 2618),
-('1', '199540513', '2020-10-19', '13:16:33', 687500, 130625, 818125),
-('10101010', '1010101', '2020-10-11', '02:23:04', 56500, 10735, 67235),
-('111111111111', '199540513', '2020-10-23', '01:33:28', 40000, 7600, 47600),
-('12222', '199540513', '2020-10-23', '19:04:24', 1100, 209, 1309),
-('1234', '199540513', '2020-10-15', '00:43:00', 40000, 7600, 47600),
-('12345', '773128493', '2020-10-23', '00:44:56', 40000, 7600, 47600),
-('123456789', '123456789', '2020-10-07', '00:42:51', 16000, 3040, 19040),
-('123456789', '123456789', '2020-10-07', '00:43:18', 16000, 3040, 19040),
-('13221312', '21321', '2020-10-08', '20:15:25', 35200, 6688, 41888),
-('2', '199540513', '2020-10-19', '13:18:56', 77500, 14725, 92225),
-('321123', '132312', '2020-10-08', '15:42:47', 22075, 0, 0),
-('321123', '199540513', '2020-10-15', '00:51:08', 40000, 7600, 47600),
-('354635', '199540513', '2020-10-23', '01:55:40', 40000, 7600, 47600),
-('431423', '199540513', '2020-10-23', '01:44:34', 40000, 7600, 47600),
-('43543', '199540513', '2020-10-23', '01:38:29', 40000, 7600, 47600),
-('454556', '199540513', '2020-10-23', '01:36:02', 40000, 7600, 47600),
-('45456555', '199540513', '2020-10-23', '01:16:42', 40000, 7600, 47600),
-('45465645', '199540513', '2020-10-23', '01:42:51', 40000, 7600, 47600),
-('54645', '199540513', '2020-10-23', '18:58:00', 41100, 7809, 48909),
-('5555554', '199540513', '2020-10-23', '00:55:32', 40000, 7600, 47600),
-('56445', '199540513', '2020-10-23', '01:56:58', 40000, 7600, 47600),
-('632143', '199540513', '2020-10-23', '01:57:48', 40000, 7600, 47600),
-('63415653', '199540513', '2020-10-23', '01:58:46', 40000, 7600, 47600),
-('645645666', '199540513', '2020-10-23', '01:05:10', 40000, 7600, 47600),
-('6465321', '199540513', '2020-10-23', '01:54:55', 40000, 7600, 47600),
-('65426313', '199540513', '2020-10-23', '01:07:40', 40000, 7600, 47600),
-('654632', '199540513', '2020-10-23', '01:40:50', 40000, 7600, 47600),
-('65465', '199540513', '2020-10-23', '00:59:37', 40000, 7600, 47600),
-('6546545163', '199540513', '2020-10-23', '01:05:29', 40000, 7600, 47600),
-('66666', '666666', '2020-10-07', '02:10:36', 60250, 11448, 71698),
-('77454', '199540513', '2020-10-23', '01:15:49', 40000, 7600, 47600),
-('775657', '773128493', '2020-10-23', '01:34:20', 40000, 7600, 47600),
-('7756571', '199540513', '2020-10-23', '19:06:38', 1100, 209, 1309),
-('88888', '88888', '2020-10-07', '02:13:12', 60250, 11448, 71698),
-('999999', '999999', '2020-10-13', '02:18:04', 180800, 34352, 215152);
+(1, '199540513', '2020-10-26', '21:47:52', 11000, 2090, 13090),
+(2, '199540513', '2020-10-26', '21:48:31', 1100, 209, 1309),
+(3, '199540513', '2020-10-26', '21:49:14', 39160, 7440, 46600),
+(31, '199540513', '2020-10-26', '21:50:23', 11000, 2090, 13090),
+(32, '199540513', '2020-10-26', '21:52:53', 1100, 209, 1309),
+(32, '199540513', '2020-10-26', '21:56:35', 1100, 209, 1309),
+(33, '199540513', '2020-10-26', '21:56:53', 1100, 209, 1309),
+(33, '199540513', '2020-10-26', '21:59:03', 1100, 209, 1309),
+(33, '199540513', '2020-10-26', '22:04:53', 1100, 209, 1309),
+(34, '199540513', '2020-10-26', '22:05:38', 1100, 209, 1309),
+(34, '199540513', '2020-10-26', '22:05:52', 1100, 209, 1309),
+(35, '199540513', '2020-10-26', '22:06:43', 1100, 209, 1309),
+(35, '199540513', '2020-10-26', '22:06:55', 1100, 209, 1309),
+(36, '199540513', '2020-10-26', '22:13:22', 1100, 209, 1309),
+(37, '199540513', '2020-10-26', '22:13:36', 1100, 209, 1309),
+(38, '199540513', '2020-10-26', '22:15:28', 1100, 209, 1309),
+(39, '199540513', '2020-10-26', '22:17:32', 1100, 209, 1309);
 
 -- --------------------------------------------------------
 
@@ -982,7 +940,9 @@ INSERT INTO `precio` (`codigo`, `codigo_producto`, `fecha`, `precio`) VALUES
 (10, 'd', '2020-10-17', 0),
 (11, 'd', '2020-10-17', 1000),
 (12, 'dsads', '2020-10-19', 5000),
-(13, 'dsads', '2020-10-19', 4000);
+(13, 'dsads', '2020-10-19', 4000),
+(14, 'd', '2020-10-26', 1000),
+(15, 'd', '2020-10-26', 1000);
 
 -- --------------------------------------------------------
 
@@ -1019,7 +979,7 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('438732', 'Aceite', 'Aceite para freir de pana las sopaipas', 1, -49, 10, '0.00', 200, 1),
 ('4579843', 'Tractor', 'Pa pitiarse a todos los wones', 2, 5, 1, '0.00', 5000000, 1),
 ('codtest', 'Nombre de producto', 'Pruebaaa', 1, 10, 5, '0.20', 1800, 1),
-('d', 'd', 'd', 2, 6, 10, '10.00', 1100, 1),
+('d', 'd', 'd', 2, 82, 10, '10.00', 1100, 1),
 ('dsads', 'dsadsa', 'dsadas', 1, 100, 10, '10.00', 5500, 1);
 
 -- --------------------------------------------------------
@@ -1045,7 +1005,7 @@ CREATE TABLE `proveedores` (
 --
 
 INSERT INTO `proveedores` (`codigo_proveedor`, `nombre_proveedor`, `giro_proveedor`, `region_proveedor`, `provincia_proveedor`, `comuna_proveedor`, `direccion_proveedor`, `fono_proveedor`, `mail_proveedor`) VALUES
-('773128493', 'TECHNICAL SERVICE', 'SERVICIO TÉCNICO AUTOMOTRIZ', 0, 0, 0, 'Los pistachos 2155', '660505005', 'marcelo.gaete@text.cl');
+('773128493', 'TECHNICAL SERVICE', 'SERVICIO TÉCNICO AUTOMOTRIZ', 1, 1, 1, 'Los pistachos 2155', '660505005', 'marcelo.gaete@text.cl');
 
 -- --------------------------------------------------------
 
@@ -1281,7 +1241,7 @@ ALTER TABLE `comunas`
 -- AUTO_INCREMENT de la tabla `precio`
 --
 ALTER TABLE `precio`
-  MODIFY `codigo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `codigo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `provincias`
