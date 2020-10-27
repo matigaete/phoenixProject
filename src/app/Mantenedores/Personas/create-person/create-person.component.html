@@ -75,7 +75,7 @@
       <mat-error *ngIf="validaEmail.invalid">{{getErrorEmail()}}</mat-error>
     </mat-form-field>
     <br>
-    <mat-radio-group aria-label="Tipo de pesona" [(ngModel)]="personaModel.tipo" [value]="personaModel.tipo">
+    <mat-radio-group aria-label="Tipo de pesona" [(ngModel)]="personaModel.tipo" [value]="personaModel.tipo" [disabled]="!isNew">
       <mat-radio-button value="C">Cliente</mat-radio-button>
       <mat-radio-button value="P">Proveedor</mat-radio-button>
     </mat-radio-group>

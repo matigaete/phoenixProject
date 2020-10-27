@@ -6,8 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Producto } from 'src/app/Clases/producto';
 import { Factura } from 'src/app/Clases/factura';
 import { DetalleFactura } from 'src/app/Clases/detalle-factura';
-import { DatePipe } from '@angular/common';
-import { CurrencyPipe } from '@angular/common';
+import { DatePipe, CurrencyPipe } from '@angular/common'; 
 import { BusinessService } from 'src/app/Servicios/business.service';
 import { PersonaService } from 'src/app/Servicios/persona.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,7 +18,7 @@ import { FormControl } from '@angular/forms';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { DateAdapter } from '@angular/material/core';
 import { RutPipe } from 'src/app/Pipes/rut.pipe';
-import jsPDF from 'jspdf';
+import { jsPDF }  from 'jspdf';
 
 const c_producto = 'P';
 const c_servicio = 'S';
