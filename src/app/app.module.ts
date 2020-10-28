@@ -34,6 +34,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { AppComponent } from './app.component';
 import { FooterComponent } from './include/footer/footer.component';
@@ -130,7 +131,8 @@ import { RutPipe } from './Pipes/rut.pipe';
     MatButtonToggleModule,
     MatGridListModule,
     MatCardModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatPaginatorModule
   ],
   providers: [BusinessService, ProductosService, CategoriasService,
     FacturaService, ServiciosService, PersonaService, DatePipe, RutPipe, CurrencyPipe],

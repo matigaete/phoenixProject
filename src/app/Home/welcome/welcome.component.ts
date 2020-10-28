@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Producto } from 'src/app/Clases/producto';
 import { Factura } from 'src/app/Clases/factura';
 import { DetalleFactura } from 'src/app/Clases/detalle-factura';
-import { DatePipe, CurrencyPipe } from '@angular/common'; 
+import { DatePipe } from '@angular/common';
 import { BusinessService } from 'src/app/Servicios/business.service';
 import { PersonaService } from 'src/app/Servicios/persona.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,15 +17,6 @@ import { Servicio } from 'src/app/Clases/servicio';
 import { FormControl } from '@angular/forms';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { DateAdapter } from '@angular/material/core';
-import { RutPipe } from 'src/app/Pipes/rut.pipe';
-import { jsPDF }  from 'jspdf';
-
-const c_producto = 'P';
-const c_servicio = 'S';
-const c_fctocompra = 'C';
-const c_fctoventa = 'V';
-const c_proveedor = 'P';
-const c_cliente = 'C';
 
 @Component({
   selector: 'app-welcome',
@@ -62,15 +53,13 @@ export class WelcomeComponent implements OnInit {
     private personaService: PersonaService,
     private facturaService: FacturaService,
     private datepipe: DatePipe,
-    private currencypipe: CurrencyPipe,
-    private rutPipe: RutPipe,
     private dialogo: MatDialog,
     private dateAdapter: DateAdapter<Date>) { }
 
   public ngOnInit() {
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
-    this.facturaService.getUltimaFactura().subscribe(nro => this.ultimaFactura = nro.cod); 
+    this.facturaService.getUltimaFactura().subscribe(nro => this.ultimaFactura = nro.cod);
     this.clientes$ = this.personaService.getClientesFiltro('%');
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
     this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
@@ -111,8 +100,8 @@ export class WelcomeComponent implements OnInit {
 
   public generaFactura() {
     var fact = this.factura;
-    (fact.codFactura == undefined || fact.codFactura == 0) && fact.tipo == c_fctoventa 
-    ? fact.codFactura = ++this.ultimaFactura : 0;
+    (fact.codFactura == undefined || fact.codFactura == 0) && fact.tipo == c_fctoventa
+      ? fact.codFactura = ++this.ultimaFactura : 0;
     fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
     fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
     if (fact.generaFactura()) { // Si es verdadero es factura de compra
@@ -122,10 +111,11 @@ export class WelcomeComponent implements OnInit {
       });
     } else {                    // Factura de venta
       this.facturaService.creaFacturaVenta(fact).subscribe(() => {
+        this.businessService.getAlert('Factura creada correctamente');
         this.alertStock();
         this.generarPDF();
-        this.reset(); 
-        this.businessService.getAlert('Factura creada correctamente');
+        // this.enviar(fact); // SE APLAZA ENVIO DE MAIL
+        this.reset();
       });
     }
   }
@@ -262,8 +252,8 @@ export class WelcomeComponent implements OnInit {
     var f = this.factura;
     var texto: string;
     f.tipo == c_cliente ? texto = 'Proveedor' : texto = 'Cliente';
-    (f.codFactura == undefined || f.codFactura == 0) && f.tipo == c_fctocompra 
-    ? log.push('Ingrese código de factura') : 0;
+    (f.codFactura == undefined || f.codFactura == 0) && f.tipo == c_fctocompra
+      ? log.push('Ingrese código de factura') : 0;
     f.persona.rut == undefined || f.persona.rut == '' ? log.push(`Ingrese rut de ${texto}`) : 0;
     this.fecha == undefined ? log.push('Ingrese una fecha válida') : 0;
     f.tipo == undefined ? log.push('Ingrese tipo de factura') : 0;
@@ -273,8 +263,8 @@ export class WelcomeComponent implements OnInit {
       if (pos.tipo == c_producto) {
         !pos.producto.nombre ? error = true : 0;
         !pos.producto.precioCompra ? error = true : 0;
-        pos.cantidad > pos.producto.stock && f.tipo == c_fctoventa 
-        ? log.push(`No puede exceder al stock actual de posición ${index + 1}`) : 0;
+        pos.cantidad > pos.producto.stock && f.tipo == c_fctoventa
+          ? log.push(`No puede exceder al stock actual de posición ${index + 1}`) : 0;
       } else {
         !pos.servicio.nombre ? error = true : 0;
         !pos.servicio.precioVenta ? error = true : 0;
@@ -339,147 +329,38 @@ export class WelcomeComponent implements OnInit {
     });
   }
 
-  public convierteCLP(valor : number) : string{
-    return this.currencypipe.transform(valor, 'CLP', 'symbol-narrow').toString();
+  public enviar(f: Factura) {
+    setTimeout(() => {
+      let user = {
+        name: f.persona.nombre,
+        email: f.persona.email,
+        factura: f.codFactura
+      }
+      this.facturaService.sendEmail("http://localhost:3000/sendmail", user).subscribe(
+        data => {
+          let res: any = data;
+          console.log(
+            `id mensaje: ${res.messageId}`
+          );
+        },
+        err => {
+          console.log(err);
+        }, () => {
+        }
+      );
+    }, 10000);
   }
+
 
   // Genera el PDF 
   public generarPDF() {
-    var doc = new jsPDF();
-    var img = new Image();
-    var rut = this.rutPipe.transform(this.factura.persona.rut);
-    var nombre = this.factura.persona.nombre;
-    var giro = this.factura.persona.giro;
-    var direccion = this.factura.persona.direccion;
-    var provincia = this.factura.persona.provincia;
-    var comuna = this.factura.persona.comuna;
-    var contacto = this.factura.persona.contacto;
-    var email = this.factura.persona.email;
-    var neto = this.convierteCLP(this.factura.neto);
-    var iva = this.convierteCLP(this.factura.iva);
-    var total = this.convierteCLP(this.factura.total);
-    var fecha = this.datepipe.transform(new Date(this.fecha), 'dd-MM-yyyy');
-    var nroFactura = this.factura.codFactura.toString();
-
-    //Seccion superior izquierda
-    img.src = 'assets/Serviciotecnico-1.jpg'
-    doc.addImage(img, 'JPEG', 10, 10, 40, 40);
-    doc.setFontSize(13);
-    doc.setFont("Helvetica", "bold"); //negrita
-    doc.text('TECHNICAL SERVICE M & G SPA', 51, 13);
-    doc.setFontSize(10);
-    doc.setFont('Helvetica', 'normal');
-    doc.text('Giro: SERV. TEC. COM. REP. DE EQUIPOS,', 51, 18);
-    doc.text('REPUESTOS E INSUMOS AUTOMOTRICES', 51, 23);
-    doc.text('Email: MGAETE@TECHNICAL.SERVICE.CL', 51, 28);
-    doc.text('Telefono: 947149483', 51, 33);
-    doc.text('TIPO DE VENTA: DEL GIRO', 51, 38);
-
-    //Datos del cliente
-    doc.rect(10, 53, 120, 40, 'S');
-    doc.text('SEÑOR(ES):', 11, 57);
-    doc.text(nombre, 35, 57);
-    // Rut
-    doc.text('R.U.T:', 11, 62);
-    doc.text(rut, 35, 62);
-    // Giro
-    doc.text('GIRO:', 11, 67);
-    doc.text(giro, 35, 67);
-    // Dirección
-    doc.text('DIRECCIÓN:', 11, 72);
-    doc.text(direccion, 35, 72);
-    // Comuna
-    doc.text('COMUNA:', 11, 77);
-    doc.text(comuna, 35, 77);
-    // Ciudad
-    doc.text('CIUDAD:', 66, 77);
-    doc.text(provincia, 85, 77);
-    // Telefono
-    doc.text('CONTACTO:', 11, 82);
-    doc.text(`${contacto} / ${email}`, 35, 82);
-    // Método de pago
-    doc.text('TIPO DE:', 11, 87);
-    doc.text('COMPRA:', 11, 92);
-    doc.text('Del giro', 35, 92);
-
-    //Seccion superior derecha 
-    doc.setDrawColor(0);
-    doc.setFillColor(234, 234, 234);
-    doc.rect(130, 5, 66, 35, 'S');
-    doc.setFontSize(13);
-    doc.setFont("Helvetica", "bold"); //negrita
-    doc.text('R.U.T.:77.132.092-9', 139, 13);
-    doc.text('FACTURA ELECTRÓNICA', 134, 25);
-    doc.text('N°' + nroFactura, 157, 37);
-    doc.text('S.I.I. - SAN BERNARDO', 132, 45);
-    doc.setFont('Helvetica', 'normal');
-    doc.text('Fecha emisión: ' + fecha, 132, 55);
-
-    //Detalle de factura
-    doc.setLineWidth(0.25);
-    doc.setFontSize(10);
-    doc.line(10, 95, 355, 95);
-    doc.line(10, 95, 10, 105);
-    doc.text('Código.', 11, 100);
-    doc.line(35, 95, 35, 105);
-    doc.text('Descripción', 55, 100);
-    doc.line(100, 95, 100, 105);
-    doc.text('Cantidad', 105, 100);
-    doc.line(125, 95, 125, 105);
-    doc.text('Precio', 130, 100);
-    doc.line(145, 95, 145, 105);
-    doc.text('%Impto', 150, 100);
-    doc.text('Adic', 150, 105);
-    doc.line(165, 95, 165, 105);
-    doc.text('%Desc.', 165, 100);
-    doc.line(185, 95, 185, 105);
-    doc.text('Valor', 190, 100);
-    doc.line(10, 95, 10, 105);
-    doc.setLineWidth(0.25);
-    doc.line(10, 105, 355, 105);
-
-    //Lista de productos
-    doc.setFontSize(7);
-    var cord = 110;
-    this.factura.detalle.forEach(pos => {
-      doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
-      doc.text(pos.producto.descripcion, 40, cord);  //Descripción
-      doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad
-      doc.text(this.convierteCLP(pos.producto.precioVenta), 133, cord);      //Precio
-      
-      // doc.text('%Impto', 150, cord);      //%Impuesto
-      doc.text(pos.dcto.toString(), 180, cord);      //%Descuento
-      doc.text(this.convierteCLP(pos.subtotal), 190, cord);       //Subtotal
-      cord = cord + 5;
-    });
-
-    //Pie de factura
-    doc.setFontSize(12);
-    doc.setLineWidth(0.25);
-    doc.rect(10, 230, 190, 60, 'S');
-
-    img.src = 'assets/timbre_electronico.jpg'
-    doc.addImage(img, 'JPEG', 15, 240, 80, 40);
-
-    doc.rect(100, 235, 100, 40, 'S');
-    // Monto neto
-    doc.text('MONTO NETO:', 125, 240);
-    doc.text(neto, 175, 240);
-    // IVA
-    doc.text('I.V.A. 19%:', 125, 245);
-    doc.text(iva, 175, 245);
-    // Impuesto
-    // doc.text('IMPUESTO ADICIONAL:', 125, 250);
-    // doc.text('$ 0', 175, 250);
-    // Total
-    doc.text('TOTAL:', 125, 255);
-    doc.text(total, 175, 255);
-
-    doc.setLineWidth(0.25);
-    doc.line(10, 215, 355, 215);
-
-    doc.save(`${nroFactura} - ${nombre}.pdf`);
-    // doc.output('dataurlnewwindow');
+    this.businessService.generarPDF(this.factura, this.fecha);
   }
-
 }
+
+const c_producto = 'P';
+const c_servicio = 'S';
+const c_fctocompra = 'C';
+const c_fctoventa = 'V';
+const c_proveedor = 'P';
+const c_cliente = 'C';

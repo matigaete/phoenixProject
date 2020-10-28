@@ -6,7 +6,7 @@ if (!$jsonPersona) {
     exit("No hay datos");
 }
 $bd = include_once "conexion.php";
-$sentencia = $bd->prepare("CALL insert_persona(?,?,?,?,?,?,?,?,?.?)");
+$sentencia = $bd->prepare("CALL insert_persona(?,?,?,?,?,?,?,?,?,?)");
 
 $resultado = $sentencia->execute([
     $jsonPersona->_rut, $jsonPersona->_nombre, $jsonPersona->_giro,

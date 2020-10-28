@@ -63,8 +63,7 @@ export class CreatePersonComponent implements OnInit {
     if (this.isNew) {
       this.personaService.creaPersona(this.personaModel).subscribe(() => {
         this.businessService.getAlert(this.personaService.mensajeCreado);
-        this.personaModel = new Persona('', '', '', 'P', '', '', '', '');
-        this.isNew = true;
+        this.nuevaPersona();
       })
     } else { 
       this.personaService.actualizaPersona(this.personaModel).subscribe(() => {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Producto } from 'src/app/Clases/producto';
 import { ProductosService } from 'src/app/Servicios/productos.service';
 import { Ilista } from 'src/app/Interfaces/ilista';
@@ -7,6 +7,8 @@ import { DialogoColumnaComponent } from '../dialogo-columna/dialogo-columna.comp
 import { plainToClass } from 'class-transformer';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { BusinessService } from 'src/app/Servicios/business.service';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-listado',
@@ -22,10 +24,14 @@ import { BusinessService } from 'src/app/Servicios/business.service';
 })
 export class ListadoComponent implements OnInit {
 
+  @ViewChild('paginatorA', {read : MatPaginator}) paginatorA: MatPaginator;
+  @ViewChild('paginatorI', {read : MatPaginator}) paginatorI: MatPaginator;
   public bajar: string;
   public subscriptions: Subscription[] = [];
-  public dataSourceA = new BehaviorSubject([]);
-  public dataSourceI = new BehaviorSubject([]);
+  // public dataSourceA = new BehaviorSubject([]);
+  // public dataSourceI = new BehaviorSubject([]);
+  public dataSourceA = new MatTableDataSource<Producto>();
+  public dataSourceI = new MatTableDataSource<Producto>();
   public jsonProductos: any;
   public jsonInactivos: any;
   public textColumns: Ilista[] = [{ id: 0, nombre: 'codigo', tipo: '#' },
@@ -58,8 +64,12 @@ export class ListadoComponent implements OnInit {
       this.productoService.getProductosInactivos().subscribe((jsonInactivos: any) => this.jsonInactivos = jsonInactivos));
     this.columnsToDisplay = this.getColumns();
     setTimeout(() => {
-      this.dataSourceA.next(this.jsonProductos);
-      this.dataSourceI.next(this.jsonInactivos);
+      // this.dataSourceA.next(this.jsonProductos);
+      // this.dataSourceI.next(this.jsonInactivos);
+      this.dataSourceA = new MatTableDataSource<Producto>(this.jsonProductos);
+      this.dataSourceI = new MatTableDataSource<Producto>(this.jsonInactivos);
+      this.dataSourceA.paginator = this.paginatorA;
+      this.dataSourceI.paginator = this.paginatorI;
     }, 200);
   }
 
@@ -114,7 +124,8 @@ export class ListadoComponent implements OnInit {
           this.businessService.getAlert(this.productoService.mensajeBajado); 
         });
         this.jsonProductos.splice(this.jsonProductos.indexOf(event), 1);
-        this.dataSourceA.next(this.jsonProductos);
+        this.dataSourceA = new MatTableDataSource<Producto>(this.jsonProductos);
+        // this.dataSourceA.next(this.jsonProductos);
       });
   }
 
@@ -128,7 +139,8 @@ export class ListadoComponent implements OnInit {
           this.businessService.getAlert(this.productoService.mensajeActivado);  
         });
         this.jsonInactivos.splice(this.jsonInactivos.indexOf(event), 1);
-        this.dataSourceI.next(this.jsonInactivos);
+        // this.dataSourceI.next(this.jsonInactivos);
+        this.dataSourceI = new MatTableDataSource<Producto>(this.jsonInactivos);
       });
   }
 

@@ -10,7 +10,7 @@
       <mat-label>Rut de Razón Social/Persona</mat-label>
       <input matInput #rut maxlength="9" placeholder="123456789" required [formControl]="validaRut"
         [(ngModel)]="personaModel.rut" [value]="personaModel.rut" [readOnly]="!isNew">
-      <mat-hint align="end">{{rut.value?.length || 0}}/10</mat-hint>
+      <mat-hint align="end">{{rut.value?.length || 0}}/9</mat-hint>
       <mat-error *ngIf="validaRut.invalid">{{getErrorRut()}}</mat-error>
     </mat-form-field>
 

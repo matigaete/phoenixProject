@@ -107,6 +107,10 @@ export class FacturaService {
     return this.http.put(`${this.url}updateDetailBill.php`, detalle);
   }
 
+  public sendEmail(url, data) {
+    return this.http.post(url, data);
+  }
+
   //-End Respuestas HTTP----------------------------------//
 
   //-Mensajes Dialogos-----------------------------------//
