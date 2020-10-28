@@ -11,11 +11,11 @@ if (!$jsonProducto) {
 }
 
 $bd = include_once "conexion.php";
-$sentencia = $bd->prepare("CALL actualiza_producto(?,?,?,?,?,?,?,?,?)");
+$sentencia = $bd->prepare("CALL actualiza_producto(?,?,?,?,?,?,?,?)");
 $resultado = $sentencia->execute([
     $jsonProducto->_codigo, $jsonProducto->_nombre, $jsonProducto->_descripcion, 
     $jsonProducto->_tipo, $jsonProducto->_stock, $jsonProducto->_stockCritico, 
-    $jsonProducto->_precioCompra, $jsonProducto->_precioVenta, $jsonProducto->_activo]);
+    $jsonProducto->_precioVenta, $jsonProducto->_activo]);
     
 echo json_encode($resultado);
 
