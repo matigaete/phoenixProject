@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ilista } from '../Interfaces/ilista';
-import { Producto } from '../Clases/producto'; 
+import { Producto } from '../Clases/producto';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import jsPDF from 'jspdf';
@@ -60,14 +60,14 @@ export class BusinessService {
       id: 4,
       nombre: 'Personas',
       path: 'personas',
-    // }, {
-    //   id: 3,
-    //   nombre: 'Clientes',
-    //   path: 'clientes',
-    // }, {
-    //   id: 4,
-    //   nombre: 'Proveedores',
-    //   path: 'proveedores',
+      // }, {
+      //   id: 3,
+      //   nombre: 'Clientes',
+      //   path: 'clientes',
+      // }, {
+      //   id: 4,
+      //   nombre: 'Proveedores',
+      //   path: 'proveedores',
     }]
   }
 
@@ -125,7 +125,7 @@ export class BusinessService {
     }
   }
 
-  public getAlert(message: string){
+  public getAlert(message: string) {
     this.snackBar.open(message, undefined, {
       duration: 1500,
     });
@@ -136,8 +136,226 @@ export class BusinessService {
     return this.currencypipe.transform(valor, 'CLP', 'symbol-narrow').toString();
   }
 
-  // Genera el PDF 
-  public generarPDF(f: Factura, fecha?: string) {
+  // Genera el PDF de factura
+  public generarCotizacion(f: Factura, fecha?: string) {
+    var doc = new jsPDF();
+    var img = new Image();
+    var rut = this.rutPipe.transform(f.persona.rut);
+    var nombre = f.persona.nombre; 
+    var direccion = f.persona.direccion; 
+    var contacto = f.persona.contacto;
+    var email = f.persona.email;
+    var neto = this.convierteCLP(f.neto);
+    var iva = this.convierteCLP(f.iva);
+    var total = this.convierteCLP(f.total);
+    var fecha = this.datepipe.transform(new Date(fecha), 'dd-MM-yyyy');
+
+    doc.setFontSize(15);
+    doc.setFont("Helvetica", "bold"); //negrita
+    doc.text('COTIZACIÓN', 90, 30);
+
+    //Seccion superior izquierda
+    img.src = 'assets/Serviciotecnico-1.jpg'
+    doc.addImage(img, 'JPEG', 10, 10, 30, 30);
+
+    //Datos del cliente
+    doc.rect(10, 43, 80, 31, 'S');
+    doc.setFontSize(7);
+    doc.text('Cliente:', 11, 47);
+    doc.text(nombre, 30, 47);
+    doc.line(10, 49, 90, 49);
+    // Rut
+    doc.text('Rut:', 11, 52);
+    doc.text(rut, 30, 52);
+    doc.line(10, 54, 90, 54);
+    // Representante
+    doc.text('Contacto:', 11, 57);
+    // doc.text(giro, 30, 57);
+    doc.line(10, 59, 90, 59);
+    // Telefono
+    doc.text('Telefono:', 11, 62);
+    doc.text(contacto, 30, 62);
+    doc.line(10, 64, 90, 64);
+    // Dirección
+    doc.text('Dirección:', 11, 67);
+    doc.text(direccion, 30, 67);
+    doc.line(10, 69, 90, 69);
+    // Email
+    doc.text('Email:', 11, 72);
+    doc.text(email, 30, 72);
+    doc.line(27, 43, 27, 74);
+
+    //Seccion superior derecha 
+    doc.setDrawColor(0);
+    doc.setFillColor(234, 234, 234);
+    doc.rect(160, 17, 40, 15, 'S');
+    doc.setFontSize(7);
+    doc.setFont("Helvetica", "normal");
+    doc.line(180, 17, 180, 32);
+    doc.text('Fecha:', 162, 20);
+    doc.text(fecha, 185, 20);
+    doc.line(160, 22, 200, 22);
+    doc.text('Cotización N°', 162, 25);
+    doc.text('1', 190, 25);
+    doc.line(160, 27, 200, 27);
+    doc.text('Registro N°', 162, 30);
+    doc.text('1', 190, 30);
+
+    //Datos de la empresa
+    doc.setFontSize(7);
+    doc.setFont("Helvetica", "bold"); //negrita
+    doc.rect(150, 43, 55, 31, 'S');
+    doc.line(150, 49, 205, 49);
+    doc.text('TECHNICAL SERVICE M & G SPA', 151, 47);
+    doc.line(150, 54, 205, 54);
+    doc.text('77.132.092-9', 151, 52);
+    doc.line(150, 59, 205, 59);
+    doc.text('Los pistachos 2155. San Bernardo', 151, 57);
+    doc.line(150, 64, 205, 64);
+    doc.text('(56) 9 4714 9483', 151, 62);
+    doc.line(150, 69, 205, 69);
+    doc.text('Marcelo Gaete ', 151, 67);
+    doc.line(27, 43, 27, 74);
+    doc.text('mgaete@technicalservice.cl', 151, 72);
+
+    if (f.tipo == 'CP') {
+      //Detalle de cotización
+      doc.setLineWidth(0.25);
+      doc.setFontSize(10);
+      doc.line(10, 95, 355, 95);
+      doc.line(10, 95, 10, 105);
+      doc.text('Código', 11, 100);
+      doc.line(35, 95, 35, 105);
+      doc.text('Descripción', 55, 100);
+      doc.line(100, 95, 100, 105);
+      doc.text('Cantidad', 105, 100);
+      doc.line(125, 95, 125, 105);
+      doc.text('Precio unitario', 130, 100);
+      doc.line(165, 95, 165, 105);
+      doc.text('Precio final', 180, 100);
+      doc.line(10, 95, 10, 105);
+      doc.setLineWidth(0.25);
+      doc.line(10, 105, 355, 105);
+
+      //Lista de productos
+      doc.setFontSize(7);
+      doc.setFont("Helvetica", "normal");
+      var cord = 110;
+      f.detalle.forEach(pos => {
+        doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
+        doc.text(pos.producto.descripcion, 40, cord);  //Descripción
+        doc.text(this.convierteCLP(pos.producto.precioVenta), 143, cord);      //Precio 
+        doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad 
+        doc.text(this.convierteCLP(pos.subtotal), 185, cord);       //Subtotal
+        cord = cord + 5;
+      });
+    } else {
+      //Detalle de servicio
+      doc.setLineWidth(0.25);
+      doc.setFontSize(10);
+      doc.line(10, 95, 355, 95);
+      doc.line(10, 95, 10, 105);
+      doc.text('Código', 11, 100);
+      doc.line(35, 95, 35, 105);
+      doc.text('Descripción Servicio', 40, 100);
+      doc.line(100, 95, 100, 105);
+      doc.text('Cantidad', 105, 100);
+      doc.line(125, 95, 125, 105);
+      doc.text('Precio unitario', 130, 100);
+      doc.line(165, 95, 165, 105);
+      doc.text('Precio final', 180, 100);
+      doc.line(10, 95, 10, 105);
+      doc.setLineWidth(0.25);
+      doc.line(10, 105, 355, 105);
+
+      //Lista de productos
+      doc.setFontSize(7);
+      doc.setFont("Helvetica", "normal");
+      var cord = 110;
+      f.detalle.forEach(pos => {
+        if (pos.tipo == 'S') {
+          doc.text(pos.servicio.codigo.toString(), 15, cord);      //Código
+          doc.text(pos.servicio.descripcion, 40, cord);  //Descripción
+          doc.text(this.convierteCLP(pos.servicio.precioVenta), 143, cord);      //Precio 
+          doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad 
+          doc.text(this.convierteCLP(pos.subtotal), 185, cord);       //Subtotal
+          cord = cord + 5;
+        }
+      });
+
+      //Detalle de repuestos
+      doc.setFont("Helvetica", "bold"); //negrita
+      doc.setLineWidth(0.25);
+      doc.setFontSize(10);
+      doc.line(10, 155, 355, 155);
+      doc.line(10, 155, 10, 165);
+      doc.text('Código', 11, 160);
+      doc.line(35, 155, 35, 165);
+      doc.text('Descripción Respuestos', 40, 160);
+      doc.line(100, 155, 100, 165);
+      doc.text('Cantidad', 105, 160);
+      doc.line(125, 155, 125, 165);
+      doc.text('Precio unitario', 130, 160);
+      doc.line(165, 155, 165, 165);
+      doc.text('Precio final', 180, 160);
+      doc.line(10, 155, 10, 165);
+      doc.setLineWidth(0.25);
+      doc.line(10, 165, 355, 165);
+
+      //Lista de productos
+      doc.setFontSize(7);
+      doc.setFont("Helvetica", "normal");
+      var cord = 170;
+      f.detalle.forEach(pos => {
+        if (pos.tipo == 'P') {
+          doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
+          doc.text(pos.producto.descripcion, 40, cord);  //Descripción
+          doc.text(this.convierteCLP(pos.producto.precioVenta), 143, cord);      //Precio 
+          doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad 
+          doc.text(this.convierteCLP(pos.subtotal), 185, cord);       //Subtotal
+          cord = cord + 5;
+        }
+      });
+    }
+
+    //Pie de factura
+    doc.setFontSize(7);
+    doc.setLineWidth(0.25);
+    doc.rect(10, 230, 190, 60, 'S');
+
+    //Condiciones comerciales
+    doc.rect(15, 235, 100, 50, 'S');
+    doc.line(15, 240, 115, 240);
+    doc.setFont("Helvetica", "bold");
+    doc.text('Condiciones Comerciales', 16, 239);
+    doc.text('1. Validez: 15 días', 16, 245);
+    doc.text('2. Forma Pago: Contado/Transferencia bancaria', 16, 248);
+    doc.text('3. Cuenta bancaria: Banco Estado', 16, 251);
+    doc.text('Nro. cuenta vista : 36772379760', 16, 254);
+    doc.text('A nombre de : Thecnical Service Spa', 16, 257);
+    doc.text('Nota:', 16, 260);
+
+    doc.setFontSize(12);
+    doc.rect(120, 235, 80, 20, 'S');
+    // Monto neto
+    doc.text('MONTO NETO:', 125, 240);
+    doc.text(neto, 175, 240);
+    // IVA
+    doc.text('I.V.A. 19%:', 125, 245);
+    doc.text(iva, 175, 245);
+    // Total
+    doc.text('TOTAL:', 125, 250);
+    doc.text(total, 175, 250);
+
+    doc.setLineWidth(0.25);
+    doc.line(10, 215, 355, 215);
+
+    // doc.save(`${nroFactura}.pdf`);
+    doc.output('dataurlnewwindow');
+  }
+
+  // Genera el PDF de factura
+  public generarFactura(f: Factura, fecha?: string) {
     var doc = new jsPDF();
     var img = new Image();
     var rut = this.rutPipe.transform(f.persona.rut);
@@ -320,7 +538,7 @@ export class BusinessService {
   }
 
   //-End Setters----------------------------------//
-  
+
   //-Getters--------------------------------------//
   public get action(): string {
     return this._action;

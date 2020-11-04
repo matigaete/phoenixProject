@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-10-2020 a las 05:00:10
+-- Tiempo de generación: 04-11-2020 a las 18:44:53
 -- Versión del servidor: 10.4.14-MariaDB
 -- Versión de PHP: 7.4.9
 
@@ -54,10 +54,10 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_persona` (IN `rut` VARCHA
 	
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_producto` (IN `codProd` VARCHAR(15), IN `nomProd` VARCHAR(50), IN `descProd` TEXT, IN `categ` TINYINT(4), IN `stock` SMALLINT(6), IN `stockC` TINYINT(4), IN `precioC` MEDIUMINT(9), IN `precioV` MEDIUMINT(9), IN `activo` TINYINT(1))  BEGIN    
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualiza_producto` (IN `codProd` VARCHAR(15), IN `nomProd` VARCHAR(50), IN `descProd` TEXT, IN `categ` TINYINT(4), IN `stock` SMALLINT(6), IN `stockC` TINYINT(4), IN `precioV` MEDIUMINT(9), IN `activo` TINYINT(1))  BEGIN    
 	UPDATE producto 
     SET nombre = nomProd, descripcion = descProd, categoria = categ, 
-        stock = stock, stockCritico = stockC, precioCompra = precioC,
+        stock = stock, stockCritico = stockC,
         precioVenta = precioV, activo = activo
     WHERE codigo = codProd ;
 END$$
@@ -704,6 +704,7 @@ INSERT INTO `clientes` (`codigo_cliente`, `nombre_cliente`, `giro_cliente`, `reg
 ('764916565', 'Tecmec SPA', 'Taller ', 7, 23, 92, 'Muñoz Gamero 501', '994916565', 'mperes@euromecanica.cl'),
 ('76495470K', 'Repuestos y Lubricantes J.M LT', 'Taller ', 8, 28, 140, 'Jose Miguel Carrera 540 ', '993261927', 'repuestosylubricantesjm@hotmail.com'),
 ('764955870', 'Premium Cars Service S.P.A.', 'Serviteca', 11, 39, 233, 'Paicavi 2005, Concepción', '9-68112856', 'monica.silva@premiumservice.cl'),
+('76498801', 'Inversiones San Alfonso Ltda', 'Taller', 6, 15, 50, '', '', 'alejandro.rodriguez.salinas@gmail.com'),
 ('76501606', 'Del Valle Valparaiso EIRL', 'taller', 6, 18, 65, 'Independencia 2309', '2598566', ''),
 ('765373042', 'Inversiones Mario Alcides Roja', 'Taller', 3, 7, 17, 'Anhidrita 52', '', ''),
 ('765391806', 'Transalezu EIRL', '', 7, 24, 118, 'Av. Gabriela Poniente 1908', '998712233', ''),
@@ -780,6 +781,7 @@ INSERT INTO `clientes` (`codigo_cliente`, `nombre_cliente`, `giro_cliente`, `reg
 ('773375003', 'Distribuidora de Neumaticos de', 'Serviteca', 7, 23, 96, 'Av Francisco Bilbao 1907', '', 'gfuenzalida@dacsa.cl'),
 ('773587000', 'Comercial Cardebot Ltda.', 'Serviteca', 7, 23, 86, 'Avda. americo Vespucio norte 1155', '9501301', ''),
 ('773804605', 'Sociedad Automotora', 'Automotora', 8, 29, 160, 'Ohiggins 436', '', ''),
+('77386680', 'Caballero y Quintana Ltda.', 'Servicio Tecnico', 6, 18, 66, 'Concepcion C9 casa 7', '32-2365923', 'cqltda@gmail.com'),
 ('773925607', 'Representaciones Exclusivas', 'Taller', 7, 23, 86, 'Santa Isabel 639', '2224053', ''),
 ('774086900', 'Servimeq', 'Servicio Tecnico', 7, 24, 118, 'Franco Sur 03343', '3184612', ''),
 ('774352309', 'Neumaticos y Llantas del Pacif', 'Serviteca', 7, 23, 86, '10 de Julio ', '6992667', ''),
@@ -825,9 +827,9 @@ INSERT INTO `clientes` (`codigo_cliente`, `nombre_cliente`, `giro_cliente`, `reg
 ('786192404', 'Dacovi Ltda', 'Serviteca', 1, 1, 1, 'Azola 3077', '58-2215855', 'dacovi-arica@hotmail.com'),
 ('786400600', 'Nelub Freire Ltda', 'Taller', 6, 18, 350, 'Av. Freire 995', '31988896', 'nelub995@gmail.com'),
 ('78649320k', 'Martinez Urrejola', 'Taller', 10, 35, 199, 'Av Collin 788', '42-2437020', ''),
-('78703750K', 'Trasportes Ocaña Ltda', 'Trasnporte', 7, 23, 91, 'Av Lo Boza 5902', '22-7679841', 'patricio@transportesocaña.cl'),
-('787391508', 'Gurovich y Asociados Ltda', 'Taller', 6, 18, 69, 'Ruta F-30E s/n Sector La Greda', '', 'edgardoramirezbaeza@gmail.com');
+('78703750K', 'Trasportes Ocaña Ltda', 'Trasnporte', 7, 23, 91, 'Av Lo Boza 5902', '22-7679841', 'patricio@transportesocaña.cl');
 INSERT INTO `clientes` (`codigo_cliente`, `nombre_cliente`, `giro_cliente`, `region_cliente`, `provincia_cliente`, `comuna_cliente`, `direccion_cliente`, `fono_cliente`, `mail_cliente`) VALUES
+('787391508', 'Gurovich y Asociados Ltda', 'Taller', 6, 18, 69, 'Ruta F-30E s/n Sector La Greda', '', 'edgardoramirezbaeza@gmail.com'),
 ('787706304', 'Comercial Automotriz Siglo Xxi', 'Automotora', 6, 16, 54, 'Ohiggis 961', '34-2534400', 'ivan.chavez@xxi.cl'),
 ('787712002', 'Sociedad Inv. El Tesoro Ltda.', '', 7, 23, 86, 'Upsala 357 Of. 163', '', ''),
 ('787993702', 'Ruiz y Cia Ltda', 'taller', 2, 3, 6, 'Eloy Ramirez  1515', '57-2439939', 'jgarciaa@vtr.cl'),
@@ -1008,9 +1010,7 @@ INSERT INTO `clientes` (`codigo_cliente`, `nombre_cliente`, `giro_cliente`, `reg
 ('995754703', 'Servicios Industriales Minardi', '', 6, 15, 50, 'Av. Argentina Oriente 131', '34-344373', ''),
 ('995992000', 'DECAR', 'Taller ', 12, 42, 263, 'Ohiggins 302 ', '965650071', 'rolate@automovilesdecar.cl'),
 ('COMER', 'Soc. Com. Amw Ltda. ( Neumamer', 'Serviteca', 7, 23, 111, 'Gamero 2109', ' 2 2891-6870 ', 'lmalebran@neumamerica.cl'),
-('NR', 'Patagonia', 'Taller', 14, 46, 311, 'Puerto Montt', '(65) 383431', ''),
-(' 76498801', 'Inversiones San Alfonso Ltda', 'Taller', 6, 15, 50, '', '', 'alejandro.rodriguez.salinas@gmail.com'),
-(' 77386680', 'Caballero y Quintana Ltda.', 'Servicio Tecnico', 6, 18, 66, 'Concepcion C9 casa 7', '32-2365923', 'cqltda@gmail.com');
+('NR', 'Patagonia', 'Taller', 14, 46, 311, 'Puerto Montt', '(65) 383431', '');
 
 -- --------------------------------------------------------
 
@@ -1382,6 +1382,39 @@ INSERT INTO `comunas` (`id`, `comuna`, `provincia_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `cotizacion`
+--
+
+CREATE TABLE `cotizacion` (
+  `codigo_cotizacion` int(5) NOT NULL,
+  `codigo_cliente` varchar(9) NOT NULL,
+  `fecha_cotizacion` date NOT NULL,
+  `hora_cotizacion` time NOT NULL,
+  `tipo` varchar(2) NOT NULL,
+  `monto_neto` mediumint(6) NOT NULL,
+  `iva` mediumint(6) NOT NULL,
+  `total` mediumint(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_cotizacion`
+--
+
+CREATE TABLE `detalle_cotizacion` (
+  `codigo_cotizacion` int(5) NOT NULL,
+  `codigo_cliente` varchar(9) NOT NULL,
+  `codigo_producto` varchar(15) NOT NULL,
+  `cantidad` smallint(5) NOT NULL,
+  `tipo` varchar(1) NOT NULL,
+  `precio_venta` mediumint(6) NOT NULL,
+  `subtotal` mediumint(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `detalle_factura_compra`
 --
 
@@ -1393,6 +1426,13 @@ CREATE TABLE `detalle_factura_compra` (
   `precio_compra` mediumint(6) NOT NULL,
   `subtotal_factura` mediumint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `detalle_factura_compra`
+--
+
+INSERT INTO `detalle_factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `codigo_producto`, `cantidad`, `precio_compra`, `subtotal_factura`) VALUES
+('010', '100668203', 'ACEITE', 1000, 1000, 1000000);
 
 -- --------------------------------------------------------
 
@@ -1410,6 +1450,99 @@ CREATE TABLE `detalle_factura_venta` (
   `subtotal_factura` mediumint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `detalle_factura_venta`
+--
+
+INSERT INTO `detalle_factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `codigo_producto`, `cantidad`, `tipo`, `precio_compra`, `subtotal_factura`) VALUES
+(1, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(2, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(3, '100668203', 'ACEITE', 10, 'P', 1100, 11000),
+(4, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(5, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(6, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(7, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(8, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(9, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(10, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(11, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(12, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(13, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(14, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(15, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(16, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(17, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(18, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(19, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(20, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(21, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(22, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(23, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(24, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(25, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(26, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(27, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(28, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(29, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(30, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(31, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(32, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(33, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(34, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(35, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(36, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(37, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(38, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(39, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(40, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(41, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(42, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(43, '100668203', 'ACEITE', 10, 'P', 1100, 11000),
+(44, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(45, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(46, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(47, '100668203', 'ACEITE', 10, 'P', 1100, 11000),
+(48, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(49, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(50, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(51, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(52, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(53, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(54, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(55, '100668203', 'ACEITE', 10, 'P', 1100, 11000),
+(56, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(57, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(58, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(59, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(60, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(61, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(62, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(63, '101565637', 'ACEITE', 1, 'P', 1100, 1100),
+(64, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(65, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(66, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(67, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(68, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(69, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(70, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(71, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(72, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(73, '100668203', 'ACEITE', 10, 'P', 1100, 11000),
+(73, '100668203', 'mantcomp', 1, 'S', 58000, 58000),
+(73, '100668203', 'repdesm', 1, 'S', 75000, 75000),
+(74, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(75, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(75, '100668203', 'mantcomp', 1, 'S', 58000, 58000),
+(75, '100668203', 'repdesm', 1, 'S', 75000, 75000),
+(76, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(77, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(78, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(78, '100668203', 'mantcomp', 1, 'S', 58000, 58000),
+(78, '100668203', 'repdesm', 1, 'S', 75000, 75000),
+(79, '100668203', 'ACEITE', 1, 'P', 1100, 1100),
+(79, '100668203', 'mantcomp', 1, 'S', 58000, 58000),
+(79, '100668203', 'repdesm', 1, 'S', 75000, 75000);
+
 -- --------------------------------------------------------
 
 --
@@ -1426,6 +1559,13 @@ CREATE TABLE `factura_compra` (
   `total_compra` mediumint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `factura_compra`
+--
+
+INSERT INTO `factura_compra` (`codigo_factura_compra`, `codigo_proveedor`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
+('010', '100668203', '2020-10-28', '16:40:58', 1000000, 190000, 1190000);
+
 -- --------------------------------------------------------
 
 --
@@ -1441,6 +1581,93 @@ CREATE TABLE `factura_venta` (
   `iva` mediumint(6) NOT NULL,
   `total_compra` mediumint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `factura_venta`
+--
+
+INSERT INTO `factura_venta` (`codigo_factura_venta`, `codigo_cliente`, `fecha_factura`, `hora_factura`, `monto_neto`, `iva`, `total_compra`) VALUES
+(1, '100668203', '2020-11-02', '16:23:48', 1100, 209, 1309),
+(2, '100668203', '2020-11-02', '16:25:53', 1100, 209, 1309),
+(3, '100668203', '2020-11-02', '16:29:51', 11000, 2090, 13090),
+(4, '100668203', '2020-11-02', '16:31:17', 1100, 209, 1309),
+(5, '100668203', '2020-11-02', '16:34:19', 1100, 209, 1309),
+(6, '100668203', '2020-11-02', '16:35:20', 1100, 209, 1309),
+(7, '100668203', '2020-11-02', '16:36:26', 1100, 209, 1309),
+(8, '100668203', '2020-11-02', '16:36:47', 1100, 209, 1309),
+(9, '100668203', '2020-11-02', '16:38:12', 1100, 209, 1309),
+(10, '100668203', '2020-11-02', '16:38:58', 1100, 209, 1309),
+(11, '100668203', '2020-11-02', '16:40:08', 1100, 209, 1309),
+(12, '100668203', '2020-11-02', '16:40:53', 1100, 209, 1309),
+(13, '100668203', '2020-11-02', '16:43:29', 1100, 209, 1309),
+(14, '100668203', '2020-11-02', '16:47:53', 1100, 209, 1309),
+(15, '100668203', '2020-11-02', '16:48:53', 1100, 209, 1309),
+(16, '100668203', '2020-11-02', '16:50:04', 1100, 209, 1309),
+(17, '100668203', '2020-11-02', '16:52:09', 1100, 209, 1309),
+(18, '100668203', '2020-11-02', '16:55:00', 1100, 209, 1309),
+(19, '100668203', '2020-11-02', '16:56:44', 1100, 209, 1309),
+(20, '100668203', '2020-11-02', '16:58:37', 1100, 209, 1309),
+(21, '100668203', '2020-11-02', '16:59:16', 1100, 209, 1309),
+(22, '100668203', '2020-11-02', '17:00:27', 1100, 209, 1309),
+(23, '100668203', '2020-11-02', '17:02:00', 1100, 209, 1309),
+(24, '100668203', '2020-11-02', '17:02:25', 1100, 209, 1309),
+(25, '100668203', '2020-11-02', '17:02:45', 1100, 209, 1309),
+(26, '100668203', '2020-11-02', '17:03:08', 1100, 209, 1309),
+(27, '100668203', '2020-11-02', '17:03:40', 1100, 209, 1309),
+(28, '100668203', '2020-11-02', '17:04:10', 1100, 209, 1309),
+(29, '100668203', '2020-11-02', '17:05:06', 1100, 209, 1309),
+(30, '100668203', '2020-11-02', '17:05:48', 1100, 209, 1309),
+(31, '100668203', '2020-11-02', '17:06:44', 1100, 209, 1309),
+(32, '100668203', '2020-11-02', '17:07:41', 1100, 209, 1309),
+(33, '100668203', '2020-11-02', '17:08:27', 1100, 209, 1309),
+(34, '100668203', '2020-11-02', '17:19:56', 1100, 209, 1309),
+(35, '100668203', '2020-11-02', '17:21:03', 1100, 209, 1309),
+(36, '100668203', '2020-11-02', '17:22:25', 1100, 209, 1309),
+(37, '100668203', '2020-11-02', '17:23:21', 1100, 209, 1309),
+(38, '100668203', '2020-11-02', '17:24:48', 1100, 209, 1309),
+(39, '100668203', '2020-11-02', '17:25:46', 1100, 209, 1309),
+(40, '100668203', '2020-11-02', '17:26:15', 1100, 209, 1309),
+(41, '100668203', '2020-11-02', '17:27:39', 1100, 209, 1309),
+(42, '100668203', '2020-11-02', '17:28:13', 1100, 209, 1309),
+(43, '100668203', '2020-11-02', '17:29:04', 11000, 2090, 13090),
+(44, '100668203', '2020-11-02', '17:29:34', 1100, 209, 1309),
+(45, '100668203', '2020-11-02', '17:39:14', 1100, 209, 1309),
+(46, '100668203', '2020-11-02', '17:40:44', 1100, 209, 1309),
+(47, '100668203', '2020-11-02', '17:44:56', 11000, 2090, 13090),
+(48, '100668203', '2020-11-02', '17:45:24', 1100, 209, 1309),
+(49, '100668203', '2020-11-02', '17:46:20', 1100, 209, 1309),
+(50, '100668203', '2020-11-02', '17:51:22', 1100, 209, 1309),
+(51, '100668203', '2020-11-02', '17:51:53', 1100, 209, 1309),
+(52, '100668203', '2020-11-02', '17:53:30', 1100, 209, 1309),
+(53, '100668203', '2020-11-02', '17:54:05', 1100, 209, 1309),
+(54, '100668203', '2020-11-09', '17:55:14', 1100, 209, 1309),
+(55, '100668203', '2020-11-02', '17:56:09', 11000, 2090, 13090),
+(56, '100668203', '2020-11-02', '18:04:15', 1100, 209, 1309),
+(57, '100668203', '2020-11-02', '18:05:19', 1100, 209, 1309),
+(58, '100668203', '2020-11-02', '18:06:12', 1100, 209, 1309),
+(59, '100668203', '2020-11-02', '18:06:43', 1100, 209, 1309),
+(60, '100668203', '2020-11-02', '18:19:47', 1100, 209, 1309),
+(61, '100668203', '2020-11-02', '18:20:50', 1100, 209, 1309),
+(62, '100668203', '2020-11-02', '18:21:19', 1100, 209, 1309),
+(63, '101565637', '2020-11-02', '19:10:29', 1100, 209, 1309),
+(64, '100668203', '2020-11-02', '19:12:25', 1100, 209, 1309),
+(65, '100668203', '2020-11-02', '19:13:26', 1100, 209, 1309),
+(66, '100668203', '2020-11-02', '19:14:36', 1100, 209, 1309),
+(67, '100668203', '2020-11-02', '19:19:55', 1100, 209, 1309),
+(68, '100668203', '2020-11-02', '19:20:28', 1100, 209, 1309),
+(69, '100668203', '2020-11-02', '19:20:57', 1100, 209, 1309),
+(70, '100668203', '2020-11-02', '19:26:38', 1100, 209, 1309),
+(71, '100668203', '2020-11-02', '19:27:09', 1100, 209, 1309),
+(72, '100668203', '2020-11-02', '19:27:32', 1100, 209, 1309),
+(73, '100668203', '2020-11-02', '19:33:02', 144000, 27360, 171360),
+(74, '100668203', '2020-11-02', '19:46:55', 1100, 209, 1309),
+(75, '100668203', '2020-11-02', '19:47:37', 134100, 25479, 159579),
+(75, '100668203', '2020-11-02', '19:48:39', 1100, 209, 1309),
+(76, '100668203', '2020-11-02', '20:52:02', 1100, 209, 1309),
+(76, '100668203', '2020-11-02', '20:52:37', 1100, 209, 1309),
+(77, '100668203', '2020-11-02', '21:07:05', 1100, 209, 1309),
+(78, '100668203', '2020-11-02', '21:08:07', 134100, 25479, 159579),
+(79, '100668203', '2020-11-02', '21:12:07', 151700, 28823, 180523);
 
 -- --------------------------------------------------------
 
@@ -1843,7 +2070,8 @@ INSERT INTO `precio` (`codigo`, `codigo_producto`, `fecha`, `precio`) VALUES
 (781, '10-30300', '2020-10-29', 0),
 (782, '100100031', '2020-10-29', 0),
 (783, '100100039', '2020-10-29', 0),
-(784, '10-6003', '2020-10-29', 0);
+(784, '10-6003', '2020-10-29', 0),
+(785, 'ACEITE', '2020-10-28', 1000);
 
 -- --------------------------------------------------------
 
@@ -1868,8 +2096,8 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`, `stockCritico`, `tasaCambio`, `precioVenta`, `activo`) VALUES
-('0220036-8', 'REPARO VALVULA RETENCIÓN 3/4 MSV 15/ MSV 20 APSA', 'REPARO VALVULA RETENCIÓN 3/4 MSV 15/ MSV 20 APSA', 14, 0, 0, '10.00', 18660, 1),
-('10-1005', '5   GR. Universal de plomo 100 pcs', '5   GR. Universal de plomo 100 pcs', 14, 0, 0, '10.00', 3800, 1),
+('0220036-8', 'REPARO VALVULA RETENCIÓN 3/4 MSV 15/ MSV 20 APSA', 'REPARO VALVULA RETENCIÓN 3/4 MSV 15/ MSV 20 APSA', 12, 0, 0, '10.00', 18660, 1),
+('10-1005', '5   GR. Universal de plomo 100 pcs', '5   GR. Universal de plomo 100 pcs', 13, 0, 0, '10.00', 3800, 1),
 ('10-1010', '10 GR. Universal de plomo 100pcs', '10 GR. Universal de plomo 100pcs', 14, 0, 0, '10.00', 7020, 1),
 ('10-1015', '15 GR. Universal de plomo 100 pcs', '15 GR. Universal de plomo 100 pcs', 14, 0, 0, '10.00', 10530, 1),
 ('10-1020', '20 GR. Universal de plomo 100 pcs', '20 GR. Universal de plomo 100 pcs', 14, 0, 0, '10.00', 12525, 1),
@@ -1904,8 +2132,8 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('10-40100', 'Contrapeso BT 100', 'Contrapeso BT 100', 13, 0, 0, '10.00', 33600, 1),
 ('10-40150', 'Contrapeso BT 150', 'Contrapeso BT 150', 13, 0, 0, '10.00', 25200, 1),
 ('10-40200', 'Contrapeso BT 200', 'Contrapeso BT 200', 13, 0, 0, '10.00', 33600, 1),
-('10-6003', 'Tira Contrapesos Adh Camiones 200 Gr 10x20 PB', 'Tira Contrapesos Adh Camiones 200 Gr 10x20 PB', 14, 0, 0, '10.00', 35600, 1),
-('10-6005', 'Tira Contrapesos Adh Aut/Cam 180 Gr 18x10 FE', 'Tira Contrapesos Adh Aut/Cam 180 Gr 18x10 FE', 14, 0, 0, '10.00', 35600, 1),
+('10-6003', 'Tira Contrapesos Adh Camiones 200 Gr 10x20 PB', 'Tira Contrapesos Adh Camiones 200 Gr 10x20 PB', 13, 0, 0, '10.00', 35600, 1),
+('10-6005', 'Tira Contrapesos Adh Aut/Cam 180 Gr 18x10 FE', 'Tira Contrapesos Adh Aut/Cam 180 Gr 18x10 FE', 13, 0, 0, '10.00', 35600, 1),
 ('10-6006', 'Adhesivo Auto Tira de 60 grs. Color Negro', 'Adhesivo Auto Tira de 60 grs. Color Negro', 14, 0, 0, '10.00', 56500, 1),
 ('100100031', 'Contrapesos para camion 350 GRS', 'Contrapesos para camion 350 GRS', 13, 0, 0, '10.00', 51800, 1),
 ('100100033', 'Adhesivo Camioneta 120 grs.', 'Adhesivo Camioneta 120 grs.', 14, 0, 0, '10.00', 55000, 1),
@@ -1915,19 +2143,19 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('100991', 'ACEITE NUTO 46 19 LTS', 'ACEITE NUTO 46 19 LTS', 14, 0, 0, '10.00', 48960, 1),
 ('100992', 'ACEITE NUTO 32 19 LTS', 'ACEITE NUTO 32 19 LTS', 14, 0, 0, '10.00', 48960, 1),
 ('10103', 'Crayones', 'Crayones', 14, 0, 0, '10.00', 980, 1),
-('104090105', 'RESERVORIO PLASTICA ELEVADOR 2 COLUMNAS LAUNCH', 'RESERVORIO PLASTICA ELEVADOR 2 COLUMNAS LAUNCH', 14, 0, 0, '10.00', 15508, 1),
-('1144', 'Soporte Doble', 'Soporte Doble', 14, 0, 0, '10.00', 600, 1),
+('104090105', 'RESERVORIO PLASTICA ELEVADOR 2 COLUMNAS LAUNCH', 'RESERVORIO PLASTICA ELEVADOR 2 COLUMNAS LAUNCH', 11, 0, 0, '10.00', 15508, 1),
+('1144', 'Soporte Doble', 'Soporte Doble', 2, 0, 0, '10.00', 600, 1),
 ('14212', 'Levanta Válvulas', 'Levanta Válvulas', 12, 0, 0, '10.00', 7200, 1),
-('14260', 'INFLADOR DE NEUMATICOS LARGO  26 CM', 'INFLADOR DE NEUMATICOS LARGO  26 CM', 14, 0, 0, '10.00', 21980, 1),
-('14501', 'SACA PEPA LARGO', 'SACA PEPA LARGO', 14, 0, 0, '10.00', 3590, 1),
+('14260', 'INFLADOR DE NEUMATICOS LARGO  26 CM', 'INFLADOR DE NEUMATICOS LARGO  26 CM', 2, 0, 0, '10.00', 21980, 1),
+('14501', 'SACA PEPA LARGO', 'SACA PEPA LARGO', 2, 0, 0, '10.00', 3590, 1),
 ('14502', 'Sacapepa Doble', 'Sacapepa Doble', 14, 0, 0, '10.00', 890, 1),
-('20-0631', 'Tapa Plástica Negra bolsa de 100 un', 'Tapa Plástica Negra bolsa de 100 un', 14, 0, 0, '10.00', 4500, 1),
-('20060', 'Pepa Corta', 'Pepa Corta', 14, 0, 0, '10.00', 60, 1),
-('20125', 'Cachimba Larga Doble PCL', 'Cachimba Larga Doble PCL', 14, 0, 0, '10.00', 0, 1),
-('24711', 'Conector Acople Rapido Hembra 1/2 ANI', 'Conector Acople Rapido Hembra 1/2 ANI', 14, 0, 0, '10.00', 9980, 1),
-('24712', 'Conector Acople Rapido Hembra 1/4 ANI', 'Conector Acople Rapido Hembra 1/4 ANI', 14, 0, 0, '10.00', 9280, 1),
-('313578', 'FILTRO REGULADOR LUBRICADOR 3/4', 'FILTRO REGULADOR LUBRICADOR 3/4', 14, 0, 0, '10.00', 125345, 1),
-('37-0004', 'KIT SELLOS RETENES', 'KIT SELLOS RETENES', 14, 0, 0, '10.00', 58980, 1),
+('20-0631', 'Tapa Plástica Negra bolsa de 100 un', 'Tapa Plástica Negra bolsa de 100 un', 2, 0, 0, '10.00', 4500, 1),
+('20060', 'Pepa Corta', 'Pepa Corta', 2, 0, 0, '10.00', 60, 1),
+('20125', 'Cachimba Larga Doble PCL', 'Cachimba Larga Doble PCL', 2, 0, 0, '10.00', 0, 1),
+('24711', 'Conector Acople Rapido Hembra 1/2 ANI', 'Conector Acople Rapido Hembra 1/2 ANI', 7, 0, 0, '10.00', 9980, 1),
+('24712', 'Conector Acople Rapido Hembra 1/4 ANI', 'Conector Acople Rapido Hembra 1/4 ANI', 7, 0, 0, '10.00', 9280, 1),
+('313578', 'FILTRO REGULADOR LUBRICADOR 3/4', 'FILTRO REGULADOR LUBRICADOR 3/4', 15, 0, 0, '10.00', 125345, 1),
+('37-0004', 'KIT SELLOS RETENES', 'KIT SELLOS RETENES', 2, 0, 0, '10.00', 58980, 1),
 ('4301010', 'Copa  Tungsteno  G-16 , 102 mm. x 38  mm.  ( NS-01', 'Copa  Tungsteno  G-16 , 102 mm. x 38  mm.  ( NS-010 )', 2, 0, 0, '10.00', 46609, 1),
 ('4301011', 'Copa  Tungsteno  G-36 , 102 mm. x 38  mm.  ( NS-01', 'Copa  Tungsteno  G-36 , 102 mm. x 38  mm.  ( NS-010 )', 2, 0, 0, '10.00', 48556, 1),
 ('4302007', 'Copa  Tungsteno  G-16 ,  50 mm.  x  25  mm.  ( NS-', 'Copa  Tungsteno  G-16 ,  50 mm.  x  25  mm.  ( NS-007 )', 2, 0, 0, '10.00', 23929, 1),
@@ -1941,8 +2169,8 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('4305515', 'Lápiz esmeril     A - 15', 'Lápiz esmeril     A - 15', 2, 0, 0, '10.00', 1499, 1),
 ('4305536', 'Disco esmeril    A - 36', 'Disco esmeril    A - 36', 2, 0, 0, '10.00', 1632, 1),
 ('4305537', 'Disco esmeril    A - 37', 'Disco esmeril    A - 37', 2, 0, 0, '10.00', 1586, 1),
-('46109', 'FILTRO REGULADOR LUBRICADOR DE 1/4  16 BAR', 'FILTRO REGULADOR LUBRICADOR DE 1/4  16 BAR', 14, 0, 0, '10.00', 35980, 1),
-('46114', 'FILTRO REGULADOR DE 1/4  16 BAR', 'FILTRO REGULADOR DE 1/4  16 BAR', 14, 0, 0, '10.00', 21800, 1),
+('46109', 'FILTRO REGULADOR LUBRICADOR DE 1/4  16 BAR', 'FILTRO REGULADOR LUBRICADOR DE 1/4  16 BAR', 15, 0, 0, '10.00', 35980, 1),
+('46114', 'FILTRO REGULADOR DE 1/4  16 BAR', 'FILTRO REGULADOR DE 1/4  16 BAR', 15, 0, 0, '10.00', 21800, 1),
 ('5000029', 'Parche Cámara F1    Redondo  25 mm.,Caja 100 un.', 'Parche Cámara F1    Redondo  25 mm.,Caja 100 un.', 9, 0, 0, '10.00', 8133, 1),
 ('5000036', 'Parche Cámara N° 0 Redondo  30 mm.,Caja 100 un.', 'Parche Cámara N° 0 Redondo  30 mm.,Caja 100 un.', 9, 0, 0, '10.00', 13952, 1),
 ('5000043', 'Parche Cámara N° 1 Redondo  37 mm.,Caja 30 un.', 'Parche Cámara N° 1 Redondo  37 mm.,Caja 30 un.', 9, 0, 0, '10.00', 2663, 1),
@@ -1956,10 +2184,10 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('5003049', 'Parche Cámara N° 1 GP, Diametro 35 MM, Caja 50 Un.', 'Parche Cámara N° 1 GP, Diametro 35 MM, Caja 50 Un.', 9, 0, 0, '10.00', 2788, 1),
 ('5003051', 'Parche Cácamara N° 2 GP, Diametro 45 MM, caja 50 U', 'Parche Cácamara N° 2 GP, Diametro 45 MM, caja 50 Un.', 9, 0, 0, '10.00', 3083, 1),
 ('5003063', 'Parche Cámara N° 3 GP, Diametro 54 MM, Caja 30 Un.', 'Parche Cámara N° 3 GP, Diametro 54 MM, Caja 30 Un.', 9, 0, 0, '10.00', 2843, 1),
-('502014', 'Profundimetro tipo lapiz Plastico', 'Profundimetro tipo lapiz Plastico', 14, 0, 0, '10.00', 1100, 1),
-('502015', 'Cachimba de aire tipo perro de 1/4 cerrada', 'Cachimba de aire tipo perro de 1/4 cerrada', 14, 0, 0, '10.00', 3400, 1),
-('502016', 'Cachimba de aire tipo perro de 1/2 cerrada', 'Cachimba de aire tipo perro de 1/2 cerrada', 14, 0, 0, '10.00', 3400, 1),
-('50420', 'ENCHUFE MACHO VOLANTE 2P+T 10A', 'ENCHUFE MACHO VOLANTE 2P+T 10A', 14, 0, 0, '10.00', 1900, 1),
+('502014', 'Profundimetro tipo lapiz Plastico', 'Profundimetro tipo lapiz Plastico', 2, 0, 0, '10.00', 1100, 1),
+('502015', 'Cachimba de aire tipo perro de 1/4 cerrada', 'Cachimba de aire tipo perro de 1/4 cerrada', 2, 0, 0, '10.00', 3400, 1),
+('502016', 'Cachimba de aire tipo perro de 1/2 cerrada', 'Cachimba de aire tipo perro de 1/2 cerrada', 2, 0, 0, '10.00', 3400, 1),
+('50420', 'ENCHUFE MACHO VOLANTE 2P+T 10A', 'ENCHUFE MACHO VOLANTE 2P+T 10A', 7, 0, 0, '10.00', 1900, 1),
 ('5050196', 'Líquido vulcanizante  Lata  175 Grs.', 'Líquido vulcanizante  Lata  175 Grs.', 10, 0, 0, '10.00', 5800, 1),
 ('5059056', 'Líquido Vulcanizante 10 Grs.  Pomo', 'Líquido Vulcanizante 10 Grs.  Pomo', 10, 0, 0, '10.00', 663, 1),
 ('5059128', 'Líquido Vulcanizante 25 Grs.  Pomo', 'Líquido Vulcanizante 25 Grs.  Pomo', 10, 0, 0, '10.00', 1625, 1),
@@ -1973,8 +2201,8 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('5102202', 'Lezna con Mango Rebatible', 'Lezna con Mango Rebatible', 2, 0, 0, '10.00', 18395, 1),
 ('5102233', 'Lezna Introductora EM', 'Lezna Introductora EM', 2, 0, 0, '10.00', 10793, 1),
 ('5103108', 'Surtido Reparación   TT- 660, ( Envase 50 unidades', 'Surtido Reparación   TT- 660, ( Envase 50 unidades )', 2, 0, 0, '10.00', 21853, 1),
-('510804', 'ESPIGA DE 1/2 X 1/4', 'ESPIGA DE 1/2 X 1/4', 14, 0, 0, '10.00', 1590, 1),
-('510808', 'Espiga de 1/2', 'Espiga de 1/2', 14, 0, 0, '10.00', 3580, 1),
+('510804', 'ESPIGA DE 1/2 X 1/4', 'ESPIGA DE 1/2 X 1/4', 2, 0, 0, '10.00', 1590, 1),
+('510808', 'Espiga de 1/2', 'Espiga de 1/2', 2, 0, 0, '10.00', 3580, 1),
 ('5111964', 'Minicombi  A -  3      Caja de 50 Unidades', 'Minicombi  A -  3      Caja de 50 Unidades', 2, 0, 0, '10.00', 61668, 1),
 ('5113058', 'Minicombi  A -  6      Caja de 40 Unidades', 'Minicombi  A -  6      Caja de 40 Unidades', 2, 0, 0, '10.00', 51847, 1),
 ('5113106', 'Minicombi  B -  8      Caja de  20 Unidades', 'Minicombi  B -  8      Caja de  20 Unidades', 2, 0, 0, '10.00', 36960, 1),
@@ -2070,11 +2298,11 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('5196689', 'Porta Herramienta Acople Rápido   8 mm.. Hembra', 'Porta Herramienta Acople Rápido   8 mm.. Hembra', 2, 0, 0, '10.00', 20020, 1),
 ('5196782', 'Porta Herramienta Acople Rápido   3 mm.. Hembra', 'Porta Herramienta Acople Rápido   3 mm.. Hembra', 2, 0, 0, '10.00', 15810, 1),
 ('5197028', 'Aspiradora Portátil Neumática', 'Aspiradora Portátil Neumática', 2, 0, 0, '10.00', 109269, 1),
-('54000', 'MATERIALES ELECTRICOS VARIOS.', 'MATERIALES ELECTRICOS VARIOS.', 14, 0, 0, '10.00', 18900, 1),
-('54003', 'ENCHUFE MACHO IND. VOL. 16A 3P+T', 'ENCHUFE MACHO IND. VOL. 16A 3P+T', 14, 0, 0, '10.00', 5280, 1),
-('54553', 'ENCHUFE HEMBRA  IND. S/P 16A 3P+T', 'ENCHUFE HEMBRA  IND. S/P 16A 3P+T', 14, 0, 0, '10.00', 6890, 1),
-('55520', 'MicroEsferas balanceo buses Camiones caja 2 bolsas', 'MicroEsferas balanceo buses Camiones caja 2 bolsas', 14, 0, 0, '10.00', 18000, 1),
-('5624279', 'Extención Malla Recubierta 210 mm con Soporte', 'Extención Malla Recubierta 210 mm con Soporte', 14, 0, 0, '10.00', 2900, 1),
+('54000', 'MATERIALES ELECTRICOS VARIOS.', 'MATERIALES ELECTRICOS VARIOS.', 7, 0, 0, '10.00', 18900, 1),
+('54003', 'ENCHUFE MACHO IND. VOL. 16A 3P+T', 'ENCHUFE MACHO IND. VOL. 16A 3P+T', 7, 0, 0, '10.00', 5280, 1),
+('54553', 'ENCHUFE HEMBRA  IND. S/P 16A 3P+T', 'ENCHUFE HEMBRA  IND. S/P 16A 3P+T', 7, 0, 0, '10.00', 6890, 1),
+('55520', 'MicroEsferas balanceo buses Camiones caja 2 bolsas', 'MicroEsferas balanceo buses Camiones caja 2 bolsas', 2, 0, 0, '10.00', 18000, 1),
+('5624279', 'Extención Malla Recubierta 210 mm con Soporte', 'Extención Malla Recubierta 210 mm con Soporte', 2, 0, 0, '10.00', 2900, 1),
 ('5640300', 'Micro interruptor', 'Micro interruptor', 2, 0, 0, '10.00', 17074, 1),
 ('5640820', 'Juego de Mordazas , Rubber Cut     ( Código Antigu', 'Juego de Mordazas , Rubber Cut     ( Código Antiguo:5640953 )', 2, 0, 0, '10.00', 46026, 1),
 ('5640915', 'Empuñadura plastica (Mango) , Rubber Cut', 'Empuñadura plastica (Mango) , Rubber Cut', 2, 0, 0, '10.00', 80033, 1),
@@ -2114,7 +2342,7 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('5960420', 'Cartucho de Inflado  (CO2)  16 Gr.', 'Cartucho de Inflado  (CO2)  16 Gr.', 2, 0, 0, '10.00', 2874, 1),
 ('5961027', 'Rodillo de  4 mm x  35 mm dia.  Con Eje', 'Rodillo de  4 mm x  35 mm dia.  Con Eje', 2, 0, 0, '10.00', 8184, 1),
 ('6001EM-300', 'ACEITE ESTER SUNISO SL-32 1 LITRO', 'ACEITE ESTER SUNISO SL-32 1 LITRO', 14, 0, 0, '10.00', 20980, 1),
-('66251', 'conector macho', 'conector macho', 14, 0, 0, '10.00', 1980, 1),
+('66251', 'conector macho', 'conector macho', 7, 0, 0, '10.00', 1980, 1),
 ('6900009', 'Elevador de Tijera Mecanico 3,5 Ton 220 Volt', 'Elevador de Tijera Mecanico 3,5 Ton 220 Volt', 11, 0, 0, '10.00', 2791800, 1),
 ('6900010', 'Elevador 2 Columnas Inferior 4,0 Ton 220 Volt', 'Elevador 2 Columnas Inferior 4,0 Ton 220 Volt', 11, 0, 0, '10.00', 1197900, 1),
 ('6900011', 'Elevador 2 Columnas Superior  4,0 Ton 220 Volt', 'Elevador 2 Columnas Superior  4,0 Ton 220 Volt', 11, 0, 0, '10.00', 1336500, 1),
@@ -2125,31 +2353,31 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('6900016', 'Brazo Auxiliar para Desmontadora', 'Brazo Auxiliar para Desmontadora', 11, 0, 0, '10.00', 393030, 1),
 ('6900017', 'Desmontadora de Auto Aro 12\" a 26\", Dia 41\" -Brazo', 'Desmontadora de Auto Aro 12\" a 26\", Dia 41\" -Brazo Auxiliar - IT', 11, 0, 0, '10.00', 1568160, 1),
 ('6900018', 'Balanceadora de Autos Digital, con Capucha 220 Vol', 'Balanceadora de Autos Digital, con Capucha 220 Volts', 11, 0, 0, '10.00', 710820, 1),
-('8301030-0', 'SERPENTINA  DESCARGA  MSV 30/40 MAX', 'SERPENTINA  DESCARGA  MSV 30/40 MAX', 14, 0, 0, '10.00', 133500, 1),
-('8301257-0', 'ELEMNTO DE FILTRO 1-1/2-3/4 CILINDRO PLASTICO', 'ELEMNTO DE FILTRO 1-1/2-3/4 CILINDRO PLASTICO', 14, 0, 0, '10.00', 20980, 1),
+('8301030-0', 'SERPENTINA  DESCARGA  MSV 30/40 MAX', 'SERPENTINA  DESCARGA  MSV 30/40 MAX', 7, 0, 0, '10.00', 133500, 1),
+('8301257-0', 'ELEMNTO DE FILTRO 1-1/2-3/4 CILINDRO PLASTICO', 'ELEMNTO DE FILTRO 1-1/2-3/4 CILINDRO PLASTICO', 15, 0, 0, '10.00', 20980, 1),
 ('90MS', 'Válvula Tubular 90MS', 'Válvula Tubular 90MS', 12, 0, 0, '10.00', 1200, 1),
-('ACEITE', 'ACEITE HIDROLAVADORA', 'ACEITE HIDROLAVADORA', 14, 0, 0, '10.00', 12580, 1),
-('ADPEJ', 'ADAPTADOR EJE PULMON', 'ADAPTADOR EJE PULMON', 14, 0, 0, '10.00', 68900, 1),
-('AFRL-8', 'FILTRO REGULADOR LUBRICADOR 1/2', 'FILTRO REGULADOR LUBRICADOR 1/2', 14, 0, 0, '10.00', 65000, 1),
-('AMEX76', 'INVERSOR DE GIRO Y CONMUTADOR', 'INVERSOR DE GIRO Y CONMUTADOR', 14, 0, 0, '10.00', 55600, 1),
-('ANI34024', 'MACHITO HEMBRA 1/4', 'MACHITO HEMBRA 1/4', 14, 0, 0, '10.00', 12980, 1),
-('ANI34025', 'MACHITO MACHO 1/4', 'MACHITO MACHO 1/4', 14, 0, 0, '10.00', 1490, 1),
-('ANI35910', 'Machito Macho 1/2', 'Machito Macho 1/2', 14, 0, 0, '10.00', 6980, 1),
-('AR21/23', 'abrazadera alta presión 21/23', 'abrazadera alta presión 21/23', 14, 0, 0, '10.00', 2442, 1),
-('BARR', 'BARRETILLA DESMONTAJE', 'BARRETILLA DESMONTAJE', 14, 0, 0, '10.00', 14000, 1),
-('BATCOR', 'BATERIAS PEQUEÑAS 3,2 AH', 'BATERIAS PEQUEÑAS 3,2 AH', 14, 0, 0, '10.00', 9000, 1),
-('BATLAR', 'BATERIAS LARGAS 7,2 AH', 'BATERIAS LARGAS 7,2 AH', 14, 0, 0, '10.00', 18000, 1),
-('BOLM', 'BOLA PARA MANILLA', 'BOLA PARA MANILLA', 14, 0, 0, '10.00', 5600, 1),
-('BOMHIDR', 'BOMBA HIDRAULICA', 'BOMBA HIDRAULICA', 14, 0, 0, '10.00', 245980, 1),
-('BOMROLL', 'BOMBA ROLLING JACK HIDRONEUMATICA', 'BOMBA ROLLING JACK HIDRONEUMATICA', 14, 0, 0, '10.00', 220980, 1),
-('BOTPUL', 'BOTON PULSADOR', 'BOTON PULSADOR', 14, 0, 0, '10.00', 35000, 1),
+('ACEITE', 'ACEITE HIDROLAVADORA', 'ACEITE HIDROLAVADORA', 14, 876, 0, '10.00', 1100, 1),
+('ADPEJ', 'ADAPTADOR EJE PULMON', 'ADAPTADOR EJE PULMON', 2, 0, 0, '10.00', 68900, 1),
+('AFRL-8', 'FILTRO REGULADOR LUBRICADOR 1/2', 'FILTRO REGULADOR LUBRICADOR 1/2', 15, 0, 0, '10.00', 65000, 1),
+('AMEX76', 'INVERSOR DE GIRO Y CONMUTADOR', 'INVERSOR DE GIRO Y CONMUTADOR', 2, 0, 0, '10.00', 55600, 1),
+('ANI34024', 'MACHITO HEMBRA 1/4', 'MACHITO HEMBRA 1/4', 7, 0, 0, '10.00', 12980, 1),
+('ANI34025', 'MACHITO MACHO 1/4', 'MACHITO MACHO 1/4', 7, 0, 0, '10.00', 1490, 1),
+('ANI35910', 'Machito Macho 1/2', 'Machito Macho 1/2', 7, 0, 0, '10.00', 6980, 1),
+('AR21/23', 'abrazadera alta presión 21/23', 'abrazadera alta presión 21/23', 2, 0, 0, '10.00', 2442, 1),
+('BARR', 'BARRETILLA DESMONTAJE', 'BARRETILLA DESMONTAJE', 2, 0, 0, '10.00', 14000, 1),
+('BATCOR', 'BATERIAS PEQUEÑAS 3,2 AH', 'BATERIAS PEQUEÑAS 3,2 AH', 2, 0, 0, '10.00', 9000, 1),
+('BATLAR', 'BATERIAS LARGAS 7,2 AH', 'BATERIAS LARGAS 7,2 AH', 2, 0, 0, '10.00', 18000, 1),
+('BOLM', 'BOLA PARA MANILLA', 'BOLA PARA MANILLA', 2, 0, 0, '10.00', 5600, 1),
+('BOMHIDR', 'BOMBA HIDRAULICA', 'BOMBA HIDRAULICA', 2, 0, 0, '10.00', 245980, 1),
+('BOMROLL', 'BOMBA ROLLING JACK HIDRONEUMATICA', 'BOMBA ROLLING JACK HIDRONEUMATICA', 2, 0, 0, '10.00', 220980, 1),
+('BOTPUL', 'BOTON PULSADOR', 'BOTON PULSADOR', 2, 0, 0, '10.00', 35000, 1),
 ('BUJG', 'BUJES GARRAS ALINEADORA', 'BUJES GARRAS ALINEADORA', 14, 0, 0, '10.00', 21600, 1),
 ('CANV', 'CANALETAS TIPO V CUBRE MANGUERAS', 'CANALETAS TIPO V CUBRE MANGUERAS', 14, 0, 0, '10.00', 32980, 1),
 ('CBALC', 'CORREA BALANCEADORA', 'CORREA BALANCEADORA', 14, 0, 0, '10.00', 12590, 1),
 ('CCOMP', 'CORREA COMPRESOR', 'CORREA COMPRESOR', 14, 0, 0, '10.00', 9890, 1),
 ('CDN4', 'CABLE 4 CONDUCTORES 2,5 MM 15 MTS', 'CABLE 4 CONDUCTORES 2,5 MM 15 MTS', 14, 0, 0, '10.00', 38000, 1),
 ('CF-CABINA', 'FILTRO DE TECHO CABINA', 'FILTRO DE TECHO CABINA', 14, 0, 0, '10.00', 0, 1),
-('CH3GM', 'Valvula de palanca 5/3 - 1/2\"', 'Valvula de palanca 5/3 - 1/2\"', 14, 0, 0, '10.00', 160100, 1),
+('CH3GM', 'Valvula de palanca 5/3 - 1/2\"', 'Valvula de palanca 5/3 - 1/2\"', 12, 0, 0, '10.00', 160100, 1),
 ('CM61/4', 'CODO MACHO 6 X 1/4', 'CODO MACHO 6 X 1/4', 14, 0, 0, '10.00', 2450, 1),
 ('CM61/8', 'CODO MACHO 6 X 1/8', 'CODO MACHO 6 X 1/8', 14, 0, 0, '10.00', 1450, 1),
 ('CM81/4', 'CODO MACHO 8 X 1/4', 'CODO MACHO 8 X 1/4', 14, 0, 0, '10.00', 2400, 1),
@@ -2162,16 +2390,16 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('DEPELV2', 'DEPOSITO DE ACEITE ELEVADOR', 'DEPOSITO DE ACEITE ELEVADOR', 14, 0, 0, '10.00', 98900, 1),
 ('EAA0361J00A', 'CONTROL REMOTO CAMARAS', 'CONTROL REMOTO CAMARAS', 14, 0, 0, '10.00', 98750, 1),
 ('ESTROT', 'ESTANQUE ROTARY', 'ESTANQUE ROTARY', 14, 0, 0, '10.00', 170000, 1),
-('EVAL', 'VALVULA CONTROL', 'VALVULA CONTROL', 14, 0, 0, '10.00', 65980, 1),
-('FF-CABINA', 'FILTRO DE PISO CABINA', 'FILTRO DE PISO CABINA', 14, 0, 0, '10.00', 44900, 1),
-('FILMSV', 'FILTRO DE AIRE MSV 40', 'FILTRO DE AIRE MSV 40', 14, 0, 0, '10.00', 19980, 1),
-('FILP', 'FILTRO DE PISO', 'FILTRO DE PISO', 14, 0, 0, '10.00', 85200, 1),
+('EVAL', 'VALVULA CONTROL', 'VALVULA CONTROL', 12, 0, 0, '10.00', 65980, 1),
+('FF-CABINA', 'FILTRO DE PISO CABINA', 'FILTRO DE PISO CABINA', 15, 0, 0, '10.00', 44900, 1),
+('FILMSV', 'FILTRO DE AIRE MSV 40', 'FILTRO DE AIRE MSV 40', 15, 0, 0, '10.00', 19980, 1),
+('FILP', 'FILTRO DE PISO', 'FILTRO DE PISO', 15, 0, 0, '10.00', 85200, 1),
 ('FLEXC', 'FLEXIBLE CORTO HIDRAULICO', 'FLEXIBLE CORTO HIDRAULICO', 14, 0, 0, '10.00', 52000, 1),
 ('FLEXL', 'FLEXIBLE LARGO HIDRAULICO', 'FLEXIBLE LARGO HIDRAULICO', 14, 0, 0, '10.00', 65000, 1),
 ('FLX2020', 'TUBO ASPIRACIÓN BOMBA', 'TUBO ASPIRACIÓN BOMBA', 14, 0, 0, '10.00', 13600, 1),
-('FLXMI', 'FILTRO MALLA INOXIDABLE', 'FILTRO MALLA INOXIDABLE', 14, 0, 0, '10.00', 28600, 1),
+('FLXMI', 'FILTRO MALLA INOXIDABLE', 'FILTRO MALLA INOXIDABLE', 15, 0, 0, '10.00', 28600, 1),
 ('FUENPOD', 'FUENTE DE PODER ALINEADORA V3D', 'FUENTE DE PODER ALINEADORA V3D', 14, 0, 0, '10.00', 85000, 1),
-('IGSERV', 'INSUMOS GENERALES', 'INSUMOS GENERALES', 14, 0, 0, '10.00', 25000, 1),
+('IGSERV', 'INSUMOS GENERALES', 'INSUMOS GENERALES', 2, 0, 0, '10.00', 25000, 1),
 ('JON05', 'Manguera Retractil Poliuretano 8x5 mts', 'Manguera Retractil Poliuretano 8x5 mts', 14, 0, 0, '10.00', 22352, 1),
 ('JON10', 'Manguera Retractil Poliuretano 8x10 mts', 'Manguera Retractil Poliuretano 8x10 mts', 14, 0, 0, '10.00', 27890, 1),
 ('KITPUL', 'KIT REPARACIÓN PULMON NEUMATICO', 'KIT REPARACIÓN PULMON NEUMATICO', 14, 0, 0, '10.00', 69000, 1),
@@ -2199,10 +2427,10 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('PER13', 'PERNOS DE ANCLAJE DE 1/2', 'PERNOS DE ANCLAJE DE 1/2', 8, 0, 0, '10.00', 980, 1),
 ('PER16', 'PERNOS DE ANCLAJE DE 5/8', 'PERNOS DE ANCLAJE DE 5/8', 8, 0, 0, '10.00', 3890, 1),
 ('PER19', 'PERNOS DE ANCLAJE DE 3/4', 'PERNOS DE ANCLAJE DE 3/4', 8, 0, 0, '10.00', 4200, 1),
-('PER8', '24 PERNOS DE ANCLAJE DE 1/4', '24 PERNOS DE ANCLAJE DE 1/4', 14, 0, 0, '10.00', 18900, 1),
+('PER8', '24 PERNOS DE ANCLAJE DE 1/4', '24 PERNOS DE ANCLAJE DE 1/4', 8, 0, 0, '10.00', 18900, 1),
 ('PF6051', 'PRE-FOLDER 6051  4X80', 'PRE-FOLDER 6051  4X80', 14, 0, 0, '10.00', 35600, 1),
-('PIODES', 'PIOLA DESTRABE ELEVADOR', 'PIOLA DESTRABE ELEVADOR', 14, 0, 0, '10.00', 12500, 1),
-('PIOTRAB', 'PIOLA TRABAJO ELEVADOR', 'PIOLA TRABAJO ELEVADOR', 14, 0, 0, '10.00', 85000, 1),
+('PIODES', 'PIOLA DESTRABE ELEVADOR', 'PIOLA DESTRABE ELEVADOR', 11, 0, 0, '10.00', 12500, 1),
+('PIOTRAB', 'PIOLA TRABAJO ELEVADOR', 'PIOLA TRABAJO ELEVADOR', 11, 0, 0, '10.00', 85000, 1),
 ('PISTOL', 'PISTOLA DE INFLADO', 'PISTOLA DE INFLADO', 14, 0, 0, '10.00', 17800, 1),
 ('PLATOS', 'JUEGO PLATOS DE ALINEACIÓN DELANTEROS', 'JUEGO PLATOS DE ALINEACIÓN DELANTEROS', 14, 0, 0, '10.00', 420000, 1),
 ('PMSVS', 'PRESOSTATO SHULZ', 'PRESOSTATO SHULZ', 14, 0, 0, '10.00', 68900, 1),
@@ -2249,9 +2477,9 @@ INSERT INTO `producto` (`codigo`, `nombre`, `descripcion`, `categoria`, `stock`,
 ('UT8', 'UNIÓN 8 MM', 'UNIÓN 8 MM', 14, 0, 0, '10.00', 1600, 1),
 ('UTE6', 'TEE DE 6 MM', 'TEE DE 6 MM', 14, 0, 0, '10.00', 1720, 1),
 ('UTE8', 'TEE DE 8 MM', 'TEE DE 8 MM', 14, 0, 0, '10.00', 1700, 1),
-('VAL53', 'VALVULA 5/3', 'VALVULA 5/3', 14, 0, 0, '10.00', 45000, 1),
-('VALRET', 'VALVULA DE RETORNO BAJADA', 'VALVULA DE RETORNO BAJADA', 14, 0, 0, '10.00', 45980, 1),
-('VALTR', 'VALVULA DE ACTIVACIÓN TRONQUETES', 'VALVULA DE ACTIVACIÓN TRONQUETES', 14, 0, 0, '10.00', 98900, 1);
+('VAL53', 'VALVULA 5/3', 'VALVULA 5/3', 12, 0, 0, '10.00', 45000, 1),
+('VALRET', 'VALVULA DE RETORNO BAJADA', 'VALVULA DE RETORNO BAJADA', 12, 0, 0, '10.00', 45980, 1),
+('VALTR', 'VALVULA DE ACTIVACIÓN TRONQUETES', 'VALVULA DE ACTIVACIÓN TRONQUETES', 12, 0, 0, '10.00', 98900, 1);
 
 -- --------------------------------------------------------
 
@@ -2672,6 +2900,7 @@ INSERT INTO `proveedores` (`codigo_proveedor`, `nombre_proveedor`, `giro_proveed
 ('773375003', 'Distribuidora de Neumaticos de', 'Serviteca', 7, 23, 96, 'Av Francisco Bilbao 1907', '', 'gfuenzalida@dacsa.cl'),
 ('773587000', 'Comercial Cardebot Ltda.', 'Serviteca', 7, 23, 86, 'Avda. americo Vespucio norte 1155', '9501301', ''),
 ('773804605', 'Sociedad Automotora', 'Automotora', 8, 29, 160, 'Ohiggins 436', '', ''),
+('77386680', 'Caballero y Quintana Ltda.', 'Servicio Tecnico', 6, 18, 66, 'Concepcion C9 casa 7', '32-236592', 'cqltda@gmail.com'),
 ('773925607', 'Representaciones Exclusivas', 'Taller', 7, 23, 86, 'Santa Isabel 639', '2224053', ''),
 ('774086900', 'Servimeq', 'Servicio Tecnico', 7, 24, 118, 'Franco Sur 03343', '3184612', ''),
 ('774352309', 'Neumaticos y Llantas del Pacif', 'Serviteca', 7, 23, 86, '10 de Julio ', '6992667', ''),
@@ -2718,9 +2947,9 @@ INSERT INTO `proveedores` (`codigo_proveedor`, `nombre_proveedor`, `giro_proveed
 ('785957105', 'NeumaServicio Ltda Iquique', 'Serviteca', 2, 3, 6, 'Ruta A-16 Esq. Santa Rosa de Molles', '57-249837', 'robertoamadori@neumaservicio.cl'),
 ('786192404', 'Dacovi Ltda', 'Serviteca', 1, 1, 1, 'Azola 3077', '58-221585', 'dacovi-arica@hotmail.com'),
 ('786400600', 'Nelub Freire Ltda', 'Taller', 6, 18, 350, 'Av. Freire 995', '31988896', 'nelub995@gmail.com'),
-('78649320k', 'Martinez Urrejola', 'Taller', 10, 35, 199, 'Av Collin 788', '42-243702', ''),
-('78703750K', 'Trasportes Ocaña Ltda', 'Trasnporte', 7, 23, 91, 'Av Lo Boza 5902', '22-767984', 'patricio@transportesocaña.cl');
+('78649320k', 'Martinez Urrejola', 'Taller', 10, 35, 199, 'Av Collin 788', '42-243702', '');
 INSERT INTO `proveedores` (`codigo_proveedor`, `nombre_proveedor`, `giro_proveedor`, `region_proveedor`, `provincia_proveedor`, `comuna_proveedor`, `direccion_proveedor`, `fono_proveedor`, `mail_proveedor`) VALUES
+('78703750K', 'Trasportes Ocaña Ltda', 'Trasnporte', 7, 23, 91, 'Av Lo Boza 5902', '22-767984', 'patricio@transportesocaña.cl'),
 ('787391508', 'Gurovich y Asociados Ltda', 'Taller', 6, 18, 69, 'Ruta F-30E s/n Sector La Greda', '', 'edgardoramirezbaeza@gmail.com'),
 ('787706304', 'Comercial Automotriz Siglo Xxi', 'Automotora', 6, 16, 54, 'Ohiggis 961', '34-253440', 'ivan.chavez@xxi.cl'),
 ('787712002', 'Sociedad Inv. El Tesoro Ltda.', '', 7, 23, 86, 'Upsala 357 Of. 163', '', ''),
@@ -2903,8 +3132,7 @@ INSERT INTO `proveedores` (`codigo_proveedor`, `nombre_proveedor`, `giro_proveed
 ('995992000', 'DECAR', 'Taller ', 12, 42, 263, 'Ohiggins 302 ', '965650071', 'rolate@automovilesdecar.cl'),
 ('COMER', 'Soc. Com. Amw Ltda. ( Neumamer', 'Serviteca', 7, 23, 111, 'Gamero 2109', ' 2 2891-6', 'lmalebran@neumamerica.cl'),
 ('NR', 'Patagonia', 'Taller', 14, 46, 311, 'Puerto Montt', '(65) 3834', ''),
-(' 76498801', 'Inversiones San Alfonso Ltda', 'Taller', 6, 15, 50, '', '', 'alejandro.rodriguez.salinas@gmail.com'),
-(' 77386680', 'Caballero y Quintana Ltda.', 'Servicio Tecnico', 6, 18, 66, 'Concepcion C9 casa 7', '32-236592', 'cqltda@gmail.com');
+(' 76498801', 'Inversiones San Alfonso Ltda', 'Taller', 6, 15, 50, '', '', 'alejandro.rodriguez.salinas@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -3029,6 +3257,14 @@ CREATE TABLE `servicio` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Volcado de datos para la tabla `servicio`
+--
+
+INSERT INTO `servicio` (`codigo`, `nombre`, `descripcion`, `precioVenta`) VALUES
+('mantcomp', 'Mantención Compresor de Piston', 'Mantención Compresor de Piston\r\n', 58000),
+('repdesm', 'Reparación desmontadora', 'Reparación desmontadora', 75000);
+
+--
 -- Índices para tablas volcadas
 --
 
@@ -3132,7 +3368,7 @@ ALTER TABLE `comunas`
 -- AUTO_INCREMENT de la tabla `precio`
 --
 ALTER TABLE `precio`
-  MODIFY `codigo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=785;
+  MODIFY `codigo` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=786;
 
 --
 -- AUTO_INCREMENT de la tabla `provincias`

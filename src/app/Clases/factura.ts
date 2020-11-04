@@ -20,8 +20,7 @@ export class Factura {
         this._detalle = [];
     }
 
-    public generaFactura(): boolean {
-        let compra: boolean;
+    public limpiaPosiciones(): void{ 
         this.detalle.forEach(det => {
             if (det.tipo == 'P') {
                 det.servicio = undefined;
@@ -29,12 +28,6 @@ export class Factura {
                 det.producto = undefined;
             }
         });
-        if (this.tipo == 'C') {
-            compra = true;
-        } else {
-            compra = false;
-        }
-        return compra;
     }
 
     public getNetAmount(): number {

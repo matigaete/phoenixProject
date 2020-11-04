@@ -38,6 +38,7 @@ export class WelcomeComponent implements OnInit {
   public chkAll: boolean = false;
   public errorStock: boolean;
   public ultimaFactura: number;
+  public ultimaCotizacion: number;
   public producto$: Observable<Producto>;
   public servicio$: Observable<Servicio>;
   public persona$: Observable<Persona>;
@@ -60,6 +61,7 @@ export class WelcomeComponent implements OnInit {
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
     this.facturaService.getUltimaFactura().subscribe(nro => this.ultimaFactura = nro.cod);
+    this.facturaService.getUltimaCotizacion().subscribe(nro => this.ultimaCotizacion = nro.cod);
     this.clientes$ = this.personaService.getClientesFiltro('%');
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
     this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
@@ -104,17 +106,24 @@ export class WelcomeComponent implements OnInit {
       ? fact.codFactura = ++this.ultimaFactura : 0;
     fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
     fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
-    if (fact.generaFactura()) { // Si es verdadero es factura de compra
+    fact.limpiaPosiciones();
+    if (fact.tipo == c_fctocompra) { // Si es verdadero es factura de compra
       this.facturaService.creaFacturaCompra(fact).subscribe(() => {
         this.businessService.getAlert('Insumos actualizados correctamente');
         this.reset();
       });
-    } else {                    // Factura de venta
+    } else if (fact.tipo == c_fctoventa) {                    // Factura de venta
       this.facturaService.creaFacturaVenta(fact).subscribe(() => {
         this.businessService.getAlert('Factura creada correctamente');
         this.alertStock();
-        this.generarPDF();
+        this.generarCotizacion();
+        this.reset();
         // this.enviar(fact); // SE APLAZA ENVIO DE MAIL
+      });
+    } else {                    // Factura de venta
+      this.facturaService.creaCotizacion(fact).subscribe(() => {
+        this.businessService.getAlert('Cotización creada correctamente'); 
+        this.generarCotizacion(); 
         this.reset();
       });
     }
@@ -157,7 +166,8 @@ export class WelcomeComponent implements OnInit {
   // Se ejecuta al generarse la factura, limpia todos los campos
   public reset() {
     this.transactions = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
-      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''))];;
+      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, 0, false, ''),
+      new Servicio(undefined, undefined, 0, ''))];
     this.dataSource.next(this.transactions);
     this.factura.tipo == c_fctoventa ? this.ultimaFactura++ : 0;
     this.factura = new Factura(this.ultimaFactura,
@@ -352,15 +362,22 @@ export class WelcomeComponent implements OnInit {
   }
 
 
-  // Genera el PDF 
-  public generarPDF() {
-    this.businessService.generarPDF(this.factura, this.fecha);
+  // Genera el PDF de cotización
+  public generarCotizacion() {
+    this.businessService.generarCotizacion(this.factura, this.fecha);
+  }
+
+  // Genera el PDF de factura venta
+  public generarFactura() {
+    this.businessService.generarFactura(this.factura, this.fecha);
   }
 }
 
 const c_producto = 'P';
 const c_servicio = 'S';
-const c_fctocompra = 'C';
-const c_fctoventa = 'V';
+const c_fctocompra = 'FC';
+const c_fctoventa = 'FV';
+const c_cotiprod = 'CP';
+const c_cotiserv = 'CS';
 const c_proveedor = 'P';
 const c_cliente = 'C';

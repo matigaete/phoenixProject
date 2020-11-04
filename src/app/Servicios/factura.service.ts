@@ -67,6 +67,10 @@ export class FacturaService {
     return this.http.get<{cod: number}>(`${this.url}getLastBill.php`);
   }
 
+  public getUltimaCotizacion() {
+    return this.http.get<{cod: number}>(`${this.url}getLastCotizacion.php`);
+  }
+
   public creaFacturaCompra(factura: Factura) {
     return this.http.post(`${this.url}addPurchaseBill.php`, factura);
   }
@@ -95,6 +99,7 @@ export class FacturaService {
     return this.http.post(`${this.url}addSellBill.php`, factura);
   }
 
+
   public actualizaFacturaVenta(factura: Factura) {
     return this.http.put(`${this.url}updateBill.php`, factura);
   }
@@ -105,6 +110,14 @@ export class FacturaService {
 
   public actualizaDetalleVenta(detalle: DetalleFactura[]) {
     return this.http.put(`${this.url}updateDetailBill.php`, detalle);
+  }
+
+  public creaCotizacion(factura: Factura) {
+    return this.http.post(`${this.url}addCotizacion.php`, factura);
+  }
+
+  public actualizaCotizacion(factura: Factura) {
+    return this.http.put(`${this.url}updateCotizacion.php`, factura);
   }
 
   public sendEmail(url, data) {
