@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Categoria } from 'src/app/Interfaces/comuna';
+import { Categoria } from 'src/app/Interfaces/categoria';
 
 @Component({
   selector: 'app-index-categorias',

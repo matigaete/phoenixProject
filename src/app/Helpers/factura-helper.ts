@@ -16,7 +16,7 @@ export class FacturaHelper {
 
     static getNetAmount(factura: Factura): number {
         try {
-            if (factura.tipo == TipoFactura.Compra) {
+            if (factura.tipo == TipoFactura.FacturaCompra) {
                 factura.neto = factura.detalle.map(t => (t.producto.precioCompra * t.cantidad) - ((t.producto.precioCompra * t.cantidad) * (t.dcto/100)))
                     .reduce((acc, value) => acc + value, 0);
             } else {

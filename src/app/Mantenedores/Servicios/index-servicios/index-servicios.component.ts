@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BusinessService } from '../../../Servicios/business.service';
-import { Ilista } from '../../../Interfaces/ilista';
-import { Servicio } from 'src/app/Clases/servicio'; 
+import { BusinessService } from 'src/app/Servicios/business.service';
+import { Ilista } from 'src/app/Interfaces/ilista';
+import { Servicio } from 'src/app/Interfaces/servicio'; 
 
 @Component({
   selector: 'app-index-servicios',

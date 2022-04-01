@@ -1,17 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { plainToClass } from 'class-transformer';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
-import { Categoria } from 'src/app/Interfaces/comuna';
+import { Categoria } from 'src/app/Interfaces/categoria';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-lista-categorias',
-  template: `<div class="form-group">
-                <label>Lista de Categorias:</label>
-                <select multiple class="form-control" [(ngModel)]="selectedC" (ngModelChange)="enviaCategoria($event)">
-                  <option [ngValue]="c" *ngFor="let c of (categorias$ | async)">{{c.tipo}}</option> 
-                </select>
-              </div>`,
+  templateUrl: './lista-categorias.component.html',
   styles: []
 })
 export class ListaCategoriasComponent implements OnInit {
@@ -32,8 +26,7 @@ export class ListaCategoriasComponent implements OnInit {
       this.categorias$ = this.categoriaService.getCategorias();
   }
 
-  public enviaCategoria(event: any) {
-    let categoria = plainToClass(Categoria, event[0]);
+  public enviaCategoria(categoria: Categoria) {
     this.categoria.emit(categoria);
   }
 

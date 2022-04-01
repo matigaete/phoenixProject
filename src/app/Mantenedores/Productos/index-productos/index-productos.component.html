@@ -1,0 +1,13 @@
+<nav>
+    <ul class="pagination justify-content-center">
+        <mat-button-toggle-group class="justify-content-center">
+            <mat-button-toggle *ngFor="let a of acciones" (click)="asignarOpcion(a.id)">{{a.nombre}}</mat-button-toggle>
+        </mat-button-toggle-group>
+    </ul>
+</nav>
+<div class="container">
+    <app-create-product *ngIf="option == 1" [isNew]="option"></app-create-product>
+    <app-search-product *ngIf="option == 2" [iValor]="option"></app-search-product>
+    <app-search-product *ngIf="option == 3" [iValor]="option"></app-search-product>
+    <app-listado *ngIf="option == 4"></app-listado>
+</div>

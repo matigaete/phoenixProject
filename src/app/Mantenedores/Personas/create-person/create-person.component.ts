@@ -2,9 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Comuna } from 'src/app/Interfaces/comuna';
-import { Persona } from 'src/app/Clases/persona';
-import { Provincia } from 'src/app/Clases/provincia';
-import { Region } from 'src/app/Clases/region';
+import { Persona } from 'src/app/Interfaces/persona';
+import { Provincia } from 'src/app/Interfaces/provincia';
+import { Region } from 'src/app/Interfaces/region';
 import { BusinessService } from 'src/app/Servicios/business.service';
 import { PersonaService } from 'src/app/Servicios/persona.service';
 
@@ -35,7 +35,7 @@ export class CreatePersonComponent implements OnInit {
   public validaNombre = new FormControl('', [Validators.required]);
   public validaDireccion = new FormControl('', [Validators.required]);
   public validaFono = new FormControl('', [Validators.maxLength(9)]);
-  public personaModel: Persona = new Persona('', '', '', 'P', '', '', '', '');
+  public personaModel: Persona = {};
   public regiones$: Observable<Region[]>;
   public provincias$: Observable<Provincia[]>;
   public comunas$: Observable<Comuna[]>;
@@ -59,21 +59,20 @@ export class CreatePersonComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    console.log(this.personaModel);
     if (this.isNew) {
       this.personaService.creaPersona(this.personaModel).subscribe(() => {
-        this.businessService.getAlert(this.personaService.mensajeCreado);
+        this.businessService.getAlert('Persona añadida');
         this.nuevaPersona();
       })
     } else { 
       this.personaService.actualizaPersona(this.personaModel).subscribe(() => {
-        this.businessService.getAlert(this.personaService.mensajeActualizado);
+        this.businessService.getAlert('Persona actualizada');
       })
     }
   }
 
   public nuevaPersona(): void {
-    this.personaModel = new Persona('', '', '', 'P', '', '', '', '');
+    this.personaModel = {};
     this.isNew = true;
   }
 

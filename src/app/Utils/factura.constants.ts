@@ -1,4 +1,6 @@
 export enum TipoFactura {
-    Compra,
-    Venta
+    FacturaCompra,
+    FacturaVenta,
+    CotizacionInsumos,
+    CotizacionServicios,
 }

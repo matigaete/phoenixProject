@@ -1,20 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core'; 
-import { Producto } from 'src/app/Clases/producto';
+import { Producto } from 'src/app/Interfaces/producto';
 
 @Component({
   selector: 'app-search-product',
-  template:  `<div class="Container">
-                <div class="row">
-                    <div class="col">
-                        <app-find (filtro)="refresh($event)"></app-find>
-                        <app-lista-productos (producto)="enviaProducto($event)" [filtro]=filtro></app-lista-productos>
-                    </div>
-                    <div class="col">
-                        <app-create-product *ngIf="iValor == 2"  [iProducto]="producto"></app-create-product>
-                        <app-info-productos *ngIf="iValor == 3"  [iProducto]="producto" (oValor)="enviaAccion($event)"></app-info-productos>
-                    </div>
-                </div>
-              </div>`,
+  templateUrl:  './search-product.component.html',
   styles: []
 })
 export class SearchProductComponent implements OnInit {

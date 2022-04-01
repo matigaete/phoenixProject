@@ -1,0 +1,6 @@
+<div class="form-group">
+    <label>Lista de Categorias:</label>
+    <select multiple class="form-control" [(ngModel)]="selectedC" (ngModelChange)="enviaCategoria($event)">
+        <option [ngValue]="c" *ngFor="let c of (categorias$ | async)">{{c.tipo}}</option>
+    </select>
+</div>

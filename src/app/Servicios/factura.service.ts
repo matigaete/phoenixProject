@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Factura } from '../Clases/factura';
-import { DetalleFactura } from '../Clases/detalle-factura';
+import { Factura } from 'src/app/Interfaces/factura';
+import { DetalleFactura } from 'src/app/Interfaces/detalle-factura';
 
 @Injectable({
   providedIn: 'root'

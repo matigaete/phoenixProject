@@ -23,7 +23,7 @@
       <td mat-cell *matCellDef="let producto"> {{producto[column.nombre] | currency : 'CLP'}} </td>
     </ng-container>
     <ng-container matColumnDef="eliminar">
-      <th mat-header-cell *matHeaderCellDef>{{bajar}}</th>
+      <th mat-header-cell *matHeaderCellDef>Dar de baja</th>
       <td mat-cell *matCellDef="let producto">
         <button mat-icon-button (click)="bajarProducto(producto)">
           <mat-icon color="warn">delete</mat-icon>

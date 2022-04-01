@@ -1,0 +1,10 @@
+<form>
+    <div class="form-row align-items-center">
+      <div class="col"> 
+        <p>Ingrese una categoría:</p>
+        <select name="select" [(ngModel)]="actual" class="custom-select" (ngModelChange)="actualizarLista($event)"> 
+          <option [value]="c.codigo" *ngFor="let c of (categorias$ | async)">{{c.tipo}}</option>
+        </select>
+      </div> 
+    </div>
+  </form>

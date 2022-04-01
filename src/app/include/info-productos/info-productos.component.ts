@@ -1,31 +1,18 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BusinessService } from 'src/app/Servicios/business.service';
-import { Producto } from 'src/app/Clases/producto';
+import { Producto } from 'src/app/Interfaces/producto';
 import { ProductosService } from 'src/app/Servicios/productos.service';
 
 @Component({
   selector: 'app-info-productos',
-  template: `<div class="card">
-                <div class="card-header">
-                  {{productoModel.nombre}}
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">Información:</h5>
-                  <p class="card-text">{{productoModel.descripcion}}</p>
-                  <p class="card-text">Stock disponible: {{productoModel.stock}}</p>
-                  <p class="card-text">Stock crítico: {{productoModel.stockCritico}}</p>
-                  <p class="card-text">Último precio de compra: {{ productoModel.precioCompra | currency : "CLP"}}</p>
-                  <p class="card-text">Precio de venta: {{ productoModel.precioVenta | currency : "CLP"}}</p>
-                  <a class="btn btn-primary {{disabled}}" (click)="asignarOpcion(2)">{{modificar}}</a>
-                </div>
-              </div>`,
+  templateUrl: './info-productos.component.html',
   styles: []
 })
 export class InfoProductosComponent implements OnInit {
 
   @Output() oValor = new EventEmitter<number>();
   @Input() iProducto: Producto;
-  public productoModel = new Producto('','','',0,0,0,0,0,false,'')
+  public productoModel: Producto = {};
   public modificar: string;
   public disabled: string;
 
@@ -33,8 +20,6 @@ export class InfoProductosComponent implements OnInit {
     private productoService: ProductosService) { }
 
   public ngOnInit(): void {
-    this.productoModel.nombre = this.productoService.nombre;
-    this.productoModel.descripcion = this.productoService.info;
     this.modificar = this.businessService.getAcciones()[1].nombre;
   }
 

@@ -1,7 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { plainToClass } from 'class-transformer';
 import { Observable } from 'rxjs';
-import { Persona } from 'src/app/Clases/persona';
+import { Persona } from 'src/app/Interfaces/persona';
 import { PersonaService } from 'src/app/Servicios/persona.service';
 
 @Component({
@@ -22,7 +21,7 @@ import { PersonaService } from 'src/app/Servicios/persona.service';
 export class ListaProveedoresComponent implements OnInit {
 
   @Output() oPersona = new EventEmitter<Persona>();
-  public selectedP = Persona;
+  public selectedP: Persona = {};
   public proveedores$: Observable<Persona[]>; 
 
   constructor(private personaService: PersonaService) { }
@@ -31,8 +30,7 @@ export class ListaProveedoresComponent implements OnInit {
     this.proveedores$ = this.personaService.getListaProveedores();
   }
 
-  enviaProveedor(event: any){
-    let persona = plainToClass(Persona, event);
+  enviaProveedor(persona: Persona){
     this.oPersona.emit(persona);
   }
 

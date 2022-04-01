@@ -3,10 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { MatDialog } from '@angular/material/dialog';  
-import { Persona } from '../Clases/persona';
-import { Observable } from 'rxjs';
-import { Region } from '../Clases/region';
-import { Provincia } from '../Clases/provincia';
+import { Persona } from '../Interfaces/persona';
+import { Region } from '../Interfaces/region';
+import { Provincia } from '../Interfaces/provincia';
 import { Comuna } from '../Interfaces/comuna';
 
 @Injectable({

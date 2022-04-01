@@ -1,0 +1,11 @@
+<div class="Container">
+    <div class="row">
+        <div class="col">
+            <app-lista-servicios (servicio)="enviaServicio($event)"></app-lista-servicios>
+            <app-info-servicios></app-info-servicios>
+        </div>
+        <div class="col">
+            <app-create-service [iServicio]="servicio"></app-create-service>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<form (ngSubmit)="OnSubmit()">
+    <div class="form-group">
+        <label>Nombre de categoría:</label>
+        <input type="text" [ngClass]="formControlNombre()" [(ngModel)]="categoriaModel.tipo"
+            (ngModelChange)="validaNombre($event)" [value]="categoriaModel.tipo" name="nombre">
+        <div class="invalid-feedback">
+            Ingrese un nombre
+        </div>
+    </div>
+    <div class="row justify-content-around">
+        <div class="col-1">
+            <button type="submit" class="btn btn-dark">Aceptar</button>
+        </div>
+        <div class="col-11">
+            <button type="button" class="btn btn-dark" (click)="nuevaCategoria()">Nueva categoría</button>
+        </div>
+    </div>
+</form>

@@ -1,19 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Servicio } from 'src/app/Clases/servicio';
+import { Servicio } from 'src/app/Interfaces/servicio';
 
 @Component({
   selector: 'app-search-service',
-  template: `<div class="Container">
-                <div class="row">
-                    <div class="col">
-                        <app-lista-servicios (servicio)="enviaServicio($event)"></app-lista-servicios>
-                        <app-info-servicios></app-info-servicios>
-                    </div>
-                    <div class="col">
-                        <app-create-service [iServicio]="servicio"></app-create-service>
-                    </div>
-                </div>
-              </div>`,
+  templateUrl: './search-service.component.html',
   styles: []
 })
 export class SearchServiceComponent implements OnInit {

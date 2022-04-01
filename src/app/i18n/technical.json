@@ -54,8 +54,8 @@
         "mensajePrecio" : "Ingrese un precio mayor a 0",
         "mensajeColumnas" : "Todas las columnas están desplegadas",
         "mensajeBajado" : "Persona dado de baja",
-        "mensajeActualizado" : "Persona actualizado",
-        "mensajeCreado" : "Persona añadido",
+        "mensajeActualizado" : "Persona actualizada",
+        "mensajeCreado" : "Persona añadida",
         "mensajeActivado" : "Persona activado"
     }, 
     "producto": {

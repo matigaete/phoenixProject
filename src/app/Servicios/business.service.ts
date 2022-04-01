@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Ilista } from '../Interfaces/ilista';
-import { Producto } from '../Clases/producto';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import jsPDF from 'jspdf';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RutPipe } from '../Pipes/rut.pipe';
-import { Factura } from '../Clases/factura';
+import { Factura } from '../Interfaces/factura';
+import { TipoProducto } from '../Utils/producto.constants';
+import { TipoFactura } from '../Utils/factura.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -206,7 +207,7 @@ export class BusinessService {
     doc.line(27, 43, 27, 74);
     doc.text('mgaete@technicalservice.cl', 151, 72);
 
-    if (f.tipo == 'CP') {
+    if (f.tipo == TipoFactura.CotizacionInsumos) {
       //Detalle de cotización
       doc.setLineWidth(0.25);
       doc.setFontSize(10);
@@ -261,7 +262,7 @@ export class BusinessService {
       doc.setFont("Helvetica", "normal");
       var cord = 110;
       f.detalle.forEach(pos => {
-        if (pos.tipo == 'S') {
+        if (pos.tipo == TipoProducto.Servicio) {
           doc.text(pos.servicio.codigo.toString(), 15, cord);      //Código
           doc.text(pos.servicio.descripcion, 40, cord);  //Descripción
           doc.text(this.convierteCLP(pos.servicio.precioVenta), 143, cord);      //Precio 
@@ -295,7 +296,7 @@ export class BusinessService {
       doc.setFont("Helvetica", "normal");
       var cord = 170;
       f.detalle.forEach(pos => {
-        if (pos.tipo == 'P') {
+        if (pos.tipo == TipoProducto.Insumo) {
           doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
           doc.text(pos.producto.descripcion, 40, cord);  //Descripción
           doc.text(this.convierteCLP(pos.producto.precioVenta), 143, cord);      //Precio 
@@ -441,7 +442,7 @@ export class BusinessService {
     doc.setFontSize(7);
     var cord = 110;
     f.detalle.forEach(pos => {
-      if (pos.tipo == 'P') {
+      if (pos.tipo == TipoProducto.Insumo) {
         doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
         doc.text(pos.producto.descripcion, 40, cord);  //Descripción
         doc.text(this.convierteCLP(pos.producto.precioVenta), 133, cord);      //Precio 

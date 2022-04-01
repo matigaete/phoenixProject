@@ -34,7 +34,7 @@ export class WelcomeComponent implements OnInit {
   dispColumn = ['disp'];
   dynamicColumns = ['cost', 'dcto', 'subtotal'];
   displayedColumns = [];
-  factura: Factura = { tipo: TipoFactura.Venta };
+  factura: Factura = { tipo: TipoFactura.FacturaVenta };
   transactions: DetalleFactura[] = [
     { tipo: TipoProducto.Insumo }
   ];
@@ -50,6 +50,8 @@ export class WelcomeComponent implements OnInit {
   proveedores$: Observable<Persona[]>;
   alertas: Ilista[];
   fecha: string;
+  esCotizacion: boolean = false;
+  esFacturaCompra: boolean = false;
   myControl = new FormControl();
 
   constructor(private businessService: BusinessService,
@@ -70,6 +72,12 @@ export class WelcomeComponent implements OnInit {
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
     this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
     this.dateAdapter.setLocale('en-GB');
+  }
+
+  ngOnChanges() {
+    let tipo = this.factura.tipo;
+    this.esCotizacion = tipo == TipoFactura.CotizacionInsumos || tipo == TipoFactura.CotizacionServicios;
+    this.esFacturaCompra = tipo == TipoFactura.FacturaCompra;
   }
 
   buscaCliente(codigo: string) {
@@ -106,17 +114,17 @@ export class WelcomeComponent implements OnInit {
 
   generaFactura() {
     let fact = this.factura;
-    (fact.codFactura == undefined || fact.codFactura == 0) && fact.tipo == TipoFactura.Venta
+    (fact.codFactura == undefined || fact.codFactura == 0) && fact.tipo == TipoFactura.FacturaVenta
       ? fact.codFactura = ++this.ultimaFactura : 0;
     fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
     fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
     fact = FacturaHelper.limpiaPosiciones(fact);
-    if (fact.tipo == TipoFactura.Compra) { // Si es verdadero es factura de compra
+    if (fact.tipo == TipoFactura.FacturaCompra) { // Si es verdadero es factura de compra
       this.facturaService.creaFacturaCompra(fact).subscribe(() => {
         this.businessService.getAlert('Insumos actualizados correctamente');
         this.reset();
       });
-    } else if (fact.tipo == TipoFactura.Venta) {                    // Factura de venta
+    } else if (fact.tipo == TipoFactura.FacturaVenta) {                    // Factura de venta
       this.facturaService.creaFacturaVenta(fact).subscribe(() => {
         this.businessService.getAlert('Factura creada correctamente');
         this.alertStock();
@@ -170,9 +178,9 @@ export class WelcomeComponent implements OnInit {
   reset() {
     this.transactions = [{tipo: TipoProducto.Insumo}];
     this.dataSource.next(this.transactions);
-    this.factura.tipo == TipoFactura.Venta ? this.ultimaFactura++ : 0;
+    this.factura.tipo == TipoFactura.FacturaVenta ? this.ultimaFactura++ : 0;
     this.factura = {
-      tipo: TipoFactura.Venta,
+      tipo: TipoFactura.FacturaVenta,
       persona: {
         tipo: TipoPersona.Cliente
       }
@@ -270,7 +278,7 @@ export class WelcomeComponent implements OnInit {
     let log = [];
     let f = this.factura;
     let texto = f.tipo == TipoPersona.Cliente ? 'Proveedor' : 'Cliente';
-    if (f.codFactura == undefined || f.codFactura == 0 && f.tipo == TipoFactura.Compra ) {
+    if (f.codFactura == undefined || f.codFactura == 0 && f.tipo == TipoFactura.FacturaCompra ) {
       log.push('Ingrese código de factura')
     }
     if (f.persona.rut == undefined || f.persona.rut == '') {
@@ -288,7 +296,7 @@ export class WelcomeComponent implements OnInit {
       if (pos.tipo == TipoProducto.Insumo) {
         !pos.producto.nombre ? error = true : 0;
         !pos.producto.precioCompra ? error = true : 0;
-        pos.cantidad > pos.producto.stock && f.tipo == TipoFactura.Venta
+        pos.cantidad > pos.producto.stock && f.tipo == TipoFactura.FacturaVenta
           ? log.push(`No puede exceder al stock actual de posición ${index + 1}`) : 0;
       } else {
         !pos.servicio.nombre ? error = true : 0;
@@ -308,7 +316,7 @@ export class WelcomeComponent implements OnInit {
 
   // Al cambiar a factura de compra todas las posiciones se colocan de tipo P(producto)
   cambiaCompra(fact: Factura) {
-    if (fact.tipo == TipoFactura.Compra) {
+    if (fact.tipo == TipoFactura.FacturaCompra) {
       fact.persona.tipo = TipoPersona.Proveedor;
       fact.detalle.forEach(det => {
         det.tipo = TipoProducto.Insumo;
@@ -342,7 +350,7 @@ export class WelcomeComponent implements OnInit {
 
   //Verifica si el rut ingresado existe
   getPersona(): void {
-    if (this.factura.tipo == TipoFactura.Venta) {
+    if (this.factura.tipo == TipoFactura.FacturaVenta) {
       this.persona$ = this.personaService.getCliente(this.factura.persona.rut);
     } else {
       this.persona$ = this.personaService.getProveedor(this.factura.persona.rut);

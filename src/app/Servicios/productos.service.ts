@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Producto } from '../Clases/producto';
+import { Producto } from '../Interfaces/producto';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/dialogo-confirmacion.component';
