@@ -15,15 +15,11 @@ import { Factura } from '../Clases/factura';
 export class BusinessService {
 
   public url = environment.baseUrl;
-  private _aceptar: string;
-  private _inicio: string;
   private _active: string;
   private _action: string;
   private _option: number;
   private _disabled: string;
   private _error: boolean;
-  private _mensajeError: string;
-  private _mensajeNombre: string;
 
   constructor(private router: Router,
     private snackBar: MatSnackBar,
@@ -31,14 +27,6 @@ export class BusinessService {
     private rutPipe: RutPipe,
     private datepipe: DatePipe) {
 
-    this._inicio = 'Inicio';
-    this._action = 'Mantenedores';
-    this._aceptar = 'Aceptar';
-    this._option = 1;
-    this._active = 'active';
-    this._disabled = 'disabled';
-    this._mensajeError = 'Complete los campos faltantes';
-    this._mensajeNombre = 'Ingrese un nombre';
     this._error = true;
   }
 
@@ -505,14 +493,6 @@ export class BusinessService {
     this._action = action;
   }
 
-  public set inicio(inicio: string) {
-    this._inicio = inicio;
-  }
-
-  public set aceptar(aceptar: string) {
-    this._aceptar = aceptar;
-  }
-
   public set active(active: string) {
     this._active = active;
   }
@@ -529,27 +509,11 @@ export class BusinessService {
     this._error = error;
   }
 
-  public set mensajeError(mensajeError: string) {
-    this._mensajeError = mensajeError;
-  }
-
-  public set mensajeNombre(mensajeNombre: string) {
-    this._mensajeNombre = mensajeNombre;
-  }
-
   //-End Setters----------------------------------//
 
   //-Getters--------------------------------------//
   public get action(): string {
     return this._action;
-  }
-
-  public get inicio(): string {
-    return this._inicio;
-  }
-
-  public get aceptar(): string {
-    return this._aceptar;
   }
 
   public get active(): string {
@@ -566,14 +530,6 @@ export class BusinessService {
 
   public get error(): boolean {
     return this._error;
-  }
-
-  public get mensajeError(): string {
-    return this._mensajeError;
-  }
-
-  public get mensajeNombre(): string {
-    return this._mensajeNombre;
   }
   //-End Getters-----------------------------------//
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { plainToClass } from 'class-transformer';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
-import { Categoria } from 'src/app/Clases/categoria';
+import { Categoria } from 'src/app/Interfaces/comuna';
 import { Observable } from 'rxjs';
 
 @Component({

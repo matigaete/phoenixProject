@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { BusinessService } from 'src/app/Servicios/business.service';
-import { Categoria } from 'src/app/Clases/categoria'; 
+import { Categoria } from 'src/app/Interfaces/categoria'; 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
 
@@ -31,7 +31,7 @@ import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmaci
 export class FormCategoriasComponent implements OnInit {
   @Output() actualiza = new EventEmitter<Categoria>();
   @Input() iCategoria: Categoria;
-  public categoriaModel: Categoria = new Categoria('', 0);
+  public categoriaModel: Categoria = { codigo: 0, tipo: '' };
   public aceptar: string;
   public nombre: string;
   public nuevo: string;
@@ -92,7 +92,10 @@ export class FormCategoriasComponent implements OnInit {
   }
 
   public nuevaCategoria() {
-    this.categoriaModel = new Categoria("", 0);
+    this.categoriaModel = {
+      codigo: 0,
+      tipo: ''
+    };
     this.errorNombre = true;
   }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Comuna } from 'src/app/Clases/comuna';
+import { Comuna } from 'src/app/Interfaces/comuna';
 import { Persona } from 'src/app/Clases/persona';
 import { Provincia } from 'src/app/Clases/provincia';
 import { Region } from 'src/app/Clases/region';

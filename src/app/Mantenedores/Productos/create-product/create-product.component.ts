@@ -5,7 +5,7 @@ import { BusinessService } from '../../../Servicios/business.service';
 import { ProductosService } from 'src/app/Servicios/productos.service';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { Observable } from 'rxjs';
-import { Categoria } from 'src/app/Clases/categoria'; 
+import { Categoria } from 'src/app/Interfaces/categoria'; 
 
 @Component({
   selector: 'app-create-product',

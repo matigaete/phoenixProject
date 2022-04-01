@@ -59,18 +59,20 @@ export class ListadoComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subscriptions.push(
-      this.productoService.getListaProductos().subscribe((jsonProductos: any) => this.jsonProductos = jsonProductos));
+      this.productoService.getListaProductos()
+      .subscribe((jsonProductos: any) => {
+        this.jsonProductos = jsonProductos;
+        this.dataSourceA = new MatTableDataSource<Producto>(this.jsonProductos);
+        this.dataSourceA.paginator = this.paginatorA;
+      }));
     this.subscriptions.push(
-      this.productoService.getProductosInactivos().subscribe((jsonInactivos: any) => this.jsonInactivos = jsonInactivos));
+      this.productoService.getProductosInactivos()
+      .subscribe((jsonInactivos: any) => {
+        this.jsonInactivos = jsonInactivos;
+        this.dataSourceI = new MatTableDataSource<Producto>(this.jsonInactivos);
+        this.dataSourceI.paginator = this.paginatorI;
+      }));
     this.columnsToDisplay = this.getColumns();
-    setTimeout(() => {
-      // this.dataSourceA.next(this.jsonProductos);
-      // this.dataSourceI.next(this.jsonInactivos);
-      this.dataSourceA = new MatTableDataSource<Producto>(this.jsonProductos);
-      this.dataSourceI = new MatTableDataSource<Producto>(this.jsonInactivos);
-      this.dataSourceA.paginator = this.paginatorA;
-      this.dataSourceI.paginator = this.paginatorI;
-    }, 200);
   }
 
   public addColumn() {

@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Ilista } from '../../Interfaces/ilista';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { Subscription, Observable } from 'rxjs';
-import { Categoria } from 'src/app/Clases/categoria';
+import { Categoria } from 'src/app/Interfaces/comuna';
 
 @Component({
   selector: 'app-find',
