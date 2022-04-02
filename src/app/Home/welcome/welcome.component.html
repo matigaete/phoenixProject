@@ -2,10 +2,10 @@
   <div class="form-group">
     <div class="row">
       <mat-radio-group [(ngModel)]="factura.tipo" (ngModelChange)="cambiaCompra(factura)">
-        <mat-radio-button value="FV">Factura de venta</mat-radio-button>
-        <mat-radio-button value="FC">Ingreso Insumos por factura</mat-radio-button>
-        <mat-radio-button value="CP">Cotización de productos</mat-radio-button>
-        <mat-radio-button value="CS">Cotización de servicios</mat-radio-button>
+        <mat-radio-button value="TipoFactura.FacturaVenta">Factura de venta</mat-radio-button>
+        <mat-radio-button value="TipoFactura.FacturaCompra">Ingreso Insumos por factura</mat-radio-button>
+        <mat-radio-button value="TipoFactura.CotizacionInsumos">Cotización de productos</mat-radio-button>
+        <mat-radio-button value="TipoFactura.CotizacionServicios">Cotización de servicios</mat-radio-button>
       </mat-radio-group>
     </div>
     <div class="row">
