@@ -37,7 +37,7 @@ export class PersonaService {
   }
 
   public getClientesFiltro(codigo:string) {
-    return this.http.get<Persona[]>(`${environment.baseUrl}getClientsFilter.php?codigo=${codigo}`);
+    return this.http.get<Persona[]>(`${environment.baseUrl}api/personas`);
   }
 
   public getProveedoresFiltro(codigo:string) {

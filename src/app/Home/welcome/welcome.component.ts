@@ -34,9 +34,9 @@ export class WelcomeComponent implements OnInit {
   dispColumn = ['disp'];
   dynamicColumns = ['cost', 'dcto', 'subtotal'];
   displayedColumns = [];
-  factura: Factura = { tipo: TipoFactura.FacturaVenta };
+  factura: Factura = { persona: { rut: '' }, tipo: TipoFactura.FacturaVenta, detalle: [{}] };
   transactions: DetalleFactura[] = [
-    { tipo: TipoProducto.Insumo }
+    { dcto: 0, tipo: TipoProducto.Insumo, producto: { stock: 0 } }
   ];
   dataSource = new BehaviorSubject([]);
   chkAll: boolean = false;
@@ -66,8 +66,8 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
-    this.facturaService.getUltimaFactura().subscribe(nro => this.ultimaFactura = nro.cod);
-    this.facturaService.getUltimaCotizacion().subscribe(nro => this.ultimaCotizacion = nro.cod);
+    //this.facturaService.getUltimaFactura().subscribe(nro => this.ultimaFactura = nro.cod);
+    //this.facturaService.getUltimaCotizacion().subscribe(nro => this.ultimaCotizacion = nro.cod);
     this.clientes$ = this.personaService.getClientesFiltro('%');
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
     this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
