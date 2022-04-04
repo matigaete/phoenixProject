@@ -12,9 +12,8 @@ export class SearchServiceComponent implements OnInit {
   public filtro: number;
   public servicio: Servicio;
 
-  constructor() { }
-
   public ngOnInit(): void {
+    console.log('search');
   }
 
   public refresh(filtro: number) {

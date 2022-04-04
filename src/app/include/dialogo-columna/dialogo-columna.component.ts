@@ -23,9 +23,7 @@ export class DialogoColumnaComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  btnClick() {
+    console.log('Dialog');
   }
 
   selectAll() {

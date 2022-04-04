@@ -57,7 +57,7 @@ export class BusinessService {
       //   id: 4,
       //   nombre: 'Proveedores',
       //   path: 'proveedores',
-    }]
+    }];
   }
 
   public getAcciones(): Ilista[] {
@@ -74,7 +74,7 @@ export class BusinessService {
       id: 4,
       nombre: 'Listado',
     }
-    ]
+    ];
   }
 
   public getFormControl(error: boolean) {
@@ -82,7 +82,7 @@ export class BusinessService {
       'form-control': true,
       'is-invalid': error,
       'is-valid': !error
-    }
+    };
   }
 
   public validaCampo(campo: any, error: boolean) {
@@ -127,24 +127,24 @@ export class BusinessService {
 
   // Genera el PDF de factura
   public generarCotizacion(f: Factura, fecha?: string) {
-    var doc = new jsPDF();
-    var img = new Image();
-    var rut = this.rutPipe.transform(f.persona.rut);
-    var nombre = f.persona.nombre; 
-    var direccion = f.persona.direccion; 
-    var contacto = f.persona.contacto;
-    var email = f.persona.email;
-    var neto = this.convierteCLP(f.neto);
-    var iva = this.convierteCLP(f.iva);
-    var total = this.convierteCLP(f.total);
-    var fecha = this.datepipe.transform(new Date(fecha), 'dd-MM-yyyy');
+    const doc = new jsPDF();
+    const img = new Image();
+    const rut = this.rutPipe.transform(f.persona.rut);
+    const nombre = f.persona.nombre; 
+    const direccion = f.persona.direccion; 
+    const contacto = f.persona.contacto;
+    const email = f.persona.email;
+    const neto = this.convierteCLP(f.neto);
+    const iva = this.convierteCLP(f.iva);
+    const total = this.convierteCLP(f.total);
+    fecha = this.datepipe.transform(new Date(fecha), 'dd-MM-yyyy');
 
     doc.setFontSize(15);
-    doc.setFont("Helvetica", "bold"); //negrita
+    doc.setFont('Helvetica', 'bold'); //negrita
     doc.text('COTIZACIÓN', 90, 30);
 
     //Seccion superior izquierda
-    img.src = 'assets/Serviciotecnico-1.jpg'
+    img.src = 'assets/Serviciotecnico-1.jpg';
     doc.addImage(img, 'JPEG', 10, 10, 30, 30);
 
     //Datos del cliente
@@ -179,7 +179,7 @@ export class BusinessService {
     doc.setFillColor(234, 234, 234);
     doc.rect(160, 17, 40, 15, 'S');
     doc.setFontSize(7);
-    doc.setFont("Helvetica", "normal");
+    doc.setFont('Helvetica', 'normal');
     doc.line(180, 17, 180, 32);
     doc.text('Fecha:', 162, 20);
     doc.text(fecha, 185, 20);
@@ -192,7 +192,7 @@ export class BusinessService {
 
     //Datos de la empresa
     doc.setFontSize(7);
-    doc.setFont("Helvetica", "bold"); //negrita
+    doc.setFont('Helvetica', 'bold'); //negrita
     doc.rect(150, 43, 55, 31, 'S');
     doc.line(150, 49, 205, 49);
     doc.text('TECHNICAL SERVICE M & G SPA', 151, 47);
@@ -228,8 +228,8 @@ export class BusinessService {
 
       //Lista de productos
       doc.setFontSize(7);
-      doc.setFont("Helvetica", "normal");
-      var cord = 110;
+      doc.setFont('Helvetica', 'normal');
+      let cord = 110;
       f.detalle.forEach(pos => {
         doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
         doc.text(pos.producto.descripcion, 40, cord);  //Descripción
@@ -259,8 +259,8 @@ export class BusinessService {
 
       //Lista de productos
       doc.setFontSize(7);
-      doc.setFont("Helvetica", "normal");
-      var cord = 110;
+      doc.setFont('Helvetica', 'normal');
+      let cord = 110;
       f.detalle.forEach(pos => {
         if (pos.tipo == TipoProducto.Servicio) {
           doc.text(pos.servicio.codigo.toString(), 15, cord);      //Código
@@ -273,7 +273,7 @@ export class BusinessService {
       });
 
       //Detalle de repuestos
-      doc.setFont("Helvetica", "bold"); //negrita
+      doc.setFont('Helvetica', 'bold'); //negrita
       doc.setLineWidth(0.25);
       doc.setFontSize(10);
       doc.line(10, 155, 355, 155);
@@ -293,8 +293,8 @@ export class BusinessService {
 
       //Lista de productos
       doc.setFontSize(7);
-      doc.setFont("Helvetica", "normal");
-      var cord = 170;
+      doc.setFont('Helvetica', 'normal');
+      cord = 170;
       f.detalle.forEach(pos => {
         if (pos.tipo == TipoProducto.Insumo) {
           doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
@@ -315,7 +315,7 @@ export class BusinessService {
     //Condiciones comerciales
     doc.rect(15, 235, 100, 50, 'S');
     doc.line(15, 240, 115, 240);
-    doc.setFont("Helvetica", "bold");
+    doc.setFont('Helvetica', 'bold');
     doc.text('Condiciones Comerciales', 16, 239);
     doc.text('1. Validez: 15 días', 16, 245);
     doc.text('2. Forma Pago: Contado/Transferencia bancaria', 16, 248);
@@ -345,27 +345,27 @@ export class BusinessService {
 
   // Genera el PDF de factura
   public generarFactura(f: Factura, fecha?: string) {
-    var doc = new jsPDF();
-    var img = new Image();
-    var rut = this.rutPipe.transform(f.persona.rut);
-    var nombre = f.persona.nombre;
-    var giro = f.persona.giro;
-    var direccion = f.persona.direccion;
-    var provincia = f.persona.provincia;
-    var comuna = f.persona.comuna;
-    var contacto = f.persona.contacto;
-    var email = f.persona.email;
-    var neto = this.convierteCLP(f.neto);
-    var iva = this.convierteCLP(f.iva);
-    var total = this.convierteCLP(f.total);
-    var fecha = this.datepipe.transform(new Date(fecha), 'dd-MM-yyyy');
-    var nroFactura = f.codFactura.toString();
+    const doc = new jsPDF();
+    const img = new Image();
+    const rut = this.rutPipe.transform(f.persona.rut);
+    const nombre = f.persona.nombre;
+    const giro = f.persona.giro;
+    const direccion = f.persona.direccion;
+    const provincia = f.persona.provincia;
+    const comuna = f.persona.comuna;
+    const contacto = f.persona.contacto;
+    const email = f.persona.email;
+    const neto = this.convierteCLP(f.neto);
+    const iva = this.convierteCLP(f.iva);
+    const total = this.convierteCLP(f.total);
+    fecha = this.datepipe.transform(new Date(fecha), 'dd-MM-yyyy');
+    const nroFactura = f.codFactura.toString();
 
     //Seccion superior izquierda
-    img.src = 'assets/Serviciotecnico-1.jpg'
+    img.src = 'assets/Serviciotecnico-1.jpg';
     doc.addImage(img, 'JPEG', 10, 10, 40, 40);
     doc.setFontSize(13);
-    doc.setFont("Helvetica", "bold"); //negrita
+    doc.setFont('Helvetica', 'bold'); //negrita
     doc.text('TECHNICAL SERVICE M & G SPA', 51, 13);
     doc.setFontSize(10);
     doc.setFont('Helvetica', 'normal');
@@ -407,7 +407,7 @@ export class BusinessService {
     doc.setFillColor(234, 234, 234);
     doc.rect(130, 5, 66, 35, 'S');
     doc.setFontSize(13);
-    doc.setFont("Helvetica", "bold"); //negrita
+    doc.setFont('Helvetica', 'bold'); //negrita
     doc.text('R.U.T.:77.132.092-9', 139, 13);
     doc.text('FACTURA ELECTRÓNICA', 134, 25);
     doc.text('N°' + nroFactura, 157, 37);
@@ -440,7 +440,7 @@ export class BusinessService {
 
     //Lista de productos
     doc.setFontSize(7);
-    var cord = 110;
+    let cord = 110;
     f.detalle.forEach(pos => {
       if (pos.tipo == TipoProducto.Insumo) {
         doc.text(pos.producto.codigo.toString(), 15, cord);      //Código
@@ -463,7 +463,7 @@ export class BusinessService {
     doc.setLineWidth(0.25);
     doc.rect(10, 230, 190, 60, 'S');
 
-    img.src = 'assets/timbre_electronico.jpg'
+    img.src = 'assets/timbre_electronico.jpg';
     doc.addImage(img, 'JPEG', 15, 240, 80, 40);
 
     doc.rect(100, 235, 100, 40, 'S');
@@ -513,22 +513,23 @@ export class BusinessService {
   //-End Setters----------------------------------//
 
   //-Getters--------------------------------------//
+  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   public get action(): string {
     return this._action;
   }
-
+  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   public get active(): string {
     return this._active;
   }
-
+  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   public get option(): number {
     return this._option;
   }
-
+  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   public get disabled(): string {
     return this._disabled;
   }
-
+  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   public get error(): boolean {
     return this._error;
   }

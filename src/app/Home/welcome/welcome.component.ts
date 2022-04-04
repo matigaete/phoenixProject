@@ -39,7 +39,7 @@ export class WelcomeComponent implements OnInit {
     { dcto: 0, tipo: TipoProducto.Insumo, producto: { stock: 0 } }
   ];
   dataSource = new BehaviorSubject([]);
-  chkAll: boolean = false;
+  chkAll = false;
   errorStock: boolean;
   ultimaFactura: number;
   ultimaCotizacion: number;
@@ -50,8 +50,8 @@ export class WelcomeComponent implements OnInit {
   proveedores$: Observable<Persona[]>;
   alertas: Ilista[];
   fecha: string;
-  esCotizacion: boolean = false;
-  esFacturaCompra: boolean = false;
+  esCotizacion = false;
+  esFacturaCompra = false;
   myControl = new FormControl();
 
   constructor(private businessService: BusinessService,
@@ -75,7 +75,7 @@ export class WelcomeComponent implements OnInit {
   }
 
   ngOnChanges() {
-    let tipo = this.factura.tipo;
+    const tipo = this.factura.tipo;
     this.esCotizacion = tipo == TipoFactura.CotizacionInsumos || tipo == TipoFactura.CotizacionServicios;
     this.esFacturaCompra = tipo == TipoFactura.FacturaCompra;
   }
@@ -90,7 +90,7 @@ export class WelcomeComponent implements OnInit {
 
   // Se validan campos vacíos antes de generar factura
   OnSubmit() {
-    let errores = this.validaCampos();
+    const errores = this.validaCampos();
     if (!errores.length) {
       this.getPersona();
       this.dialogo.open(DialogoConfirmacionComponent, {
@@ -149,7 +149,7 @@ export class WelcomeComponent implements OnInit {
     } catch (error) {
       newID = 0;
     }
-    let registro: DetalleFactura = { posicion: newID, tipo: TipoProducto.Insumo };
+    const registro: DetalleFactura = { posicion: newID, tipo: TipoProducto.Insumo };
     this.transactions.push(registro);
     this.factura.detalle = this.transactions;
     this.dataSource.next(this.transactions);
@@ -157,7 +157,7 @@ export class WelcomeComponent implements OnInit {
 
   // Limpia posiciones según las que estén marcadas
   clear() {
-    let array = [];
+    const array = [];
     this.transactions.forEach(transaction => {
       if (!transaction.insert) {
         array.push(transaction);
@@ -184,18 +184,18 @@ export class WelcomeComponent implements OnInit {
       persona: {
         tipo: TipoPersona.Cliente
       }
-    }
+    };
     this.factura.detalle.push(this.transactions[0]);
     this.fecha = null;
   }
 
   // Alerta todos los productos que se encuentren bajo el stock crítico
   alertStock() {
-    let arr = [];
+    const arr = [];
     this.transactions.forEach(det => {
       if (det.tipo == TipoProducto.Insumo) {
-        let producto = det.producto;
-        let cantidadFinal = producto.stock - det.cantidad;
+        const producto = det.producto;
+        const cantidadFinal = producto.stock - det.cantidad;
         if (cantidadFinal <= 0) {
           arr.push({
             tipo: 'danger',
@@ -239,7 +239,7 @@ export class WelcomeComponent implements OnInit {
           } else {
             prd = {
               codigo: prd.codigo
-            }
+            };
           }
         }
         datpos.producto = prd;
@@ -264,7 +264,7 @@ export class WelcomeComponent implements OnInit {
           } else {
             srv = {
               codigo: srv.codigo
-            }
+            };
           }
         }
         datpos.servicio = srv;
@@ -275,23 +275,23 @@ export class WelcomeComponent implements OnInit {
 
   // Validación si existe algún campo que falte por rellenar
   validaCampos() {
-    let log = [];
-    let f = this.factura;
-    let texto = f.tipo == TipoPersona.Cliente ? 'Proveedor' : 'Cliente';
+    const log = [];
+    const f = this.factura;
+    const texto = f.tipo == TipoPersona.Cliente ? 'Proveedor' : 'Cliente';
     if (f.codFactura == undefined || f.codFactura == 0 && f.tipo == TipoFactura.FacturaCompra ) {
-      log.push('Ingrese código de factura')
+      log.push('Ingrese código de factura');
     }
     if (f.persona.rut == undefined || f.persona.rut == '') {
-      log.push(`Ingrese rut de ${texto}`)
+      log.push(`Ingrese rut de ${texto}`);
     }
     if (this.fecha == undefined) {
-      log.push('Ingrese una fecha válida')
+      log.push('Ingrese una fecha válida');
     }
     if (f.tipo == undefined) {
-      log.push('Ingrese tipo de factura')
+      log.push('Ingrese tipo de factura');
     }
     this.transactions.forEach(function (pos, index) {
-      let msg = `Pos. ${index + 1} datos incompletos`;
+      const msg = `Pos. ${index + 1} datos incompletos`;
       let error = false;
       if (pos.tipo == TipoProducto.Insumo) {
         !pos.producto.nombre ? error = true : 0;
@@ -320,7 +320,7 @@ export class WelcomeComponent implements OnInit {
       fact.persona.tipo = TipoPersona.Proveedor;
       fact.detalle.forEach(det => {
         det.tipo = TipoProducto.Insumo;
-      })
+      });
       this.displayedColumns = this.principalColumns.concat(this.dynamicColumns);
     } else {
       fact.persona.tipo = TipoPersona.Cliente;
@@ -364,22 +364,21 @@ export class WelcomeComponent implements OnInit {
 
   enviar(f: Factura) {
     setTimeout(() => {
-      let user = {
+      const user = {
         name: f.persona.nombre,
         email: f.persona.email,
         factura: f.codFactura
-      }
-      this.facturaService.sendEmail("http://localhost:3000/sendmail", user).subscribe(
+      };
+      this.facturaService.sendEmail('http://localhost:3000/sendmail', user).subscribe(
         data => {
-          let res: any = data;
+          const res: any = data;
           console.log(
             `id mensaje: ${res.messageId}`
           );
         },
         err => {
           console.log(err);
-        }, () => {
-        }
+        },
       );
     }, 10000);
   }

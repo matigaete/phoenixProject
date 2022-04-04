@@ -15,7 +15,7 @@ export class FormCategoriasComponent implements OnInit {
   @Input() iCategoria: Categoria;
   public categoriaModel: Categoria = { codigo: 0, tipo: '' };
   public errorNombre: boolean;
-  public categoria: string = 'categorias';
+  public categoria = 'categorias';
 
   constructor(private businessService: BusinessService,
     private categoriasService: CategoriasService, 
@@ -41,24 +41,24 @@ export class FormCategoriasComponent implements OnInit {
           data: this.categoriasService.getMensajeCrear(this.categoriaModel.tipo)
         })
           .afterClosed().
-          subscribe((confirmado: Boolean) => {
+          subscribe((confirmado: boolean) => {
             if (!confirmado) return;
             this.categoriasService.creaCategoria(this.categoriaModel).subscribe(() => {
               this.businessService.getAlert('Categoría creada');
-            })
-          })
+            });
+          });
       } else {
         this.dialogo.open(DialogoConfirmacionComponent, {
           data: this.categoriasService.getMensajeActualizar(this.iCategoria.tipo, this.categoriaModel.tipo)
         })
           .afterClosed().
-          subscribe((confirmado: Boolean) => {
+          subscribe((confirmado: boolean) => {
             if (!confirmado) return;
             this.categoriasService.actualizaCategoria(this.categoriaModel).subscribe(() => {
               this.businessService.getAlert('Categoría actualizada');
-            })
+            });
             this.actualiza.emit(this.categoriaModel);
-          })
+          });
       }
     } else {
       this.businessService.getAlert('Complete los campos faltantes'); 

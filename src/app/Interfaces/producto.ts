@@ -1,4 +1,4 @@
-import { Servicio } from "./servicio";
+import { Servicio } from './servicio';
 
 export interface Producto extends Servicio {
     categoria?: number | string,

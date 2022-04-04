@@ -46,11 +46,11 @@ export class CreateServiceComponent implements OnInit {
       if (this.isNew) {
         this.serviciosService.creaServicio(this.servicioModel).subscribe(() => {
           this.businessService.getAlert('Servicio añadido');
-        })
+        });
       } else {
         this.serviciosService.actualizaServicio(this.servicioModel).subscribe(() => {
           this.businessService.getAlert('Servicio actualizado');
-        })
+        });
       }
       this.servicioModel = {};
     } else {

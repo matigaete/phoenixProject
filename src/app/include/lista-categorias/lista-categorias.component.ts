@@ -19,11 +19,11 @@ export class ListaCategoriasComponent implements OnInit {
   constructor(private categoriaService: CategoriasService) { }
 
   public ngOnInit(): void {
-      this.categorias$ = this.categoriaService.getCategorias();
+    this.categorias$ = this.categoriaService.getCategorias();
   }
 
   public ngOnChanges(): void {
-      this.categorias$ = this.categoriaService.getCategorias();
+    this.categorias$ = this.categoriaService.getCategorias();
   }
 
   public enviaCategoria(categoria: Categoria) {

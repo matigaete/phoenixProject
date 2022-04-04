@@ -60,12 +60,12 @@ export class CreateProductComponent implements OnInit {
           this.chkAuto = false;
           this.errorCodigo = this.errorNombre = this.errorDescripcion =
             this.errorStockCritico = this.errorPrecioVenta = true;
-        })
+        });
       } else {
         if (this.chkBaja) {
           this.productoService.bajarProducto(this.productoModel)
             .afterClosed().
-            subscribe((confirmado: Boolean) => {
+            subscribe((confirmado: boolean) => {
               if (!confirmado) return;
               this.productoService.bajaProducto(this.productoModel).subscribe(() => {
                 this.businessService.getAlert('Producto dado de baja');
@@ -74,7 +74,7 @@ export class CreateProductComponent implements OnInit {
         } else {
           this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
             this.businessService.getAlert('Producto actualizado');
-          })
+          });
         }
       }
     } else {

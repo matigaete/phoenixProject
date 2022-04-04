@@ -1,5 +1,4 @@
-import { DetalleFactura } from '../Clases/detalle-factura';
-import { Producto } from '../Clases/producto';
+import { DetalleFactura } from '../Interfaces/detalle-factura';
 
 export interface Transaction {
     idpos: number;

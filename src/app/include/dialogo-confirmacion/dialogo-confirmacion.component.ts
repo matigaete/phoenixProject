@@ -19,6 +19,7 @@ export class DialogoConfirmacionComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('Dialog');
   }
 
 }

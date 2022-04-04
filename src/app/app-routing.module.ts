@@ -12,8 +12,8 @@ const routes: Routes = [
   { path: 'categorias', component: IndexCategoriasComponent },
   { path: 'index', component: WelcomeComponent },
   { path: 'personas', component: IndexPersonComponent }, 
-  { path: "", redirectTo: "/", pathMatch: "full" },// Cuando es la raíz
-  { path: "**", redirectTo: "/" }
+  { path: '', redirectTo: '/', pathMatch: 'full' },// Cuando es la raíz
+  { path: '**', redirectTo: '/' }
   //{ path: 'about', loadChildren: () => import('./about/about.module').then(m => m.AboutModule) },   
 ];
 

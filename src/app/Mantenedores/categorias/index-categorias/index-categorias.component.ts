@@ -17,9 +17,9 @@ export class IndexCategoriasComponent implements OnInit {
 
   public categoria: Categoria;
   public actualiza: Categoria;
-  constructor() { }
 
   ngOnInit(): void {
+    console.log('index');
   }
 
   public enviaCategoria(categoria: Categoria) {

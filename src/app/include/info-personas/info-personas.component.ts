@@ -20,9 +20,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InfoPersonasComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngOnInit() {
+    console.log('info');
   }
 
 }

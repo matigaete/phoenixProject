@@ -22,7 +22,7 @@ export class ListaServiciosComponent implements OnInit {
   constructor(private servicioService: ServiciosService) { }
 
   public ngOnInit(): void {
-      this.servicios$ = this.servicioService.getServicios();
+    this.servicios$ = this.servicioService.getServicios();
   }
 
   public ngOnChanges(): void {

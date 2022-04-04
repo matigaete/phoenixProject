@@ -39,7 +39,7 @@ export class CreatePersonComponent implements OnInit {
   public regiones$: Observable<Region[]>;
   public provincias$: Observable<Provincia[]>;
   public comunas$: Observable<Comuna[]>;
-  public isNew: boolean = true;
+  public isNew = true;
 
   constructor(private businessService: BusinessService,
     private personaService: PersonaService) { }
@@ -63,11 +63,11 @@ export class CreatePersonComponent implements OnInit {
       this.personaService.creaPersona(this.personaModel).subscribe(() => {
         this.businessService.getAlert('Persona añadida');
         this.nuevaPersona();
-      })
+      });
     } else { 
       this.personaService.actualizaPersona(this.personaModel).subscribe(() => {
         this.businessService.getAlert('Persona actualizada');
-      })
+      });
     }
   }
 

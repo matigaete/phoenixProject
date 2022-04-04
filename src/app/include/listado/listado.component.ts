@@ -79,14 +79,14 @@ export class ListadoComponent implements OnInit {
 
   public addColumn() {
     if (this.columnsOculted.length) {
-      var arrayOculted = [];
+      const arrayOculted = [];
       this.dialogo.open(DialogoColumnaComponent, {
         data: this.columnsOculted
       })
         .afterClosed().
         subscribe((lista: Ilista[]) => {
           if (lista) {
-            var col = this.columnsToDisplay;
+            const col = this.columnsToDisplay;
             col.pop();
             lista.forEach(element => {
               if (element.current) col.splice(element.id, 0, element.nombre);
@@ -96,7 +96,7 @@ export class ListadoComponent implements OnInit {
             col.splice(col.length, 0, 'eliminar');
             this.columnsToDisplay = col;
           }
-        })
+        });
     } else {
       this.businessService.getAlert('Todas las columnas están desplegadas');
     }
@@ -111,7 +111,7 @@ export class ListadoComponent implements OnInit {
   }
 
   public getColumns() {
-    var aux = new Array;
+    const aux = [];
     for (let i = 0; i < this.allColumns.length; i++) {
       aux.push(this.allColumns[i].nombre);
     }
@@ -121,7 +121,7 @@ export class ListadoComponent implements OnInit {
   public bajarProducto(producto: Producto) {
     this.productoService.bajarProducto(producto)
       .afterClosed().
-      subscribe((confirmado: Boolean) => {
+      subscribe((confirmado: boolean) => {
         if (!confirmado) return;
         this.productoService.bajaProducto(producto)
           .subscribe(() => {
@@ -136,7 +136,7 @@ export class ListadoComponent implements OnInit {
   public activarProducto(producto: Producto) {
     this.productoService.activarProducto(producto)
       .afterClosed().
-      subscribe((confirmado: Boolean) => {
+      subscribe((confirmado: boolean) => {
         if (!confirmado) return;
         this.productoService.activaProducto(producto)
           .subscribe(() => {

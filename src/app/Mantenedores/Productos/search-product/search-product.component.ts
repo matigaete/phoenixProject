@@ -12,9 +12,8 @@ export class SearchProductComponent implements OnInit {
   public filtro : number; 
   public producto : Producto;
 
-  constructor() { }
-
-  public ngOnInit(): void {
+  public ngOnInit() {
+    console.log('search');
   }
   
   public refresh(filtro : number){

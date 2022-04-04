@@ -29,9 +29,8 @@ export class IndexPersonComponent implements OnInit {
   public provincias$: Observable<Provincia[]>;
   public comunas$: Observable<Comuna[]>;
 
-  constructor() { }
-
   ngOnInit(): void {
+    console.log('info');
   }
 
   public enviaPersona(persona : Persona){
