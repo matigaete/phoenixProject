@@ -50,8 +50,6 @@ export class WelcomeComponent implements OnInit {
   proveedores$: Observable<Persona[]>;
   alertas: Ilista[];
   fecha: string;
-  esCotizacion = false;
-  esFacturaCompra = false;
   myControl = new FormControl();
 
   constructor(private businessService: BusinessService,
@@ -72,12 +70,6 @@ export class WelcomeComponent implements OnInit {
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
     this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
     this.dateAdapter.setLocale('en-GB');
-  }
-
-  ngOnChanges() {
-    const tipo = this.factura.tipo;
-    this.esCotizacion = tipo == TipoFactura.CotizacionInsumos || tipo == TipoFactura.CotizacionServicios;
-    this.esFacturaCompra = tipo == TipoFactura.FacturaCompra;
   }
 
   buscaCliente(codigo: string) {
@@ -277,7 +269,7 @@ export class WelcomeComponent implements OnInit {
   validaCampos() {
     const log = [];
     const f = this.factura;
-    const texto = f.tipo == TipoPersona.Cliente ? 'Proveedor' : 'Cliente';
+    const texto = f.persona?.tipo == TipoPersona.Cliente ? 'Proveedor' : 'Cliente';
     if (f.codFactura == undefined || f.codFactura == 0 && f.tipo == TipoFactura.FacturaCompra ) {
       log.push('Ingrese código de factura');
     }

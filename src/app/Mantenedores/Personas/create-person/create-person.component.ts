@@ -37,8 +37,8 @@ export class CreatePersonComponent implements OnInit {
   public validaFono = new FormControl('', [Validators.maxLength(9)]);
   public personaModel: Persona = {};
   public regiones$: Observable<Region[]>;
-  public provincias$: Observable<Provincia[]>;
-  public comunas$: Observable<Comuna[]>;
+  public provincias: Provincia[];
+  public comunas: Comuna[];
   public isNew = true;
 
   constructor(private businessService: BusinessService,
@@ -46,6 +46,7 @@ export class CreatePersonComponent implements OnInit {
 
   public ngOnInit(): void {
     this.regiones$ = this.personaService.getRegiones();
+    this.regiones$.subscribe((a) => console.log(a));
   }
 
   public ngDoCheck(): void {
@@ -76,12 +77,12 @@ export class CreatePersonComponent implements OnInit {
     this.isNew = true;
   }
 
-  public actualizaProvincia(id: number): void {
-    this.provincias$ = this.personaService.getProvincias(id);
+  public actualizaProvincia(region: Region): void {
+    this.provincias = region.provincias;
   }
 
-  public actualizaComuna(id: number): void {
-    this.comunas$ = this.personaService.getComunas(id);
+  public actualizaComuna(provincia: Provincia): void {
+    this.comunas = provincia.comunas;
   }
 
   public getErrorEmail() {

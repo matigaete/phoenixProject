@@ -13,7 +13,7 @@ import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmaci
 export class FormCategoriasComponent implements OnInit {
   @Output() actualiza = new EventEmitter<Categoria>();
   @Input() iCategoria: Categoria;
-  public categoriaModel: Categoria = { codigo: 0, tipo: '' };
+  public categoriaModel: Categoria = { id: 0, nombre: '' };
   public errorNombre: boolean;
   public categoria = 'categorias';
 
@@ -27,18 +27,18 @@ export class FormCategoriasComponent implements OnInit {
 
   public ngOnChanges() {
     if (this.iCategoria != undefined) {
-      this.categoriaModel.codigo = this.iCategoria.codigo;
-      const nombre = this.iCategoria.tipo;
-      this.categoriaModel.tipo = nombre;
+      this.categoriaModel.id = this.iCategoria.id;
+      const nombre = this.iCategoria.nombre;
+      this.categoriaModel.nombre = nombre;
       this.errorNombre = false;
     }
   }
 
   public OnSubmit() {
     if (!this.errorNombre) {
-      if (this.categoriaModel.codigo == 0) {
+      if (this.categoriaModel.id == 0) {
         this.dialogo.open(DialogoConfirmacionComponent, {
-          data: this.categoriasService.getMensajeCrear(this.categoriaModel.tipo)
+          data: this.categoriasService.getMensajeCrear(this.categoriaModel.nombre)
         })
           .afterClosed().
           subscribe((confirmado: boolean) => {
@@ -49,7 +49,7 @@ export class FormCategoriasComponent implements OnInit {
           });
       } else {
         this.dialogo.open(DialogoConfirmacionComponent, {
-          data: this.categoriasService.getMensajeActualizar(this.iCategoria.tipo, this.categoriaModel.tipo)
+          data: this.categoriasService.getMensajeActualizar(this.iCategoria.nombre, this.categoriaModel.nombre)
         })
           .afterClosed().
           subscribe((confirmado: boolean) => {
@@ -67,8 +67,8 @@ export class FormCategoriasComponent implements OnInit {
 
   public nuevaCategoria() {
     this.categoriaModel = {
-      codigo: 0,
-      tipo: ''
+      id: 0,
+      nombre: ''
     };
     this.errorNombre = true;
   }

@@ -1,6 +1,6 @@
 export enum TipoFactura {
-    FacturaCompra,
-    FacturaVenta,
-    CotizacionInsumos,
-    CotizacionServicios,
+    FacturaCompra = 'FC',
+    FacturaVenta = 'FV',
+    CotizacionInsumos = 'CI',
+    CotizacionServicios = 'CS',
 }

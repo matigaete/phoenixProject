@@ -62,9 +62,8 @@ import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dia
 import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-errores.component';
 import { CreatePersonComponent } from './Mantenedores/Personas/create-person/create-person.component';
 import { InfoPersonasComponent } from './Include/info-personas/info-personas.component';
-import { ListaClientesComponent } from './Include/lista-clientes/lista-clientes.component';
-import { ListaProveedoresComponent } from './Include/lista-proveedores/lista-proveedores.component';
-import { RutPipe } from './Pipes/rut.pipe'; 
+import { ListaPersonasComponent } from './include/lista-personas/lista-personas.component';
+import { RutPipe } from './Pipes/rut.pipe';
 
 
 @NgModule({
@@ -96,8 +95,8 @@ import { RutPipe } from './Pipes/rut.pipe';
     IndexPersonComponent, 
     CreatePersonComponent, 
     InfoPersonasComponent, 
-    ListaClientesComponent, 
-    ListaProveedoresComponent, RutPipe,  
+    ListaPersonasComponent,
+    RutPipe
   ],
   entryComponents: [
     DialogoConfirmacionComponent,

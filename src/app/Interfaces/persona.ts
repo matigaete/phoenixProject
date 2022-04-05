@@ -1,7 +1,9 @@
+import { TipoPersona } from '../Utils/persona.constants';
+
 export interface Persona {
     rut?: string,
     nombre?: string,
-    tipo?: number,
+    tipo?: TipoPersona,
     giro?: string,
     region?: string,
     provincia?: string,

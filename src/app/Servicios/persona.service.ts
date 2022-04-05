@@ -17,7 +17,7 @@ export class PersonaService {
     private dialogo: MatDialog) { }
 
   public getRegiones() {
-    return this.http.get<Region[]>(`${environment.baseUrl}getRegiones.php`);
+    return this.http.get<Region[]>(`${environment.baseUrl}api/regiones`);
   }
 
   public getProvincias(id: number) {
@@ -28,8 +28,8 @@ export class PersonaService {
     return this.http.get<Comuna[]>(`${environment.baseUrl}getComunas.php?codigo=${id}`);
   }
 
-  public getListaClientes() {
-    return this.http.get<Persona[]>(`${environment.baseUrl}getClients.php`);
+  public getPersonas() {
+    return this.http.get<Persona[]>(`${environment.baseUrl}api/personas`);
   }
 
   public getListaProveedores() {
@@ -53,7 +53,7 @@ export class PersonaService {
   }
 
   public creaPersona(persona: Persona) {
-    return this.http.post(`${environment.baseUrl}addPerson.php`, persona);
+    return this.http.post(`${environment.baseUrl}api/personas`, persona);
   }
 
   public actualizaPersona(persona: Persona) {

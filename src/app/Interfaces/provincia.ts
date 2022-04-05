@@ -1,4 +1,7 @@
+import { Comuna } from './comuna';
+
 export interface Provincia {
     id?: number,
-    provincia?: string
+    nombre?: string,
+    comunas: Comuna[]
 }

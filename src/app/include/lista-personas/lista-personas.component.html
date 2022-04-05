@@ -1,0 +1,11 @@
+<mat-card class="card-extend">
+  <mat-card-header>
+      <mat-card-title>Lista de Clientes</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <select multiple class="form-control" [(ngModel)]="persona" (ngModelChange)="enviaPersona($event)">
+      <option [ngValue]="p" *ngFor="let p of personas">{{p.rut | rut}} - {{p.nombre}}</option> 
+    </select>
+  </mat-card-content>
+</mat-card>
+<br>

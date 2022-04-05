@@ -11,7 +11,7 @@ export class ServiciosService {
   constructor(private http: HttpClient) {}
 
   public getServicios() {
-    return this.http.get<Servicio[]>(`${environment.baseUrl}getServices.php`);
+    return this.http.get<Servicio[]>(`${environment.baseUrl}api/servicios`);
   }
 
   public getServicio(codigo: number | string) {

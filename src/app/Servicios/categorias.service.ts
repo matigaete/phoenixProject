@@ -11,11 +11,11 @@ export class CategoriasService {
   constructor(private http: HttpClient) { }
 
   public getCategorias() {
-    return this.http.get<Categoria[]>(`${environment.baseUrl}getCategories.php`);
+    return this.http.get<Categoria[]>(`${environment.baseUrl}api/categorias`);
   }
 
   public creaCategoria(categoria: Categoria) {
-    return this.http.post(`${environment.baseUrl}addCategorie.php`, categoria);
+    return this.http.post(`${environment.baseUrl}api/categorias`, categoria);
   }
 
   public actualizaCategoria(categoria: Categoria) {

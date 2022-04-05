@@ -15,11 +15,7 @@ export class ProductosService {
     private dialogo: MatDialog) { }
 
   public getProductos() {
-    return this.http.get<Producto[]>(`${environment.baseUrl}getProducts.php?codigo=undefined`);
-  }
-
-  public getListaProductos() {
-    return this.http.get<Producto[]>(`${environment.baseUrl}getProducts.php?codigo=all`);
+    return this.http.get<Producto[]>(`${environment.baseUrl}api/productos`);
   }
 
   public getProductosInactivos() {
@@ -35,7 +31,7 @@ export class ProductosService {
   }
 
   public creaProducto(producto: Producto) {
-    return this.http.post(`${environment.baseUrl}addProduct.php`, producto);
+    return this.http.post(`${environment.baseUrl}api/productos`, producto);
   }
 
   public actualizaProducto(producto: Producto) {

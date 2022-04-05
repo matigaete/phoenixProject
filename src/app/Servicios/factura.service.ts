@@ -12,7 +12,7 @@ export class FacturaService {
   constructor(private http: HttpClient) { }
 
   public getListaFacturasCompra() {
-    return this.http.get<Factura[]>(`${environment.baseUrl}getPurchaseBills.php?codigo=all`);
+    return this.http.get<Factura[]>(`${environment.baseUrl}api/facturas`);
   }
 
   public getFacturaCompra(codigo: number | string) {

@@ -30,8 +30,8 @@ export class ListadoComponent implements OnInit {
   // public dataSourceI = new BehaviorSubject([]);
   public dataSourceA = new MatTableDataSource<Producto>();
   public dataSourceI = new MatTableDataSource<Producto>();
-  public jsonProductos: any;
-  public jsonInactivos: any;
+  public jsonProductos: Producto[];
+  public jsonInactivos: Producto[];
   public textColumns: Ilista[] = [
     { id: 0, nombre: 'codigo', tipo: '#' },
     { id: 1, nombre: 'nombre', tipo: 'Nombre' },
@@ -61,15 +61,15 @@ export class ListadoComponent implements OnInit {
 
   public ngOnInit(): void {
     this.subscriptions.push(
-      this.productoService.getListaProductos()
-        .subscribe((jsonProductos: any) => {
+      this.productoService.getProductos()
+        .subscribe((jsonProductos: Producto[]) => {
           this.jsonProductos = jsonProductos;
           this.dataSourceA = new MatTableDataSource<Producto>(this.jsonProductos);
           this.dataSourceA.paginator = this.paginatorA;
         }));
     this.subscriptions.push(
       this.productoService.getProductosInactivos()
-        .subscribe((jsonInactivos: any) => {
+        .subscribe((jsonInactivos: Producto[]) => {
           this.jsonInactivos = jsonInactivos;
           this.dataSourceI = new MatTableDataSource<Producto>(this.jsonInactivos);
           this.dataSourceI.paginator = this.paginatorI;

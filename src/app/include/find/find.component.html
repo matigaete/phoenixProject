@@ -3,7 +3,7 @@
       <div class="col"> 
         <p>Ingrese una categoría:</p>
         <select name="select" [(ngModel)]="actual" class="custom-select" (ngModelChange)="actualizarLista($event)"> 
-          <option [value]="c.codigo" *ngFor="let c of (categorias$ | async)">{{c.tipo}}</option>
+          <option [value]="c.nombre" *ngFor="let c of (categorias$ | async)">{{c.nombre}}</option>
         </select>
       </div> 
     </div>

@@ -2,14 +2,14 @@
   <div class="form-group">
     <div class="row">
       <mat-radio-group [(ngModel)]="factura.tipo" (ngModelChange)="cambiaCompra(factura)">
-        <mat-radio-button value="TipoFactura.FacturaVenta">Factura de venta</mat-radio-button>
-        <mat-radio-button value="TipoFactura.FacturaCompra">Ingreso Insumos por factura</mat-radio-button>
-        <mat-radio-button value="TipoFactura.CotizacionInsumos">Cotización de productos</mat-radio-button>
-        <mat-radio-button value="TipoFactura.CotizacionServicios">Cotización de servicios</mat-radio-button>
+        <mat-radio-button value="FV">Factura de venta</mat-radio-button>
+        <mat-radio-button value="FC">Ingreso Insumos por factura</mat-radio-button>
+        <mat-radio-button value="CI">Cotización de productos</mat-radio-button>
+        <mat-radio-button value="CS">Cotización de servicios</mat-radio-button>
       </mat-radio-group>
     </div>
     <div class="row">
-      <section *ngIf="esFacturaCompra">
+      <section *ngIf="factura.tipo === 'FC'">
         <div class="col-2">
           <mat-form-field>
             <mat-label>Nro. de factura</mat-label>
@@ -26,7 +26,7 @@
         </mat-form-field>
       </div>
       <div class="col-2">
-        <section *ngIf="esFacturaCompra">
+        <section *ngIf="factura.tipo === 'FC'">
           <mat-form-field>
             <input type="text" placeholder="Proveedor" matInput [formControl]="myControl" [matAutocomplete]="auto"
               [(ngModel)]="factura.persona.rut" (keyup)="buscaProveedor(factura.persona.rut)">
@@ -37,7 +37,7 @@
             </mat-autocomplete>
           </mat-form-field>
         </section>
-        <section *ngIf="!esFacturaCompra">
+        <section *ngIf="factura.tipo !== 'FC'">
           <mat-form-field>
             <input type="text" placeholder="Cliente" matInput [formControl]="myControl" [matAutocomplete]="auto"
               [(ngModel)]="factura.persona.rut" (keyup)="buscaCliente(factura.persona.rut)">
@@ -51,7 +51,7 @@
       </div>
     </div>
     <div class="row">
-      <section *ngIf="esCotizacion">
+      <section *ngIf="factura.tipo === 'CI' || factura.tipo === 'CS'">
         <div class="col-2">
           <mat-form-field>
             <mat-label>Forma de pago</mat-label>

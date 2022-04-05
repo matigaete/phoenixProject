@@ -32,7 +32,7 @@
     <mat-form-field appearance="fill">
       <mat-label>Región</mat-label>
       <mat-select name="select" [(ngModel)]="personaModel.region" (ngModelChange)="actualizaProvincia($event)" required>
-        <mat-option [value]="r.id" *ngFor="let r of (regiones$ | async)">{{r.abreviatura}} - {{r.region}}</mat-option>
+        <mat-option [value]="r" *ngFor="let r of (regiones$ | async)">{{r.abreviatura}} - {{r.nombre}}</mat-option>
       </mat-select>
       <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
     </mat-form-field>
@@ -40,7 +40,7 @@
     <mat-form-field appearance="fill">
       <mat-label>Provincia</mat-label>
       <mat-select name="select" [(ngModel)]="personaModel.provincia" (ngModelChange)="actualizaComuna($event)" required>
-        <mat-option [value]="p.id" *ngFor="let p of (provincias$ | async)">{{p.provincia}}</mat-option>
+        <mat-option [value]="p" *ngFor="let p of provincias">{{p.nombre}}</mat-option>
       </mat-select>
       <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
     </mat-form-field>
@@ -48,7 +48,7 @@
     <mat-form-field appearance="fill">
       <mat-label>Comuna</mat-label>
       <mat-select name="select" [(ngModel)]="personaModel.comuna" required>
-        <mat-option [value]="c.id" *ngFor="let c of (comunas$ | async)">{{c.comuna}}</mat-option>
+        <mat-option [value]="c.nombre" *ngFor="let c of comunas">{{c.nombre}}</mat-option>
       </mat-select>
       <mat-hint align="end">Here's the dropdown arrow ^</mat-hint>
     </mat-form-field>

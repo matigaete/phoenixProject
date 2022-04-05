@@ -1,4 +1,4 @@
 export enum TipoProducto {
-    Insumo,
-    Servicio
+    Insumo = 'P',
+    Servicio = 'S'
 }

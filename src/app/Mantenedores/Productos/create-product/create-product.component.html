@@ -26,7 +26,7 @@
     <div class="form-group">
       <label>Categoría del producto</label>
       <select name="select" [(ngModel)]="productoModel.categoria" class="form-control">
-        <option [value]="c.codigo" *ngFor="let c of (categorias$ | async)">{{c.tipo}}</option>
+        <option [value]="c.nombre" *ngFor="let c of (categorias$ | async)">{{c.nombre}}</option>
       </select>
     </div>
     <div class="form-group">

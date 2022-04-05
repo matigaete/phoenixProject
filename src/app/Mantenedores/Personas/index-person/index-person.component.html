@@ -1,0 +1,12 @@
+<div class="Container">
+  <div class="row">
+    <div class="col">
+      <app-create-person [iPersona]="personaModel"></app-create-person>
+    </div>
+    <div class="col">
+      <app-lista-personas (oPersona)="enviaPersona($event)" [personas]="clientes"></app-lista-personas>
+      <app-lista-personas (oPersona)="enviaPersona($event)" [personas]="proveedores"></app-lista-personas>
+      <app-info-personas></app-info-personas>
+    </div>
+  </div>
+</div>

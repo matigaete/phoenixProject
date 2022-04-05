@@ -1,39 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Comuna } from 'src/app/Interfaces/comuna';
 import { Persona } from 'src/app/Interfaces/persona';
-import { Provincia } from 'src/app/Interfaces/provincia';
-import { Region } from 'src/app/Interfaces/region';
+import { PersonaService } from 'src/app/Servicios/persona.service';
+import { TipoPersona } from 'src/app/Utils/persona.constants';
 
 @Component({
   selector: 'app-index-person',
-  template: `<div class="Container">
-              <div class="row">
-                <div class="col">
-                  <app-create-person [iPersona]="personaModel"></app-create-person>
-                </div>
-                <div class="col">
-                  <app-lista-clientes (oPersona)="enviaPersona($event)"></app-lista-clientes>
-                  <app-lista-proveedores (oPersona)="enviaPersona($event)"></app-lista-proveedores>
-                  <app-info-personas></app-info-personas>
-                </div>
-              </div>
-            </div>`,
+  templateUrl: './index-person.component.html',
   styles: []
 })
 
 export class IndexPersonComponent implements OnInit {
 
-  public personaModel: Persona;
-  public regiones$: Observable<Region[]>;
-  public provincias$: Observable<Provincia[]>;
-  public comunas$: Observable<Comuna[]>;
+  personaModel: Persona;
+  clientes: Persona[];
+  proveedores: Persona[];
+
+  constructor(private personaService: PersonaService) { }
 
   ngOnInit(): void {
-    console.log('info');
+    this.personaService.getPersonas().subscribe((personas) => {
+      this.clientes = personas.filter(clientes => clientes.tipo === TipoPersona.Cliente);
+      this.proveedores = personas.filter(clientes => clientes.tipo === TipoPersona.Proveedor);
+    });
   }
 
-  public enviaPersona(persona : Persona){
+  enviaPersona(persona : Persona){
     this.personaModel = persona;
   }
 

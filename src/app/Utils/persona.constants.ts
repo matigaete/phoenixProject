@@ -1,4 +1,4 @@
 export enum TipoPersona {
-    Cliente,
-    Proveedor
+    Cliente = 'C',
+    Proveedor = 'P'
 }

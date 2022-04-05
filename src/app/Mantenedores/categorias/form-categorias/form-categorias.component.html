@@ -1,8 +1,8 @@
 <form (ngSubmit)="OnSubmit()">
     <div class="form-group">
         <label>Nombre de categoría:</label>
-        <input type="text" [ngClass]="formControlNombre()" [(ngModel)]="categoriaModel.tipo"
-            (ngModelChange)="validaNombre($event)" [value]="categoriaModel.tipo" name="nombre">
+        <input type="text" [ngClass]="formControlNombre()" [(ngModel)]="categoriaModel.nombre"
+            (ngModelChange)="validaNombre($event)" [value]="categoriaModel.nombre" name="nombre">
         <div class="invalid-feedback">
             Ingrese un nombre
         </div>
