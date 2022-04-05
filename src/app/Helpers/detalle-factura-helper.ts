@@ -6,7 +6,7 @@ export class DetalleFacturaHelper {
 
   static getSubtotal(detalle: DetalleFactura, tipo: TipoFactura): number {
     let precio: number;
-    detalle.dcto <= 100 ? detalle.dcto : detalle.dcto = 100;
+    detalle.dcto = detalle.dcto <= 100 ? detalle.dcto : 100;
     if (tipo == TipoFactura.FacturaCompra) {
       precio = detalle.producto.precioCompra;
     } else {

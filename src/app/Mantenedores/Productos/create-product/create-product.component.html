@@ -1,8 +1,8 @@
 <form (ngSubmit)="OnSubmit()">
     <div class="form-group">
       <label>Código del producto</label>
-      <input type="text" [readOnly]="!isNew" [ngClass]="formControlCodigo()" [(ngModel)]="productoModel.codigo"
-        (ngModelChange)="validaCodigo($event)" [value]="productoModel?.codigo" name="codigo">
+      <input type="text" [readOnly]="!isNew" [ngClass]="formControlCodigo()" [(ngModel)]="productoModel.idProducto"
+        (ngModelChange)="validaCodigo($event)" [value]="productoModel?.idProducto" name="codigo">
       <div class="invalid-feedback">
         Debe de ingresar un código para el producto
       </div>

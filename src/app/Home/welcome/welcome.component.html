@@ -112,12 +112,12 @@
           <th mat-header-cell *matHeaderCellDef> Código Producto </th>
           <td mat-cell *matCellDef="let transaction">
             <section *ngIf="transaction.tipo=='P'">
-              <input type="text" class="form-control texto" [value]="transaction.producto.codigo"
-                [(ngModel)]="transaction.producto.codigo" name="item" (keyup)="findProduct(transaction)">
+              <input type="text" class="form-control texto" [value]="transaction.producto.idProducto"
+                [(ngModel)]="transaction.producto.idProducto" name="item" (keyup)="findProduct(transaction)">
             </section>
             <section *ngIf="transaction.tipo=='S'">
-              <input type="text" class="form-control texto" [value]="transaction.servicio.codigo"
-                [(ngModel)]="transaction.servicio.codigo" name="item" (keyup)="findService(transaction)">
+              <input type="text" class="form-control texto" [value]="transaction.servicio.idProducto"
+                [(ngModel)]="transaction.servicio.idProducto" name="item" (keyup)="findService(transaction)">
             </section>
           </td>
           <td mat-footer-cell *matFooterCellDef></td>
@@ -173,7 +173,7 @@
                   name="cost" value="{{transaction.servicio.precioVenta}}">
               </section>
             </section>
-            <section *ngIf="esFacturaCompra">
+            <section *ngIf="factura.tipo === 'FC'">
               <input type="number" class="form-control numero" [(ngModel)]="transaction.producto.precioCompra"
                 name="cost" value="{{transaction.producto.precioCompra}}">
             </section>

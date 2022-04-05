@@ -34,7 +34,7 @@ export class WelcomeComponent implements OnInit {
   dispColumn = ['disp'];
   dynamicColumns = ['cost', 'dcto', 'subtotal'];
   displayedColumns = [];
-  factura: Factura = { persona: { rut: '' }, tipo: TipoFactura.FacturaVenta, detalle: [{}] };
+  factura: Factura = { persona: { rut: '' }, tipo: TipoFactura.FacturaVenta, detalle: [] };
   transactions: DetalleFactura[] = [
     { dcto: 0, tipo: TipoProducto.Insumo, producto: { stock: 0 } }
   ];
@@ -89,7 +89,9 @@ export class WelcomeComponent implements OnInit {
         data: 'Desea generar la factura?'
       }).afterClosed()
         .subscribe((confirmado: boolean) => {
-          if (confirmado) this.generaFactura();
+          if (confirmado) {
+            this.generaFactura();
+          }
         });
     } else {
       this.dialogo.open(DialogoErroresComponent, {
@@ -191,12 +193,12 @@ export class WelcomeComponent implements OnInit {
         if (cantidadFinal <= 0) {
           arr.push({
             tipo: 'danger',
-            nombre: `${producto.nombre} (${producto.codigo}) se encuentra sin stock`,
+            nombre: `${producto.nombre} (${producto.idProducto}) se encuentra sin stock`,
           });
         } else if (cantidadFinal < det.producto.stockCritico) {
           arr.push({
             tipo: 'warning',
-            nombre: `${producto.nombre} (${producto.codigo}) bajo de stock crítico`,
+            nombre: `${producto.nombre} (${producto.idProducto}) bajo de stock crítico`,
           });
         }
       }
@@ -219,8 +221,8 @@ export class WelcomeComponent implements OnInit {
   findProduct(datpos: DetalleFactura) {
     let modificado: boolean;
     let prd = datpos.producto;
-    if (prd.codigo) {
-      this.producto$ = this.productosService.getProducto(prd.codigo);
+    if (prd.idProducto) {
+      this.producto$ = this.productosService.getProducto(prd.idProducto);
       this.producto$.subscribe(producto => {
         for (let i = 0; i < this.transactions.length; i++) {
           const element = this.transactions[i];
@@ -230,7 +232,7 @@ export class WelcomeComponent implements OnInit {
             break;
           } else {
             prd = {
-              codigo: prd.codigo
+              idProducto: prd.idProducto
             };
           }
         }
@@ -244,8 +246,8 @@ export class WelcomeComponent implements OnInit {
   findService(datpos: DetalleFactura) {
     let modificado: boolean;
     let srv = datpos.servicio;
-    if (srv.codigo) {
-      this.servicio$ = this.serviciosService.getServicio(srv.codigo);
+    if (srv.idProducto) {
+      this.servicio$ = this.serviciosService.getServicio(srv.idProducto);
       this.servicio$.subscribe(servicio => {
         for (let i = 0; i < this.transactions.length; i++) {
           const element = this.transactions[i];
@@ -255,7 +257,7 @@ export class WelcomeComponent implements OnInit {
             break;
           } else {
             srv = {
-              codigo: srv.codigo
+              idProducto: srv.idProducto
             };
           }
         }
@@ -270,7 +272,7 @@ export class WelcomeComponent implements OnInit {
     const log = [];
     const f = this.factura;
     const texto = f.persona?.tipo == TipoPersona.Cliente ? 'Proveedor' : 'Cliente';
-    if (f.codFactura == undefined || f.codFactura == 0 && f.tipo == TipoFactura.FacturaCompra ) {
+    if (f.codFactura == 0 && f.tipo == TipoFactura.FacturaCompra ) {
       log.push('Ingrese código de factura');
     }
     if (f.persona.rut == undefined || f.persona.rut == '') {
@@ -286,13 +288,13 @@ export class WelcomeComponent implements OnInit {
       const msg = `Pos. ${index + 1} datos incompletos`;
       let error = false;
       if (pos.tipo == TipoProducto.Insumo) {
-        !pos.producto.nombre ? error = true : 0;
-        !pos.producto.precioCompra ? error = true : 0;
+        error = !pos.producto.nombre ? !error: error;
+        error = !pos.producto.precioVenta ? !error: error;
         pos.cantidad > pos.producto.stock && f.tipo == TipoFactura.FacturaVenta
           ? log.push(`No puede exceder al stock actual de posición ${index + 1}`) : 0;
       } else {
-        !pos.servicio.nombre ? error = true : 0;
-        !pos.servicio.precioVenta ? error = true : 0;
+        error = !pos.producto.nombre ? !error: error;
+        error = !pos.producto.precioVenta ? !error: error;
       }
       !pos.cantidad ? error = true : 0;
       error ? log.push(msg) : 0;

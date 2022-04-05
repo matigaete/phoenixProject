@@ -52,7 +52,7 @@ export class FacturaService {
   }
 
   public creaFacturaVenta(factura: Factura) {
-    return this.http.post(`${environment.baseUrl}addSellBill.php`, factura);
+    return this.http.post(`${environment.baseUrl}api/facturas`, factura);
   }
 
   public actualizaFacturaVenta(factura: Factura) {

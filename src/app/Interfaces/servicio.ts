@@ -1,5 +1,5 @@
 export interface Servicio {
-    codigo?: number | string,
+    idProducto?: number | string,
     nombre?: string,
     descripcion?: string,
     precioVenta?: number

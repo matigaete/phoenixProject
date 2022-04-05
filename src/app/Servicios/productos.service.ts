@@ -27,7 +27,7 @@ export class ProductosService {
   }
 
   public getProducto(codigo: number | string) {
-    return this.http.get<Producto>(`${environment.baseUrl}getProduct.php?codigo=${codigo}`);
+    return this.http.get<Producto>(`${environment.baseUrl}api/productos/${codigo}`);
   }
 
   public creaProducto(producto: Producto) {
