@@ -231,7 +231,7 @@ export class BusinessService {
       doc.setFont('Helvetica', 'normal');
       let cord = 110;
       f.detalle.forEach(pos => {
-        doc.text(pos.producto.idProducto.toString(), 15, cord);      //Código
+        doc.text(pos.producto.id.toString(), 15, cord);      //Código
         doc.text(pos.producto.descripcion, 40, cord);  //Descripción
         doc.text(this.convierteCLP(pos.producto.precioVenta), 143, cord);      //Precio 
         doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad 
@@ -263,7 +263,7 @@ export class BusinessService {
       let cord = 110;
       f.detalle.forEach(pos => {
         if (pos.tipo == TipoProducto.Servicio) {
-          doc.text(pos.servicio.idProducto.toString(), 15, cord);      //Código
+          doc.text(pos.servicio.id.toString(), 15, cord);      //Código
           doc.text(pos.servicio.descripcion, 40, cord);  //Descripción
           doc.text(this.convierteCLP(pos.servicio.precioVenta), 143, cord);      //Precio 
           doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad 
@@ -297,7 +297,7 @@ export class BusinessService {
       cord = 170;
       f.detalle.forEach(pos => {
         if (pos.tipo == TipoProducto.Insumo) {
-          doc.text(pos.producto.idProducto.toString(), 15, cord);      //Código
+          doc.text(pos.producto.id.toString(), 15, cord);      //Código
           doc.text(pos.producto.descripcion, 40, cord);  //Descripción
           doc.text(this.convierteCLP(pos.producto.precioVenta), 143, cord);      //Precio 
           doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad 
@@ -443,11 +443,11 @@ export class BusinessService {
     let cord = 110;
     f.detalle.forEach(pos => {
       if (pos.tipo == TipoProducto.Insumo) {
-        doc.text(pos.producto.idProducto.toString(), 15, cord);      //Código
+        doc.text(pos.producto.id.toString(), 15, cord);      //Código
         doc.text(pos.producto.descripcion, 40, cord);  //Descripción
         doc.text(this.convierteCLP(pos.producto.precioVenta), 133, cord);      //Precio 
       } else {
-        doc.text(pos.servicio.idProducto.toString(), 15, cord);      //Código
+        doc.text(pos.servicio.id.toString(), 15, cord);      //Código
         doc.text(pos.servicio.descripcion, 40, cord);  //Descripción
         doc.text(this.convierteCLP(pos.servicio.precioVenta), 133, cord);      //Precio
       }

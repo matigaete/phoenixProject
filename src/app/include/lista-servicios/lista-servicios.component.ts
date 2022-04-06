@@ -30,6 +30,7 @@ export class ListaServiciosComponent implements OnInit {
   }
 
   public enviaServicio(servicio: Servicio) {
+    console.log(servicio)
     this.servicio.emit(servicio);
   }
 

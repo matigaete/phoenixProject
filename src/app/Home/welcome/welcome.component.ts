@@ -35,9 +35,17 @@ export class WelcomeComponent implements OnInit {
   dynamicColumns = ['cost', 'dcto', 'subtotal'];
   displayedColumns = [];
   factura: Factura = { persona: { rut: '' }, tipo: TipoFactura.FacturaVenta, detalle: [] };
-  transactions: DetalleFactura[] = [
-    { dcto: 0, tipo: TipoProducto.Insumo, producto: { stock: 0 } }
-  ];
+  transactions: DetalleFactura[] = [{
+    dcto: 0,
+    posicion: 0, 
+    tipo: TipoProducto.Insumo, 
+    producto: { 
+      id: '' 
+    },
+    servicio: {
+      id: ''
+    } 
+  }];
   dataSource = new BehaviorSubject([]);
   chkAll = false;
   errorStock: boolean;
@@ -143,7 +151,17 @@ export class WelcomeComponent implements OnInit {
     } catch (error) {
       newID = 0;
     }
-    const registro: DetalleFactura = { posicion: newID, tipo: TipoProducto.Insumo };
+    const registro: DetalleFactura = { 
+      posicion: newID, 
+      tipo: TipoProducto.Insumo,
+      dcto: 0,
+      producto: { 
+        id: '' 
+      },
+      servicio: {
+        id: ''
+      } 
+    };
     this.transactions.push(registro);
     this.factura.detalle = this.transactions;
     this.dataSource.next(this.transactions);
@@ -193,12 +211,12 @@ export class WelcomeComponent implements OnInit {
         if (cantidadFinal <= 0) {
           arr.push({
             tipo: 'danger',
-            nombre: `${producto.nombre} (${producto.idProducto}) se encuentra sin stock`,
+            nombre: `${producto.nombre} (${producto.id}) se encuentra sin stock`,
           });
         } else if (cantidadFinal < det.producto.stockCritico) {
           arr.push({
             tipo: 'warning',
-            nombre: `${producto.nombre} (${producto.idProducto}) bajo de stock crítico`,
+            nombre: `${producto.nombre} (${producto.id}) bajo de stock crítico`,
           });
         }
       }
@@ -219,10 +237,11 @@ export class WelcomeComponent implements OnInit {
 
   //Busca un producto a la BD para enlazarlo al detalle
   findProduct(datpos: DetalleFactura) {
+    console.log(datpos)
     let modificado: boolean;
     let prd = datpos.producto;
-    if (prd.idProducto) {
-      this.producto$ = this.productosService.getProducto(prd.idProducto);
+    if (prd.id) {
+      this.producto$ = this.productosService.getProducto(prd.id);
       this.producto$.subscribe(producto => {
         for (let i = 0; i < this.transactions.length; i++) {
           const element = this.transactions[i];
@@ -232,7 +251,7 @@ export class WelcomeComponent implements OnInit {
             break;
           } else {
             prd = {
-              idProducto: prd.idProducto
+              id: prd.id
             };
           }
         }
@@ -246,9 +265,10 @@ export class WelcomeComponent implements OnInit {
   findService(datpos: DetalleFactura) {
     let modificado: boolean;
     let srv = datpos.servicio;
-    if (srv.idProducto) {
-      this.servicio$ = this.serviciosService.getServicio(srv.idProducto);
+    if (srv.id) {
+      this.servicio$ = this.serviciosService.getServicio(srv.id);
       this.servicio$.subscribe(servicio => {
+        console.log(servicio)
         for (let i = 0; i < this.transactions.length; i++) {
           const element = this.transactions[i];
           if (element.posicion == datpos.posicion && servicio) {
@@ -257,7 +277,7 @@ export class WelcomeComponent implements OnInit {
             break;
           } else {
             srv = {
-              idProducto: srv.idProducto
+              id: srv.id
             };
           }
         }

@@ -15,11 +15,11 @@ export class ServiciosService {
   }
 
   public getServicio(codigo: number | string) {
-    return this.http.get<Servicio>(`${environment.baseUrl}getService.php?codigo=${codigo}`);
+    return this.http.get<Servicio>(`${environment.baseUrl}api/servicios/${codigo}`);
   }
 
   public creaServicio(servicio: Servicio) {
-    return this.http.post(`${environment.baseUrl}addService.php`, servicio);
+    return this.http.post(`${environment.baseUrl}api/servicios`, servicio);
   }
 
   public actualizaServicio(servicio: Servicio) {

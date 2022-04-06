@@ -19,7 +19,7 @@ export class CreateProductComponent implements OnInit {
   @Input() isNew: boolean;
   @Input() iProducto: Producto;
 
-  public productoModel: Producto = { idProducto: '' };
+  public productoModel: Producto = { id: '' };
 
   public chkBaja: boolean;
   public chkAuto: boolean;
