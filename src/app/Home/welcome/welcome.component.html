@@ -79,7 +79,7 @@
             <mat-checkbox [(ngModel)]="chkAll" [value]="chkAll" (ngModelChange)="selectAll()">
             </mat-checkbox>
           </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <mat-checkbox [(ngModel)]="t.insert">
             </mat-checkbox>
           </td>
@@ -93,7 +93,7 @@
               <mat-icon>add</mat-icon>
             </button>
           </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <select *ngIf="factura.tipo=='FV' || factura.tipo=='CS'" name="select" [(ngModel)]="t.tipo"
               class="form-control select" (ngModelChange)="asignaCantidad(t)">
               <option value="P"> 1-Productos </option>
@@ -110,7 +110,7 @@
         <!-- Item Column -->
         <ng-container matColumnDef="item">
           <th mat-header-cell *matHeaderCellDef> Código Producto </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <section *ngIf="t.tipo==='P'">
               <input type="text" class="form-control texto" [value]="t.producto?.id"
                 [(ngModel)]="t.producto.id" name="item" (keyup)="findProduct(t)">
@@ -126,7 +126,7 @@
         <!-- Nom. producto Column -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Nombre </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <section *ngIf="t.tipo==='P'">
               <input readonly type="text" class="form-control texto" [value]="t.producto?.nombre"
                 [(ngModel)]="t.producto.nombre" name="name">
@@ -142,7 +142,7 @@
         <!-- Cantidad Column -->
         <ng-container matColumnDef="cant">
           <th mat-header-cell *matHeaderCellDef> Cantidad </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <input [readOnly]="t.tipo=='S'" type="number" class="form-control numero" name="cant"
               [(ngModel)]="t.cantidad" [value]="t.cantidad">
           </td>
@@ -152,7 +152,7 @@
         <!-- Disponible Column -->
         <ng-container matColumnDef="disp">
           <th mat-header-cell *matHeaderCellDef> Disponible </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <input readOnly type="number" class="form-control numero" name="cant"
               [(ngModel)]="t.producto.stock" [value]="t.tipo === 'P' ? t.producto.stock : 0">
           </td>
@@ -162,7 +162,7 @@
         <!-- Cost Column -->
         <ng-container matColumnDef="cost">
           <th mat-header-cell *matHeaderCellDef> Precio Unitario </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <section *ngIf="factura.tipo!='FC'">
               <section *ngIf="t.tipo=='P'">
                 <input readonly type="number" class="form-control numero" [(ngModel)]="t.producto.precioVenta"
@@ -190,7 +190,7 @@
         <!-- Dcto Column -->
         <ng-container matColumnDef="dcto">
           <th mat-header-cell *matHeaderCellDef> Descuento </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <input type="number" class="form-control numero" name="dcto" [(ngModel)]="t.dcto"
               [value]="t.dcto">
           </td>
@@ -200,7 +200,7 @@
         <!-- Subtotal Column -->
         <ng-container matColumnDef="subtotal">
           <th mat-header-cell *matHeaderCellDef> Subtotal </th>
-          <td mat-cell *matCellDef="let t of transactions">
+          <td mat-cell *matCellDef="let t">
             <label>{{getSubtotal(factura, t) | currency:'CLP'}}</label>
           </td>
           <td mat-footer-cell *matFooterCellDef>

@@ -72,8 +72,6 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
-    //this.facturaService.getUltimaFactura().subscribe(nro => this.ultimaFactura = nro.cod);
-    //this.facturaService.getUltimaCotizacion().subscribe(nro => this.ultimaCotizacion = nro.cod);
     this.clientes$ = this.personaService.getClientesFiltro('%');
     this.proveedores$ = this.personaService.getProveedoresFiltro('%');
     this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
@@ -127,12 +125,15 @@ export class WelcomeComponent implements OnInit {
         this.reset();
       });
     } else if (fact.tipo == TipoFactura.FacturaVenta) {                    // Factura de venta
-      this.facturaService.creaFacturaVenta(fact).subscribe(() => {
-        this.businessService.getAlert('Factura creada correctamente');
-        this.alertStock();
-        this.generarCotizacion();
-        this.reset();
+      this.facturaService.creaFacturaVenta(fact).subscribe((nroFactura: number) => {
+        if (nroFactura) {
+          this.factura.codFactura = nroFactura;
+          this.businessService.getAlert('Factura creada correctamente');
+          this.alertStock();
+          this.generarFactura();
+          this.reset();
         // this.enviar(fact); // SE APLAZA ENVIO DE MAIL
+        }
       });
     } else {                    // Factura de venta
       this.facturaService.creaCotizacion(fact).subscribe(() => {
@@ -188,7 +189,7 @@ export class WelcomeComponent implements OnInit {
 
   // Se ejecuta al generarse la factura, limpia todos los campos
   reset() {
-    this.transactions = [{tipo: TipoProducto.Insumo}];
+    this.transactions = [{tipo: TipoProducto.Insumo, producto: { id: ''}, dcto: 0}];
     this.dataSource.next(this.transactions);
     this.factura.tipo == TipoFactura.FacturaVenta ? this.ultimaFactura++ : 0;
     this.factura = {
@@ -197,7 +198,7 @@ export class WelcomeComponent implements OnInit {
         tipo: TipoPersona.Cliente
       }
     };
-    this.factura.detalle.push(this.transactions[0]);
+    this.factura.detalle = this.transactions;
     this.fecha = null;
   }
 
@@ -237,7 +238,6 @@ export class WelcomeComponent implements OnInit {
 
   //Busca un producto a la BD para enlazarlo al detalle
   findProduct(datpos: DetalleFactura) {
-    console.log(datpos)
     let modificado: boolean;
     let prd = datpos.producto;
     if (prd.id) {
@@ -268,7 +268,6 @@ export class WelcomeComponent implements OnInit {
     if (srv.id) {
       this.servicio$ = this.serviciosService.getServicio(srv.id);
       this.servicio$.subscribe(servicio => {
-        console.log(servicio)
         for (let i = 0; i < this.transactions.length; i++) {
           const element = this.transactions[i];
           if (element.posicion == datpos.posicion && servicio) {

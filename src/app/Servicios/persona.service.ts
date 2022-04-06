@@ -45,7 +45,7 @@ export class PersonaService {
   }
 
   public getCliente(codigo: string) {
-    return this.http.get<Persona>(`${environment.baseUrl}getClient.php?codigo=${codigo}`);
+    return this.http.get<Persona>(`${environment.baseUrl}api/personas/${codigo}`);
   }
 
   public getProveedor(codigo: string) { 
