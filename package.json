@@ -6,7 +6,7 @@
     "start": "node server.js",
     "dev": "ng serve -o",
     "build": "ng build",
-    "postinstall": "ng build --prod",
+    "postinstall": "ng build",
     "preinstall": "npm install -g @angular/cli @angular/compiler-cli @angular/material typescript",
     "test": "ng test",
     "lint": "eslint .",
