@@ -30,27 +30,15 @@ import { DateAdapter } from '@angular/material/core';
 })
 export class WelcomeComponent implements OnInit {
 
-  principalColumns = ['insert', 'add', 'item', 'name', 'cant'];
-  dispColumn = ['disp'];
-  dynamicColumns = ['cost', 'dcto', 'subtotal'];
-  displayedColumns = [];
-  factura: Factura = { persona: { rut: '' }, tipo: TipoFactura.FacturaVenta, detalle: [] };
-  transactions: DetalleFactura[] = [{
-    dcto: 0,
-    posicion: 0, 
-    tipo: TipoProducto.Insumo, 
-    producto: { 
-      id: '' 
-    },
-    servicio: {
-      id: ''
-    } 
-  }];
+  principalColumns: string[];
+  dispColumn: string[];
+  dynamicColumns: string[];
+  displayedColumns: string[];
+  factura: Factura;
+  transactions: DetalleFactura[];
   dataSource = new BehaviorSubject([]);
   chkAll = false;
   errorStock: boolean;
-  ultimaFactura: number;
-  ultimaCotizacion: number;
   producto$: Observable<Producto>;
   servicio$: Observable<Servicio>;
   persona$: Observable<Persona>;
@@ -70,24 +58,26 @@ export class WelcomeComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>) { }
 
   ngOnInit() {
+    this.assignValues(); 
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
-    this.clientes$ = this.personaService.getClientesFiltro('%');
-    this.proveedores$ = this.personaService.getProveedoresFiltro('%');
+    this.clientes$ = this.personaService.getPersonas(TipoPersona.Cliente);
+    this.proveedores$ = this.personaService.getPersonas(TipoPersona.Proveedor);
     this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
     this.dateAdapter.setLocale('en-GB');
   }
 
   buscaCliente(codigo: string) {
-    this.clientes$ = this.personaService.getClientesFiltro(codigo + '%');
+    this.clientes$ = this.personaService.getClientesFiltro(codigo);
   }
 
   buscaProveedor(codigo: string) {
-    this.proveedores$ = this.personaService.getProveedoresFiltro(codigo + '%');
+    this.proveedores$ = this.personaService.getProveedoresFiltro(codigo);
   }
 
   // Se validan campos vacíos antes de generar factura
   OnSubmit() {
+    console.log(this.factura);
     const errores = this.validaCampos();
     if (!errores.length) {
       this.getPersona();
@@ -114,8 +104,6 @@ export class WelcomeComponent implements OnInit {
 
   generaFactura() {
     let fact = this.factura;
-    (fact.codFactura == undefined || fact.codFactura == 0) && fact.tipo == TipoFactura.FacturaVenta
-      ? fact.codFactura = ++this.ultimaFactura : 0;
     fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
     fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
     fact = FacturaHelper.limpiaPosiciones(fact);
@@ -191,7 +179,6 @@ export class WelcomeComponent implements OnInit {
   reset() {
     this.transactions = [{tipo: TipoProducto.Insumo, producto: { id: ''}, dcto: 0}];
     this.dataSource.next(this.transactions);
-    this.factura.tipo == TipoFactura.FacturaVenta ? this.ultimaFactura++ : 0;
     this.factura = {
       tipo: TipoFactura.FacturaVenta,
       persona: {
@@ -286,6 +273,31 @@ export class WelcomeComponent implements OnInit {
     }
   }
 
+  assignValues() {
+    this.principalColumns = ['insert', 'add', 'item', 'name', 'cant'];
+    this.dispColumn = ['disp'];
+    this.dynamicColumns = ['cost', 'dcto', 'subtotal'];
+    this.displayedColumns = [];
+    this.transactions = [{
+      dcto: 0,
+      posicion: 0, 
+      tipo: TipoProducto.Insumo, 
+      producto: { 
+        id: '' 
+      },
+      servicio: {
+        id: ''
+      } 
+    }];
+    this.factura = { 
+      persona: { 
+        rut: '' 
+      }, 
+      tipo: TipoFactura.FacturaVenta, 
+      detalle: [] 
+    };
+  }
+
   // Validación si existe algún campo que falte por rellenar
   validaCampos() {
     const log = [];
@@ -337,7 +349,6 @@ export class WelcomeComponent implements OnInit {
       this.displayedColumns = this.principalColumns.concat(this.dynamicColumns);
     } else {
       fact.persona.tipo = TipoPersona.Cliente;
-      fact.codFactura = this.ultimaFactura;
       this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
     }
   }
@@ -363,15 +374,11 @@ export class WelcomeComponent implements OnInit {
 
   //Verifica si el rut ingresado existe
   getPersona(): void {
-    if (this.factura.tipo == TipoFactura.FacturaVenta) {
-      this.persona$ = this.personaService.getCliente(this.factura.persona.rut);
-    } else {
-      this.persona$ = this.personaService.getProveedor(this.factura.persona.rut);
-    }
+    const person = this.factura.persona;
+    const tipo = this.factura.tipo === TipoFactura.FacturaCompra ? TipoPersona.Proveedor : TipoPersona.Cliente;
+    this.persona$ = this.personaService.getPersona(person.rut, tipo);
     this.persona$.subscribe(per => {
-      if (per) {
-        this.factura.persona = per;
-      }
+      this.factura.persona = per;
     });
   }
 

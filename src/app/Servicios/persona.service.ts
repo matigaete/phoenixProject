@@ -5,8 +5,7 @@ import { DialogoConfirmacionComponent } from '../Include/dialogo-confirmacion/di
 import { MatDialog } from '@angular/material/dialog';  
 import { Persona } from '../Interfaces/persona';
 import { Region } from '../Interfaces/region';
-import { Provincia } from '../Interfaces/provincia';
-import { Comuna } from '../Interfaces/comuna';
+import { TipoPersona } from '../Utils/persona.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -20,36 +19,20 @@ export class PersonaService {
     return this.http.get<Region[]>(`${environment.baseUrl}api/regiones`);
   }
 
-  public getProvincias(id: number) {
-    return this.http.get<Provincia[]>(`${environment.baseUrl}getProvincias.php?codigo=${id}`);
-  }
-
-  public getComunas(id: number) {
-    return this.http.get<Comuna[]>(`${environment.baseUrl}getComunas.php?codigo=${id}`);
-  }
-
-  public getPersonas() {
-    return this.http.get<Persona[]>(`${environment.baseUrl}api/personas`);
-  }
-
-  public getListaProveedores() {
-    return this.http.get<Persona[]>(`${environment.baseUrl}getProviders.php`);
+  public getPersonas(tipo: TipoPersona) {
+    return this.http.get<Persona[]>(`${environment.baseUrl}api/personas/${tipo}`);
   }
 
   public getClientesFiltro(codigo:string) {
-    return this.http.get<Persona[]>(`${environment.baseUrl}api/personas`);
+    return this.http.get<Persona[]>(`${environment.baseUrl}api/clientes/${codigo}`);
   }
 
   public getProveedoresFiltro(codigo:string) {
-    return this.http.get<Persona[]>(`${environment.baseUrl}getProvidersFilter.php?codigo=${codigo}`);
+    return this.http.get<Persona[]>(`${environment.baseUrl}api/proveedores/${codigo}`);
   }
 
-  public getCliente(codigo: string) {
-    return this.http.get<Persona>(`${environment.baseUrl}api/personas/${codigo}`);
-  }
-
-  public getProveedor(codigo: string) { 
-    return this.http.get<Persona>(`${environment.baseUrl}getProvider.php?codigo=${codigo}`);
+  public getPersona(codigo: string, tipo: string) {
+    return this.http.get<Persona>(`${environment.baseUrl}api/personas/${codigo}/${tipo}`);
   }
 
   public creaPersona(persona: Persona) {

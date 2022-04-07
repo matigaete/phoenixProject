@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Persona } from 'src/app/Interfaces/persona';
 import { PersonaService } from 'src/app/Servicios/persona.service';
 import { TipoPersona } from 'src/app/Utils/persona.constants';
@@ -12,16 +13,14 @@ import { TipoPersona } from 'src/app/Utils/persona.constants';
 export class IndexPersonComponent implements OnInit {
 
   personaModel: Persona;
-  clientes: Persona[];
-  proveedores: Persona[];
+  clientes$: Observable<Persona[]>;
+  proveedores$: Observable<Persona[]>;
 
   constructor(private personaService: PersonaService) { }
 
   ngOnInit(): void {
-    this.personaService.getPersonas().subscribe((personas) => {
-      this.clientes = personas.filter(clientes => clientes.tipo === TipoPersona.Cliente);
-      this.proveedores = personas.filter(clientes => clientes.tipo === TipoPersona.Proveedor);
-    });
+    this.clientes$ = this.personaService.getPersonas(TipoPersona.Cliente);
+    this.proveedores$ = this.personaService.getPersonas(TipoPersona.Proveedor);
   }
 
   enviaPersona(persona : Persona){

@@ -19,30 +19,30 @@ export class CreateProductComponent implements OnInit {
   @Input() isNew: boolean;
   @Input() iProducto: Producto;
 
-  public productoModel: Producto = { id: '' };
+  productoModel: Producto = { id: '' };
 
-  public chkBaja: boolean;
-  public chkAuto: boolean;
+  chkBaja: boolean;
+  chkAuto: boolean;
 
-  public categorias$: Observable<Categoria[]>;
+  categorias$: Observable<Categoria[]>;
 
-  public errorCodigo: boolean;
-  public errorNombre: boolean;
-  public errorDescripcion: boolean;
-  public errorStockCritico: boolean;
-  public errorPrecioVenta: boolean;
+  errorCodigo: boolean;
+  errorNombre: boolean;
+  errorDescripcion: boolean;
+  errorStockCritico: boolean;
+  errorPrecioVenta: boolean;
 
   constructor(private businessService: BusinessService,
     private productoService: ProductosService,
     private categoriaService: CategoriasService) { }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.categorias$ = this.categoriaService.getCategorias();
     this.errorCodigo = this.errorNombre = this.errorDescripcion =
       this.errorStockCritico = this.errorPrecioVenta = this.businessService.error;
   }
 
-  public ngDoCheck(): void {
+  ngDoCheck(): void {
     if (this.iProducto !== undefined) {
       this.productoModel = this.iProducto[0];
       this.errorCodigo = this.errorNombre = this.errorDescripcion =
@@ -50,7 +50,7 @@ export class CreateProductComponent implements OnInit {
     }
   }
 
-  public OnSubmit() {
+  OnSubmit() {
     if (!this.errorCodigo && !this.errorNombre && !this.errorDescripcion &&
       !this.errorStockCritico && !this.errorPrecioVenta) {
       if (this.isNew) {
@@ -62,69 +62,61 @@ export class CreateProductComponent implements OnInit {
             this.errorStockCritico = this.errorPrecioVenta = true;
         });
       } else {
-        if (this.chkBaja) {
-          this.productoService.bajarProducto(this.productoModel)
-            .afterClosed().
-            subscribe((confirmado: boolean) => {
-              if (!confirmado) return;
-              this.productoService.bajaProducto(this.productoModel).subscribe(() => {
-                this.businessService.getAlert('Producto dado de baja');
-              });
-            });
-        } else {
-          this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
-            this.businessService.getAlert('Producto actualizado');
-          });
-        }
+        this.productoService.actualizaProducto(this.productoModel).subscribe(() => {
+          this.businessService.getAlert('Producto actualizado');
+        });
       }
     } else {
       this.businessService.getAlert('Complete los campos faltantes');
     }
   }
 
-  public calculaValor() {
+  calculaValor() {
     if (this.chkAuto) {
-      ProductHelper.getValorAutomatico(this.productoModel);
+      this.productoModel.precioVenta = ProductHelper.getValorAutomatico(this.productoModel);
     }
   }
 
-  public formControlCodigo() {
+  formControlCodigo() {
     return this.businessService.getFormControl(this.errorCodigo);
   }
 
-  public formControlNombre() {
+  formControlNombre() {
     return this.businessService.getFormControl(this.errorNombre);
   }
 
-  public formControlDescripcion() {
+  formControlDescripcion() {
     return this.businessService.getFormControl(this.errorDescripcion);
   }
 
-  public formControlStockCritico() {
+  formControlStockCritico() {
     return this.businessService.getFormControl(this.errorStockCritico);
   }
 
-  public formControlPrecioVenta() {
+  formControlPrecioVenta() {
     return this.businessService.getFormControl(this.errorPrecioVenta);
   }
 
-  public validaCodigo(campo: any) {
+  validaCodigo(campo: string) {
+    this.productoService.getProducto(campo).subscribe((existe) => {
+      this.errorCodigo = existe ? existe as boolean : false;
+    });
     this.errorCodigo = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaNombre(campo: any) {
+  validaNombre(campo: string) {
     this.errorNombre = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaDescripcion(campo: any) {
+  validaDescripcion(campo: string) {
     this.errorDescripcion = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaStockCritico(campo: any) {
+  validaStockCritico(campo: string) {
     this.errorStockCritico = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 
-  public validaPrecioVenta(campo: any) {
+  validaPrecioVenta(campo: string) {
     this.errorPrecioVenta = this.businessService.validaCampo(campo, this.errorCodigo);
   }
 

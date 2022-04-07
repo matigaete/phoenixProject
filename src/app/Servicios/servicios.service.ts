@@ -23,7 +23,7 @@ export class ServiciosService {
   }
 
   public actualizaServicio(servicio: Servicio) {
-    return this.http.put(`${environment.baseUrl}updateService.php`, servicio);
+    return this.http.put(`${environment.baseUrl}api/servicios`, servicio);
   }
 
 }

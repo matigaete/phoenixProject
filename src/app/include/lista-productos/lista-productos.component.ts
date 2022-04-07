@@ -16,21 +16,21 @@ import { Observable } from 'rxjs';
 export class ListaProductosComponent implements OnInit {
 
   @Output() producto = new EventEmitter<Producto>();
-  @Input() filtro: string; 
-  public selectedP: Producto; 
-  public productos$: Observable<Producto[]>;
+  @Input() filtro: string;
+  selectedP: Producto;
+  productos$: Observable<Producto[]>;
 
   constructor(private productoService: ProductosService) { }
 
-  public ngOnInit(): void {
-    this.productos$ = this.productoService.getProductosFiltro(this.filtro);
+  ngOnInit(): void {
+    this.productos$ = this.productoService.getProductosPorCategoria(this.filtro);
   }
 
-  public ngOnChanges(): void {
-    this.productos$ = this.productoService.getProductosFiltro(this.filtro);
+  ngOnChanges(): void {
+    this.productos$ = this.productoService.getProductosPorCategoria(this.filtro);
   }
 
-  public enviaProducto(producto: Producto) {
+  enviaProducto(producto: Producto) {
     this.producto.emit(producto);
   }
 

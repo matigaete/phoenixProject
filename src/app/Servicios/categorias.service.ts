@@ -19,11 +19,11 @@ export class CategoriasService {
   }
 
   public actualizaCategoria(categoria: Categoria) {
-    return this.http.put(`${environment.baseUrl}updateCategorie.php`, categoria);
+    return this.http.put(`${environment.baseUrl}api/categorias`, categoria);
   }
 
-  public getMensajeActualizar(mensaje1: string, mensaje2: string ): string {
-    return `¿Desea actualizar categoría ${mensaje1} por ${mensaje2}?`;
+  public getMensajeActualizar(mensaje: string ): string {
+    return `¿Desea actualizar categoría a ${mensaje}?`;
   }
 
   public getMensajeCrear(mensajeCrear: string): string {

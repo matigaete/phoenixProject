@@ -13,7 +13,6 @@ export class IndexProductosComponent implements OnInit {
   public acciones: Ilista[];
   public option: number;
   public current: string;
-  public jsonProducto: any;
   public productos: Producto[] = [];
 
   constructor(private businessService: BusinessService) { }
@@ -21,12 +20,11 @@ export class IndexProductosComponent implements OnInit {
   public ngOnInit(): void {
     this.acciones = this.businessService.getAcciones();
     this.option = this.businessService.option;
-    // this.acciones[this.option - 1].current = this.businessService.active;
+    this.asignarOpcion(1);
   }
 
   public ngDoCheck(): void {
     this.option = this.businessService.option;
-    // this.acciones[this.option - 1].current = this.businessService.active;
   }
 
   public asignarOpcion(option: number): void {

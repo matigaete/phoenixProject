@@ -45,11 +45,10 @@ import { FormCategoriasComponent } from './Mantenedores/Categorias/form-categori
 import { WelcomeComponent } from './Home/welcome/welcome.component';
 import { IndexCategoriasComponent } from './Mantenedores/Categorias/index-categorias/index-categorias.component';
 import { IndexProductosComponent } from './Mantenedores/Productos/index-productos/index-productos.component';
-import { IndexServiciosComponent } from './Mantenedores/Servicios/index-servicios/index-servicios.component';
 import { IndexPersonComponent } from './Mantenedores/Personas/index-person/index-person.component';
 import { CreateServiceComponent } from './Mantenedores/Servicios/create-service/create-service.component';
 import { CreateProductComponent } from './Mantenedores/Productos/create-product/create-product.component';
-import { SearchServiceComponent } from './Mantenedores/Servicios/search-service/search-service.component';
+import { IndexServiceComponent } from './Mantenedores/Servicios/index-service/index-service.component';
 import { SearchProductComponent } from './Mantenedores/Productos/search-product/search-product.component';
 import { InfoProductosComponent } from './Include/info-productos/info-productos.component';
 import { InfoServiciosComponent } from './Include/info-servicios/info-servicios.component';
@@ -82,9 +81,8 @@ import { RutPipe } from './Pipes/rut.pipe';
     DialogoColumnaComponent,
     DialogoConfirmacionComponent,
     DialogoErroresComponent,
-    IndexServiciosComponent,
     CreateServiceComponent,
-    SearchServiceComponent,
+    IndexServiceComponent,
     CreateProductComponent,
     SearchProductComponent,
     InfoProductosComponent,

@@ -64,15 +64,19 @@ export class BusinessService {
     return [{
       id: 1,
       nombre: 'Agregar',
+      current: true,
     }, {
       id: 2,
       nombre: 'Modificar',
+      current: false,
     }, {
       id: 3,
       nombre: 'Consultar',
+      current: false,
     }, {
       id: 4,
       nombre: 'Listado',
+      current: false,
     }
     ];
   }
@@ -85,7 +89,7 @@ export class BusinessService {
     };
   }
 
-  public validaCampo(campo: any, error: boolean) {
+  public validaCampo(campo: string, error: boolean) {
     if (campo == '' || campo == null) {
       error = true;
     } else {
@@ -110,7 +114,7 @@ export class BusinessService {
 
   public clearCurrent(acciones: Ilista[]): void {
     for (let i = 0; i < acciones.length; i++) {
-      acciones[i].current = null;
+      acciones[i].current = false;
     }
   }
 
@@ -441,6 +445,7 @@ export class BusinessService {
     //Lista de productos
     doc.setFontSize(7);
     let cord = 110;
+    console.log(f);
     f.detalle.forEach(pos => {
       if (pos.tipo == TipoProducto.Insumo) {
         doc.text(pos.producto.id.toString(), 15, cord);      //Código

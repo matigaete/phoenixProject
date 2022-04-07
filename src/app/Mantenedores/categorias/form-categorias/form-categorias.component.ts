@@ -13,28 +13,26 @@ import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmaci
 export class FormCategoriasComponent implements OnInit {
   @Output() actualiza = new EventEmitter<Categoria>();
   @Input() iCategoria: Categoria;
-  public categoriaModel: Categoria = { id: 0, nombre: '' };
-  public errorNombre: boolean;
-  public categoria = 'categorias';
+  categoriaModel: Categoria = { id: 0, nombre: '' };
+  errorNombre: boolean;
+  categoria = 'categorias';
 
   constructor(private businessService: BusinessService,
     private categoriasService: CategoriasService, 
     private dialogo: MatDialog) { }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.errorNombre = this.businessService.error;
   }
 
-  public ngOnChanges() {
+  ngOnChanges() {
     if (this.iCategoria != undefined) {
-      this.categoriaModel.id = this.iCategoria.id;
-      const nombre = this.iCategoria.nombre;
-      this.categoriaModel.nombre = nombre;
+      this.categoriaModel = this.iCategoria[0];
       this.errorNombre = false;
     }
   }
 
-  public OnSubmit() {
+  OnSubmit() {
     if (!this.errorNombre) {
       if (this.categoriaModel.id == 0) {
         this.dialogo.open(DialogoConfirmacionComponent, {
@@ -49,7 +47,7 @@ export class FormCategoriasComponent implements OnInit {
           });
       } else {
         this.dialogo.open(DialogoConfirmacionComponent, {
-          data: this.categoriasService.getMensajeActualizar(this.iCategoria.nombre, this.categoriaModel.nombre)
+          data: this.categoriasService.getMensajeActualizar(this.categoriaModel.nombre)
         })
           .afterClosed().
           subscribe((confirmado: boolean) => {
@@ -57,7 +55,6 @@ export class FormCategoriasComponent implements OnInit {
             this.categoriasService.actualizaCategoria(this.categoriaModel).subscribe(() => {
               this.businessService.getAlert('Categoría actualizada');
             });
-            this.actualiza.emit(this.categoriaModel);
           });
       }
     } else {
@@ -65,7 +62,7 @@ export class FormCategoriasComponent implements OnInit {
     }
   }
 
-  public nuevaCategoria() {
+  nuevaCategoria() {
     this.categoriaModel = {
       id: 0,
       nombre: ''
@@ -73,11 +70,11 @@ export class FormCategoriasComponent implements OnInit {
     this.errorNombre = true;
   }
 
-  public formControlNombre() {
+  formControlNombre() {
     return this.businessService.getFormControl(this.errorNombre);
   }
 
-  public validaNombre(campo: any) {
+  validaNombre(campo: string) {
     this.errorNombre = this.businessService.validaCampo(campo, this.errorNombre);
   }
 }
