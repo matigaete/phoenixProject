@@ -94,7 +94,7 @@ import { RutPipe } from './Pipes/rut.pipe';
     CreatePersonComponent, 
     InfoPersonasComponent, 
     ListaPersonasComponent,
-    RutPipe
+    RutPipe,
   ],
   entryComponents: [
     DialogoConfirmacionComponent,
@@ -109,8 +109,8 @@ import { RutPipe } from './Pipes/rut.pipe';
     ReactiveFormsModule,
     HttpClientModule,
     MatSnackBarModule,
-    MatDialogModule,
     BrowserAnimationsModule,
+    MatDialogModule,
     MatCheckboxModule,
     MatIconModule,
     MatButtonModule,
