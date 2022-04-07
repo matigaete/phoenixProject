@@ -4,7 +4,6 @@ export class ProductHelper {
   static getValorAutomatico(product: Producto) {
     try {
       const percent = product.tasaCambio / 100;
-      const pCompra = product.precioCompra[0].precio;
       const pCompra = product.precioCompra;
       return pCompra + (pCompra * percent);
     } catch (error) {
