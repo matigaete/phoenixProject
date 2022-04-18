@@ -123,7 +123,7 @@ export class WelcomeComponent implements OnInit {
         // this.enviar(fact); // SE APLAZA ENVIO DE MAIL
         }
       });
-    } else {                    // Factura de venta
+    } else {                    // Cotizacion
       this.facturaService.creaCotizacion(fact).subscribe(() => {
         this.businessService.getAlert('Cotización creada correctamente'); 
         this.generarCotizacion(); 
@@ -177,7 +177,7 @@ export class WelcomeComponent implements OnInit {
 
   // Se ejecuta al generarse la factura, limpia todos los campos
   reset() {
-    this.transactions = [{tipo: TipoProducto.Insumo, producto: { id: ''}, dcto: 0}];
+    this.transactions = [{tipo: TipoProducto.Insumo, producto: { id: ''}, servicio: { id: ''}, dcto: 0}];
     this.dataSource.next(this.transactions);
     this.factura = {
       tipo: TipoFactura.FacturaVenta,
@@ -252,6 +252,7 @@ export class WelcomeComponent implements OnInit {
   findService(datpos: DetalleFactura) {
     let modificado: boolean;
     let srv = datpos.servicio;
+    console.log(srv)
     if (srv.id) {
       this.servicio$ = this.serviciosService.getServicio(srv.id);
       this.servicio$.subscribe(servicio => {

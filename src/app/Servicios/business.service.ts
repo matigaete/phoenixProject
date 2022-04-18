@@ -141,6 +141,7 @@ export class BusinessService {
     const neto = this.convierteCLP(f.neto);
     const iva = this.convierteCLP(f.iva);
     const total = this.convierteCLP(f.total);
+    const nroFactura = f.codFactura;
     fecha = this.datepipe.transform(new Date(fecha), 'dd-MM-yyyy');
 
     doc.setFontSize(15);
@@ -149,12 +150,12 @@ export class BusinessService {
 
     //Seccion superior izquierda
     img.src = 'assets/Serviciotecnico-1.jpg';
-    doc.addImage(img, 'JPEG', 10, 10, 30, 30);
+    doc.addImage(img, 'JPEG', 10, 10, 40, 40);
 
     //Datos del cliente
     doc.rect(10, 43, 80, 31, 'S');
     doc.setFontSize(7);
-    doc.text('Cliente:', 11, 47);
+    doc.text('Cliente:', 11, 57);
     doc.text(nombre, 30, 47);
     doc.line(10, 49, 90, 49);
     // Rut
@@ -343,8 +344,8 @@ export class BusinessService {
     doc.setLineWidth(0.25);
     doc.line(10, 215, 355, 215);
 
-    // doc.save(`${nroFactura}.pdf`);
-    doc.output('dataurlnewwindow');
+    doc.save(`${nroFactura}.pdf`);
+    //doc.output('dataurlnewwindow');
   }
 
   // Genera el PDF de factura
