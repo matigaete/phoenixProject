@@ -446,7 +446,6 @@ export class BusinessService {
     //Lista de productos
     doc.setFontSize(7);
     let cord = 110;
-    console.log(f);
     f.detalle.forEach(pos => {
       if (pos.tipo == TipoProducto.Insumo) {
         doc.text(pos.producto.id.toString(), 15, cord);      //Código
@@ -488,9 +487,8 @@ export class BusinessService {
 
     doc.setLineWidth(0.25);
     doc.line(10, 215, 355, 215);
-
-    doc.save(`${nroFactura}.pdf`);
-    // doc.output('dataurlnewwindow');
+    //doc.save(`${nroFactura}.pdf`);
+    return doc.output('datauristring');
   }
 
   //-End Funciones-------------------------------//

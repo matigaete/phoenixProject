@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Factura } from 'src/app/Interfaces/factura';
+import { User } from '../Interfaces/user';
 
 @Injectable({
   providedIn: 'root'
@@ -50,8 +51,8 @@ export class FacturaService {
     return this.http.put(`${environment.baseUrl}api/cotizaciones`, factura);
   }
 
-  public sendEmail(url, data) {
-    return this.http.post(url, data);
+  public sendEmail(user: User) {
+    return this.http.post(`${environment.baseUrl}sendmail`, user);
   }
   
 }

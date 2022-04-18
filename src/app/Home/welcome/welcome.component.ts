@@ -12,6 +12,7 @@ import { PersonaService } from 'src/app/Servicios/persona.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoErroresComponent } from 'src/app/Include/dialogo-errores/dialogo-errores.component';
 import { Persona } from 'src/app/Interfaces/persona';
+import { User } from 'src/app/Interfaces/user';
 import { Ilista } from 'src/app/Interfaces/ilista';
 import { Servicio } from 'src/app/Interfaces/servicio';
 import { FacturaHelper } from 'src/app/Helpers/factura-helper';
@@ -77,7 +78,6 @@ export class WelcomeComponent implements OnInit {
 
   // Se validan campos vacíos antes de generar factura
   OnSubmit() {
-    console.log(this.factura);
     const errores = this.validaCampos();
     if (!errores.length) {
       this.getPersona();
@@ -118,9 +118,9 @@ export class WelcomeComponent implements OnInit {
           this.factura.codFactura = nroFactura;
           this.businessService.getAlert('Factura creada correctamente');
           this.alertStock();
-          this.generarFactura();
+          const doc = this.generarFactura();
           this.reset();
-        // this.enviar(fact); // SE APLAZA ENVIO DE MAIL
+          this.enviar(fact, doc); // SE APLAZA ENVIO DE MAIL
         }
       });
     } else {                    // Cotizacion
@@ -252,7 +252,6 @@ export class WelcomeComponent implements OnInit {
   findService(datpos: DetalleFactura) {
     let modificado: boolean;
     let srv = datpos.servicio;
-    console.log(srv)
     if (srv.id) {
       this.servicio$ = this.serviciosService.getServicio(srv.id);
       this.servicio$.subscribe(servicio => {
@@ -383,24 +382,18 @@ export class WelcomeComponent implements OnInit {
     });
   }
 
-  enviar(f: Factura) {
+  enviar(f: Factura, doc: string) {
     setTimeout(() => {
-      const user = {
+      const user: User = {
         name: f.persona.nombre,
         email: f.persona.email,
-        factura: f.codFactura
+        idFactura: f.codFactura,
+        pdf: doc
       };
-      this.facturaService.sendEmail('http://localhost:3000/sendmail', user).subscribe(
-        data => {
-          const res: any = data;
-          console.log(
-            `id mensaje: ${res.messageId}`
-          );
-        },
-        err => {
-          console.log(err);
-        },
-      );
+
+      this.facturaService.sendEmail(user).subscribe(data => { 
+        console.log(data);
+      });
     }, 10000);
   }
 
@@ -412,6 +405,6 @@ export class WelcomeComponent implements OnInit {
 
   // Genera el PDF de factura venta
   generarFactura() {
-    this.businessService.generarFactura(this.factura, this.fecha);
+    return this.businessService.generarFactura(this.factura, this.fecha);
   }
 }

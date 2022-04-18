@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'http://localhost:80/php/',
+  baseUrl: 'https://app-technical.herokuapp.com/',
 };
