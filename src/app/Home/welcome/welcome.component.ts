@@ -31,6 +31,8 @@ import { DateAdapter } from '@angular/material/core';
 })
 export class WelcomeComponent implements OnInit {
 
+  insertColumn: string[];
+  addColumn: string[];
   principalColumns: string[];
   dispColumn: string[];
   dynamicColumns: string[];
@@ -59,12 +61,12 @@ export class WelcomeComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>) { }
 
   ngOnInit() {
-    this.assignValues(); 
+    this.assignValues();
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
     this.clientes$ = this.personaService.getPersonas(TipoPersona.Cliente);
     this.proveedores$ = this.personaService.getPersonas(TipoPersona.Proveedor);
-    this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
+    this.displayedColumns = this.insertColumn.concat(this.addColumn, this.principalColumns, this.dispColumn, this.dynamicColumns);
     this.dateAdapter.setLocale('en-GB');
   }
 
@@ -120,14 +122,18 @@ export class WelcomeComponent implements OnInit {
           this.alertStock();
           const doc = this.generarFactura();
           this.reset();
-          this.enviar(fact, doc); // SE APLAZA ENVIO DE MAIL
+          this.enviar(fact, doc);
         }
       });
-    } else {                    // Cotizacion
-      this.facturaService.creaCotizacion(fact).subscribe(() => {
-        this.businessService.getAlert('Cotización creada correctamente'); 
-        this.generarCotizacion(); 
-        this.reset();
+    } else {                                                                // Cotizacion
+      this.facturaService.creaCotizacion(fact).subscribe((nroCotizacion: number) => {
+        if (nroCotizacion) {
+          this.businessService.getAlert('Cotización creada correctamente');
+          this.alertStock();
+          const doc = this.generarCotizacion();
+          this.reset();
+          //this.enviar(fact, doc);
+        }
       });
     }
   }
@@ -140,16 +146,16 @@ export class WelcomeComponent implements OnInit {
     } catch (error) {
       newID = 0;
     }
-    const registro: DetalleFactura = { 
-      posicion: newID, 
+    const registro: DetalleFactura = {
+      posicion: newID,
       tipo: TipoProducto.Insumo,
       dcto: 0,
-      producto: { 
-        id: '' 
+      producto: {
+        id: ''
       },
       servicio: {
         id: ''
-      } 
+      }
     };
     this.transactions.push(registro);
     this.factura.detalle = this.transactions;
@@ -177,7 +183,7 @@ export class WelcomeComponent implements OnInit {
 
   // Se ejecuta al generarse la factura, limpia todos los campos
   reset() {
-    this.transactions = [{tipo: TipoProducto.Insumo, producto: { id: ''}, servicio: { id: ''}, dcto: 0}];
+    this.transactions = [{ tipo: TipoProducto.Insumo, producto: { id: '' }, servicio: { id: '' }, dcto: 0 }];
     this.dataSource.next(this.transactions);
     this.factura = {
       tipo: TipoFactura.FacturaVenta,
@@ -235,6 +241,7 @@ export class WelcomeComponent implements OnInit {
           if (element.posicion == datpos.posicion && producto) {
             prd = producto;
             modificado = true;
+            datpos.cantidad = 1;
             break;
           } else {
             prd = {
@@ -274,27 +281,29 @@ export class WelcomeComponent implements OnInit {
   }
 
   assignValues() {
-    this.principalColumns = ['insert', 'add', 'item', 'name', 'cant'];
+    this.insertColumn = ['insert'];
+    this.addColumn = ['add'];
+    this.principalColumns = ['item', 'name', 'cant'];
     this.dispColumn = ['disp'];
     this.dynamicColumns = ['cost', 'dcto', 'subtotal'];
     this.displayedColumns = [];
     this.transactions = [{
       dcto: 0,
-      posicion: 0, 
-      tipo: TipoProducto.Insumo, 
-      producto: { 
-        id: '' 
+      posicion: 0,
+      tipo: TipoProducto.Insumo,
+      producto: {
+        id: ''
       },
       servicio: {
         id: ''
-      } 
+      }
     }];
-    this.factura = { 
-      persona: { 
-        rut: '' 
-      }, 
-      tipo: TipoFactura.FacturaVenta, 
-      detalle: [] 
+    this.factura = {
+      persona: {
+        rut: ''
+      },
+      tipo: TipoFactura.FacturaVenta,
+      detalle: []
     };
   }
 
@@ -303,7 +312,7 @@ export class WelcomeComponent implements OnInit {
     const log = [];
     const f = this.factura;
     const texto = f.persona?.tipo == TipoPersona.Cliente ? 'Proveedor' : 'Cliente';
-    if (f.codFactura == 0 && f.tipo == TipoFactura.FacturaCompra ) {
+    if (f.codFactura == 0 && f.tipo == TipoFactura.FacturaCompra) {
       log.push('Ingrese código de factura');
     }
     if (f.persona.rut == undefined || f.persona.rut == '') {
@@ -319,13 +328,13 @@ export class WelcomeComponent implements OnInit {
       const msg = `Pos. ${index + 1} datos incompletos`;
       let error = false;
       if (pos.tipo == TipoProducto.Insumo) {
-        error = !pos.producto.nombre ? !error: error;
-        error = !pos.producto.precioVenta ? !error: error;
+        error = !pos.producto.nombre ? !error : error;
+        error = !pos.producto.precioVenta ? !error : error;
         pos.cantidad > pos.producto.stock && f.tipo == TipoFactura.FacturaVenta
           ? log.push(`No puede exceder al stock actual de posición ${index + 1}`) : 0;
       } else {
-        error = !pos.producto.nombre ? !error: error;
-        error = !pos.producto.precioVenta ? !error: error;
+        error = !pos.producto.nombre ? !error : error;
+        error = !pos.producto.precioVenta ? !error : error;
       }
       !pos.cantidad ? error = true : 0;
       error ? log.push(msg) : 0;
@@ -336,20 +345,20 @@ export class WelcomeComponent implements OnInit {
   // Switch para cambio de producto a servicio (cantidad fijada en 1)
   asignaCantidad(det: DetalleFactura) {
     det.cantidad = 0;
-    det.tipo == TipoProducto.Servicio ? det.cantidad = 1 : 0;
+    det.tipo === TipoProducto.Servicio ? det.cantidad = 1 : 0;
   }
 
   // Al cambiar a factura de compra todas las posiciones se colocan de tipo P(producto)
   cambiaCompra(fact: Factura) {
-    if (fact.tipo == TipoFactura.FacturaCompra) {
+    if (fact.tipo === TipoFactura.FacturaCompra || fact.tipo === TipoFactura.CotizacionInsumos) {
       fact.persona.tipo = TipoPersona.Proveedor;
       fact.detalle.forEach(det => {
         det.tipo = TipoProducto.Insumo;
       });
-      this.displayedColumns = this.principalColumns.concat(this.dynamicColumns);
+      this.displayedColumns = this.insertColumn.concat(this.principalColumns, this.dynamicColumns);
     } else {
       fact.persona.tipo = TipoPersona.Cliente;
-      this.displayedColumns = this.principalColumns.concat(this.dispColumn, this.dynamicColumns);
+      this.displayedColumns = this.insertColumn.concat(this.addColumn, this.principalColumns, this.dispColumn, this.dynamicColumns);
     }
   }
   // Obtiene el subtotal por posición
@@ -391,7 +400,7 @@ export class WelcomeComponent implements OnInit {
         pdf: doc
       };
 
-      this.facturaService.sendEmail(user).subscribe(data => { 
+      this.facturaService.sendEmail(user).subscribe(data => {
         console.log(data);
       });
     }, 10000);
@@ -400,7 +409,7 @@ export class WelcomeComponent implements OnInit {
 
   // Genera el PDF de cotización
   generarCotizacion() {
-    this.businessService.generarCotizacion(this.factura, this.fecha);
+    return this.businessService.generarCotizacion(this.factura, this.fecha);
   }
 
   // Genera el PDF de factura venta

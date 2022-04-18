@@ -1,37 +1,39 @@
-.example-container {
-  height: 270px;
-  overflow: auto;
+.form-header {
+  height: 100%;
+  background-color: aliceblue;
+  border-color: darkgrey;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0.9rem;
+  margin-bottom: 30px;
+  padding: 15px 0px 10px 15px;
+}
+
+.form-body {
+  margin-bottom: 30px;
+}
+
+.mat-form-field {
+  margin-left: 10px;
 }
 
 table {
   width: 100%;
 }
 
-tr.mat-footer-row {
-  font-weight: bold;
-}
-
-.mat-table-sticky {
-  border-top: 1px solid #e0e0e0;
-}
-
-.mat-radio-button~.mat-radio-button {
-  margin-left: 16px;
-}
-
 .texto {
-  max-width: 250px;
+  max-width: 150px;
 }
 
 .numero {
-  max-width: 110px;
+  max-width: 80px;
 }
 
 .select {
-  max-width: 140px;
+  max-width: 90px;
 }
 
-.alertMessage {
+.alert-message {
   position: fixed;
   top: 30%;
   left: 80%;
@@ -43,12 +45,29 @@ tr.mat-footer-row {
   border-radius: 0px;
 }
 
-.example-form {
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
+th.mat-header-cell:first-of-type {
+  padding-left: 0px;
 }
 
-.example-full-width {
-  width: 100%;
+.row {
+  display: block;
+}
+
+.row>* {
+  padding-left: 0px;
+}
+
+.mat-radio-group {
+  display: inherit;
+}
+
+.mat-radio-button {
+  margin-right: 15px;
+}
+
+@media (max-width: 821px) {
+  .mat-column-name, .mat-column-disp, .mat-column-cost,
+  .mat-cell-add, .mat-cell-insert {
+    display: none;
+  }
 }

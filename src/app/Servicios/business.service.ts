@@ -134,14 +134,13 @@ export class BusinessService {
     const doc = new jsPDF();
     const img = new Image();
     const rut = this.rutPipe.transform(f.persona.rut);
-    const nombre = f.persona.nombre; 
-    const direccion = f.persona.direccion; 
+    const nombre = f.persona.nombre;
+    const direccion = f.persona.direccion;
     const contacto = f.persona.contacto;
     const email = f.persona.email;
     const neto = this.convierteCLP(f.neto);
     const iva = this.convierteCLP(f.iva);
     const total = this.convierteCLP(f.total);
-    const nroFactura = f.codFactura;
     fecha = this.datepipe.transform(new Date(fecha), 'dd-MM-yyyy');
 
     doc.setFontSize(15);
@@ -153,31 +152,31 @@ export class BusinessService {
     doc.addImage(img, 'JPEG', 10, 10, 40, 40);
 
     //Datos del cliente
-    doc.rect(10, 43, 80, 31, 'S');
+    doc.rect(10, 53, 80, 31, 'S');
     doc.setFontSize(7);
     doc.text('Cliente:', 11, 57);
-    doc.text(nombre, 30, 47);
-    doc.line(10, 49, 90, 49);
-    // Rut
-    doc.text('Rut:', 11, 52);
-    doc.text(rut, 30, 52);
-    doc.line(10, 54, 90, 54);
-    // Representante
-    doc.text('Contacto:', 11, 57);
-    // doc.text(giro, 30, 57);
+    doc.text(nombre, 30, 57);
     doc.line(10, 59, 90, 59);
-    // Telefono
-    doc.text('Telefono:', 11, 62);
-    doc.text(contacto, 30, 62);
+    // Rut
+    doc.text('Rut:', 11, 62);
+    doc.text(rut, 30, 62);
     doc.line(10, 64, 90, 64);
-    // Dirección
-    doc.text('Dirección:', 11, 67);
-    doc.text(direccion, 30, 67);
+    // Representante
+    doc.text('Contacto:', 11, 67);
+    // doc.text(giro, 30, 57);
     doc.line(10, 69, 90, 69);
+    // Telefono
+    doc.text('Telefono:', 11, 72);
+    doc.text(contacto, 30, 72);
+    doc.line(10, 74, 90, 74);
+    // Dirección
+    doc.text('Dirección:', 11, 77);
+    doc.text(direccion, 30, 77);
+    doc.line(10, 79, 90, 79);
     // Email
-    doc.text('Email:', 11, 72);
-    doc.text(email, 30, 72);
-    doc.line(27, 43, 27, 74);
+    doc.text('Email:', 11, 82);
+    doc.text(email, 30, 82);
+    doc.line(27, 53, 27, 84);
 
     //Seccion superior derecha 
     doc.setDrawColor(0);
@@ -209,7 +208,7 @@ export class BusinessService {
     doc.text('(56) 9 4714 9483', 151, 62);
     doc.line(150, 69, 205, 69);
     doc.text('Marcelo Gaete ', 151, 67);
-    doc.line(27, 43, 27, 74);
+    doc.line(47, 43, 47, 43);
     doc.text('mgaete@technicalservice.cl', 151, 72);
 
     if (f.tipo == TipoFactura.CotizacionInsumos) {
@@ -344,8 +343,9 @@ export class BusinessService {
     doc.setLineWidth(0.25);
     doc.line(10, 215, 355, 215);
 
-    doc.save(`${nroFactura}.pdf`);
-    //doc.output('dataurlnewwindow');
+    //doc.save(`${nroFactura}.pdf`);
+    doc.save('d.pdf');
+    //return doc.output('datauristring');
   }
 
   // Genera el PDF de factura
