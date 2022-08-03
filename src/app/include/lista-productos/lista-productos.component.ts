@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Producto } from '../../Clases/producto';
-import { plainToClass } from 'class-transformer';
+import { Producto } from 'src/app/Interfaces/producto';
 import { ProductosService } from 'src/app/Servicios/productos.service';
 import { Observable } from 'rxjs';
 
@@ -17,22 +16,21 @@ import { Observable } from 'rxjs';
 export class ListaProductosComponent implements OnInit {
 
   @Output() producto = new EventEmitter<Producto>();
-  @Input() filtro: string; 
-  public selectedP: Producto; 
-  public productos$: Observable<Producto[]>;
+  @Input() filtro: string;
+  selectedP: Producto;
+  productos$: Observable<Producto[]>;
 
   constructor(private productoService: ProductosService) { }
 
-  public ngOnInit(): void {
-    this.productos$ = this.productoService.getProductosFiltro(this.filtro);
+  ngOnInit(): void {
+    this.productos$ = this.productoService.getProductosPorCategoria(this.filtro);
   }
 
-  public ngOnChanges(): void {
-    this.productos$ = this.productoService.getProductosFiltro(this.filtro);
+  ngOnChanges(): void {
+    this.productos$ = this.productoService.getProductosPorCategoria(this.filtro);
   }
 
-  public enviaProducto(event: any) {
-    let producto = plainToClass(Producto, event);
+  enviaProducto(producto: Producto) {
     this.producto.emit(producto);
   }
 

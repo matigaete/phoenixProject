@@ -31,3 +31,9 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+@media (max-width: 821px) {
+  .img-fluid {
+    max-width: 50%;
+  }
+}

@@ -15,8 +15,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InfoServiciosComponent implements OnInit {
 
-  constructor() { }
-
-  public ngOnInit(): void { }
+  public ngOnInit() {
+    console.log('info');
+  }
 
 }

@@ -3,28 +3,26 @@ import { ProductosService } from 'src/app/Servicios/productos.service';
 import { ServiciosService } from 'src/app/Servicios/servicios.service';
 import { FacturaService } from 'src/app/Servicios/factura.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Producto } from 'src/app/Clases/producto';
-import { Factura } from 'src/app/Clases/factura';
-import { DetalleFactura } from 'src/app/Clases/detalle-factura';
+import { Producto } from 'src/app/Interfaces/producto';
+import { Factura } from 'src/app/Interfaces/factura';
+import { DetalleFactura } from 'src/app/Interfaces/detalle-factura';
 import { DatePipe } from '@angular/common';
 import { BusinessService } from 'src/app/Servicios/business.service';
 import { PersonaService } from 'src/app/Servicios/persona.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoErroresComponent } from 'src/app/Include/dialogo-errores/dialogo-errores.component';
-import { Persona } from 'src/app/Clases/persona';
+import { Persona } from 'src/app/Interfaces/persona';
+import { User } from 'src/app/Interfaces/user';
 import { Ilista } from 'src/app/Interfaces/ilista';
-import { Servicio } from 'src/app/Clases/servicio';
-
+import { Servicio } from 'src/app/Interfaces/servicio';
+import { FacturaHelper } from 'src/app/Helpers/factura-helper';
+import { DetalleFacturaHelper } from 'src/app/Helpers/detalle-factura-helper';
+import { TipoFactura } from 'src/app/Utils/factura.constants';
+import { TipoProducto } from 'src/app/Utils/producto.constants';
+import { TipoPersona } from 'src/app/Utils/persona.constants';
 import { FormControl } from '@angular/forms';
-import { map, startWith } from 'rxjs/operators';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
-
-const c_producto = 'P';
-const c_servicio = 'S';
-const c_fctocompra = 'C';
-const c_fctoventa = 'V';
-const c_proveedor = 'P';
-const c_cliente = 'C';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-welcome',
@@ -33,25 +31,25 @@ const c_cliente = 'C';
 })
 export class WelcomeComponent implements OnInit {
 
-  public displayedColumns = ['insert', 'add', 'item', 'name', 'cant', 'cost', 'dcto', 'subtotal'];
-  public factura = new Factura(undefined,
-    new Persona(undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
-  public transactions: DetalleFactura[] = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
-    new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''),
-    new Servicio(undefined, undefined, 0, ''))];
-  public dataSource = new BehaviorSubject([]);
-  public chkAll: boolean = false;
-  public producto$: Observable<Producto>;
-  public servicio$: Observable<Servicio>;
-  public persona$: Observable<Persona>;
-  public clientes$: Observable<Persona[]>;
-  public proveedores$: Observable<Persona[]>;
-  public filteredOptions: Observable<string[]>;
-  public alertas: Ilista[];
-  public fecha: string;
-  public myControl = new FormControl();
-
-  options: string[] = ['One', 'Two', 'Three'];
+  insertColumn: string[];
+  addColumn: string[];
+  principalColumns: string[];
+  dispColumn: string[];
+  dynamicColumns: string[];
+  displayedColumns: string[];
+  factura: Factura;
+  transactions: DetalleFactura[];
+  dataSource = new BehaviorSubject([]);
+  chkAll = false;
+  errorStock: boolean;
+  producto$: Observable<Producto>;
+  servicio$: Observable<Servicio>;
+  persona$: Observable<Persona>;
+  clientes$: Observable<Persona[]>;
+  proveedores$: Observable<Persona[]>;
+  alertas: Ilista[];
+  fecha: string;
+  myControl = new FormControl();
 
   constructor(private businessService: BusinessService,
     private productosService: ProductosService,
@@ -59,89 +57,114 @@ export class WelcomeComponent implements OnInit {
     private personaService: PersonaService,
     private facturaService: FacturaService,
     private datepipe: DatePipe,
-    private dialogo: MatDialog) { }
+    private dialogo: MatDialog,
+    private dateAdapter: DateAdapter<Date>) { }
 
-  public ngOnInit() {
+  ngOnInit() {
+    this.assignValues();
     this.dataSource.next(this.transactions);
     this.factura.detalle.push(this.transactions[0]);
-    this.clientes$ = this.personaService.getClientesFiltro('%');
-    this.proveedores$ = this.personaService.getProveedoresFiltro('%');
+    this.clientes$ = this.personaService.getPersonas(TipoPersona.Cliente);
+    this.proveedores$ = this.personaService.getPersonas(TipoPersona.Proveedor);
+    this.displayedColumns = this.insertColumn.concat(this.addColumn, this.principalColumns, this.dispColumn, this.dynamicColumns);
+    this.dateAdapter.setLocale('en-GB');
   }
 
-  public buscaCliente(codigo: string) {
-    this.clientes$ = this.personaService.getClientesFiltro(codigo + '%');
+  buscaCliente(codigo: string) {
+    this.clientes$ = this.personaService.getClientesFiltro(codigo);
   }
 
-  public buscaProveedor(codigo: string) {
-    this.proveedores$ = this.personaService.getProveedoresFiltro(codigo + '%');
+  buscaProveedor(codigo: string) {
+    this.proveedores$ = this.personaService.getProveedoresFiltro(codigo);
   }
 
   // Se validan campos vacíos antes de generar factura
-  public OnSubmit() {
-    var errores = this.validaCampos();
+  OnSubmit() {
+    const errores = this.validaCampos();
     if (!errores.length) {
+      this.getPersona();
       this.dialogo.open(DialogoConfirmacionComponent, {
         data: 'Desea generar la factura?'
       }).afterClosed()
-      .subscribe((confirmado: boolean) => {
-          if (confirmado) this.generaFactura();
+        .subscribe((confirmado: boolean) => {
+          if (confirmado) {
+            this.generaFactura();
+          }
         });
     } else {
       this.dialogo.open(DialogoErroresComponent, {
         data: errores
       });
-      // var timeOut = 1500;
+      // let timeOut = 1500;
       // errores.forEach((message, index) => {
       //   setTimeout(() => {
       //     this.businessService.getAlert(message);
-      //   }, index * (timeOut + 200)); // 500 => timeout between two messages
+      //   }, index * (timeOut + 350)); // 500 => timeout between two messages
       // });
     }
   }
 
-  public generaFactura() {
-    var fact = this.factura;
+  generaFactura() {
+    let fact = this.factura;
     fact.hora = this.datepipe.transform(new Date(), 'HH:mm:ss');
     fact.fecha = this.datepipe.transform(new Date(this.fecha), 'yyyy-MM-dd');
-    fact.detalle.forEach(det => {
-      if (det.tipo == c_producto) {
-        det.servicio = undefined;
-      } else {
-        det.producto = undefined;
-      }
-    });
-    if (fact.tipo == c_fctocompra) {
+    fact = FacturaHelper.limpiaPosiciones(fact);
+    if (fact.tipo == TipoFactura.FacturaCompra) { // Si es verdadero es factura de compra
       this.facturaService.creaFacturaCompra(fact).subscribe(() => {
-        this.businessService.getAlert('Factura creada correctamente');
+        this.businessService.getAlert('Insumos actualizados correctamente');
         this.reset();
       });
-    } else {
-      this.facturaService.creaFacturaVenta(fact).subscribe(() => {
-        this.businessService.getAlert('Factura creada correctamente');
-        this.alertStock();
-        this.reset();
+    } else if (fact.tipo == TipoFactura.FacturaVenta) {                    // Factura de venta
+      this.facturaService.creaFacturaVenta(fact).subscribe((nroFactura: number) => {
+        if (nroFactura) {
+          this.factura.codFactura = nroFactura;
+          this.businessService.getAlert('Factura creada correctamente');
+          this.alertStock();
+          const doc = this.generarFactura();
+          this.reset();
+          this.enviar(fact, doc);
+        }
+      });
+    } else {                                                          // Cotizacion
+      this.facturaService.creaCotizacion(fact).subscribe((nroCotizacion: number) => {
+        if (nroCotizacion) {
+          this.businessService.getAlert('Cotización creada correctamente');
+          this.alertStock();
+          const doc = this.generarCotizacion();
+          this.reset();
+          //this.enviar(fact, doc);
+        }
       });
     }
   }
 
   //Genera nueva posición
-  public btnClick() {
+  btnClick() {
+    let newID = 0;
     try {
-      var newID = this.transactions[this.transactions.length - 1].posicion + 1;
+      newID = this.transactions[this.transactions.length - 1].posicion + 1;
     } catch (error) {
       newID = 0;
     }
-    var registro: DetalleFactura = new DetalleFactura(newID, 0, 0, c_producto, false, 0,
-      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''),
-      new Servicio(undefined, undefined, 0, ''));
+    const registro: DetalleFactura = {
+      posicion: newID,
+      tipo: TipoProducto.Insumo,
+      dcto: 0,
+      producto: {
+        id: ''
+      },
+      servicio: {
+        id: ''
+      }
+    };
     this.transactions.push(registro);
     this.factura.detalle = this.transactions;
     this.dataSource.next(this.transactions);
   }
 
   // Limpia posiciones según las que estén marcadas
-  public clear() {
-    var array = [];
+  clear() {
+    const array = [];
     this.transactions.forEach(transaction => {
       if (!transaction.insert) {
         array.push(transaction);
@@ -159,32 +182,45 @@ export class WelcomeComponent implements OnInit {
   }
 
   // Se ejecuta al generarse la factura, limpia todos los campos
-  public reset() {
-    this.transactions = [new DetalleFactura(0, 0, 0, c_producto, false, 0,
-      new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, ''))];;
+  reset() {
+    this.transactions = [{ 
+      tipo: TipoProducto.Insumo,
+      producto: { 
+        id: '' 
+      }, 
+      servicio: { 
+        id: '' 
+      }, 
+      dcto: 0,
+      posicion: 0 
+    }];
     this.dataSource.next(this.transactions);
-    this.factura = new Factura(undefined,
-      new Persona('', undefined, undefined, c_proveedor), undefined, undefined, 0, 0, 0, c_fctocompra);
-    this.factura.detalle.push(this.transactions[0]);
+    this.factura = {
+      tipo: TipoFactura.FacturaVenta,
+      persona: {
+        tipo: TipoPersona.Cliente
+      }
+    };
+    this.factura.detalle = this.transactions;
     this.fecha = null;
   }
 
   // Alerta todos los productos que se encuentren bajo el stock crítico
-  public alertStock() {
-    var arr = [];
+  alertStock() {
+    const arr = [];
     this.transactions.forEach(det => {
-      if (det.tipo == c_producto) {
-        var producto = det.producto;
-        var cantidadFinal = producto.stock - det.cantidad;
+      if (det.tipo == TipoProducto.Insumo) {
+        const producto = det.producto;
+        const cantidadFinal = producto.stock - det.cantidad;
         if (cantidadFinal <= 0) {
           arr.push({
             tipo: 'danger',
-            nombre: `${producto.nombre} (${producto.codigo}) se encuentra sin stock`,
+            nombre: `${producto.nombre} (${producto.id}) se encuentra sin stock`,
           });
         } else if (cantidadFinal < det.producto.stockCritico) {
           arr.push({
             tipo: 'warning',
-            nombre: `${producto.nombre} (${producto.codigo}) bajo de stock crítico`,
+            nombre: `${producto.nombre} (${producto.id}) bajo de stock crítico`,
           });
         }
       }
@@ -193,46 +229,49 @@ export class WelcomeComponent implements OnInit {
   }
 
   // Cierra las alertas de stock
-  public close(alert: Ilista) {
+  close(alert: Ilista) {
     this.alertas.splice(this.alertas.indexOf(alert), 1);
   }
 
   // Selecciona todas las posiciones
-  public selectAll() {
+  selectAll() {
     this.transactions.map(transac => transac.insert = this.chkAll);
     this.dataSource.next(this.transactions);
   }
 
   //Busca un producto a la BD para enlazarlo al detalle
-  public findProduct(datpos: DetalleFactura) {
-    var modificado: boolean;
-    var prd = datpos.producto;
-    if (prd.codigo) {
-      this.producto$ = this.productosService.getProducto(prd.codigo);
-      this.producto$.forEach(producto => {
+  findProduct(datpos: DetalleFactura) {
+    let modificado: boolean;
+    let prd = datpos.producto;
+    if (prd.id) {
+      this.producto$ = this.productosService.getProducto(prd.id);
+      this.producto$.subscribe(producto => {
         for (let i = 0; i < this.transactions.length; i++) {
           const element = this.transactions[i];
           if (element.posicion == datpos.posicion && producto) {
             prd = producto;
             modificado = true;
+            datpos.cantidad = 1;
             break;
           } else {
-            prd = new Producto(undefined, undefined, undefined, 0, 0, 0, 0, false, prd.codigo)
+            prd = {
+              id: prd.id
+            };
           }
         }
         datpos.producto = prd;
       });
-      if (modificado) this.dataSource.next(this.transactions);
+      modificado ? this.dataSource.next(this.transactions) : 0;
     }
   }
 
   //Busca un servicio a la BD para enlazarlo al detalle
-  public findService(datpos: DetalleFactura) {
-    var modificado: boolean;
-    var srv = datpos.servicio;
-    if (srv.codigo) {
-      this.servicio$ = this.serviciosService.getServicio(srv.codigo);
-      this.servicio$.forEach(servicio => {
+  findService(datpos: DetalleFactura) {
+    let modificado: boolean;
+    let srv = datpos.servicio;
+    if (srv.id) {
+      this.servicio$ = this.serviciosService.getServicio(srv.id);
+      this.servicio$.subscribe(servicio => {
         for (let i = 0; i < this.transactions.length; i++) {
           const element = this.transactions[i];
           if (element.posicion == datpos.posicion && servicio) {
@@ -240,73 +279,151 @@ export class WelcomeComponent implements OnInit {
             modificado = true;
             break;
           } else {
-            srv = new Servicio(undefined, undefined, 0, srv.codigo);
+            srv = {
+              id: srv.id
+            };
           }
         }
         datpos.servicio = srv;
       });
-      if (modificado) this.dataSource.next(this.transactions);
+      modificado ? this.dataSource.next(this.transactions) : 0;
     }
   }
 
-  // Validación si existe algún campo que falte por rellenar
-  public validaCampos() {
-    var log = [];
-    var f = this.factura;
-    if (f.tipo == c_cliente) var texto = 'Proveedor'; else texto = 'Cliente';
-    if (f.codFactura == undefined || f.codFactura == '') log.push('Ingrese código de factura');
-    if (f.persona.rut == undefined || f.persona.rut == '') log.push(`Ingrese rut de ${texto}`);
-    if (this.fecha == undefined) log.push('Ingrese una fecha válida');
-    if (f.tipo == undefined) log.push('Ingrese tipo de factura');
-    this.transactions.forEach(function (pos, index) {
-      var msg = `Pos. ${index + 1} datos incompletos`;
-      var error = false;
-      if (pos.tipo == c_producto) {
-        if (!pos.producto.nombre) { error = true }
-        if (!pos.producto.precioCompra) { error = true }
-      } else {
-        if (!pos.servicio.nombre) { error = true }
-        if (!pos.servicio.precioVenta) { error = true }
+  assignValues() {
+    this.insertColumn = ['insert'];
+    this.addColumn = ['add'];
+    this.principalColumns = ['item', 'name', 'cant'];
+    this.dispColumn = ['disp'];
+    this.dynamicColumns = ['cost', 'dcto', 'subtotal'];
+    this.displayedColumns = [];
+    this.transactions = [{
+      dcto: 0,
+      posicion: 0,
+      tipo: TipoProducto.Insumo,
+      producto: {
+        id: ''
+      },
+      servicio: {
+        id: ''
       }
-      if (!pos.cantidad) { error = true }
-      if (error) { log.push(msg) }
+    }];
+    this.factura = {
+      persona: {
+        rut: ''
+      },
+      tipo: TipoFactura.FacturaVenta,
+      detalle: []
+    };
+  }
+
+  // Validación si existe algún campo que falte por rellenar
+  validaCampos() {
+    const log = [];
+    const f = this.factura;
+    const texto = f.persona?.tipo == TipoPersona.Cliente ? 'Proveedor' : 'Cliente';
+    if (f.codFactura == 0 && f.tipo == TipoFactura.FacturaCompra) {
+      log.push('Ingrese código de factura');
+    }
+    if (f.persona.rut == undefined || f.persona.rut == '') {
+      log.push(`Ingrese rut de ${texto}`);
+    }
+    if (this.fecha == undefined) {
+      log.push('Ingrese una fecha válida');
+    }
+    if (f.tipo == undefined) {
+      log.push('Ingrese tipo de factura');
+    }
+    this.transactions.forEach(function (pos, index) {
+      const msg = `Pos. ${index + 1} datos incompletos`;
+      let error = false;
+      if (pos.tipo == TipoProducto.Insumo) {
+        error = !pos.producto.nombre ? !error : error;
+        error = !pos.producto.precioVenta ? !error : error;
+        pos.cantidad > pos.producto.stock && f.tipo == TipoFactura.FacturaVenta
+          ? log.push(`No puede exceder al stock actual de posición ${index + 1}`) : 0;
+      } else {
+        error = !pos.producto.nombre ? !error : error;
+        error = !pos.producto.precioVenta ? !error : error;
+      }
+      !pos.cantidad ? error = true : 0;
+      error ? log.push(msg) : 0;
     });
     return log;
   }
 
   // Switch para cambio de producto a servicio (cantidad fijada en 1)
-  public asignaCantidad(det: DetalleFactura) {
+  asignaCantidad(det: DetalleFactura) {
     det.cantidad = 0;
-    if (det.tipo == c_servicio) {
-      det.cantidad = 1;
-    }
+    det.tipo === TipoProducto.Servicio ? det.cantidad = 1 : 0;
   }
 
   // Al cambiar a factura de compra todas las posiciones se colocan de tipo P(producto)
-  public cambiaCompra(fact: Factura) {
-    if (fact.tipo == c_fctocompra) {
-      fact.persona.tipo = c_proveedor;
+  cambiaCompra(fact: Factura) {
+    if (fact.tipo === TipoFactura.FacturaCompra || fact.tipo === TipoFactura.CotizacionInsumos) {
+      fact.persona.tipo = TipoPersona.Proveedor;
       fact.detalle.forEach(det => {
-        det.tipo = c_producto;
+        det.tipo = TipoProducto.Insumo;
       });
+      this.displayedColumns = this.insertColumn.concat(this.principalColumns, this.dynamicColumns);
     } else {
-      fact.persona.tipo = c_cliente;
+      fact.persona.tipo = TipoPersona.Cliente;
+      this.displayedColumns = this.insertColumn.concat(this.addColumn, this.principalColumns, this.dispColumn, this.dynamicColumns);
     }
   }
-
-  public getSubtotal(f: Factura, d: DetalleFactura): number {
-    return d.getSubtotal(f.tipo);
+  // Obtiene el subtotal por posición
+  getSubtotal(f: Factura, d: DetalleFactura): number {
+    return DetalleFacturaHelper.getSubtotal(d, f.tipo);
   }
 
-  public getNetAmount(f: Factura): number {
-    return f.getNetAmount();
+  // Obtiene el monto neto de la factura
+  getNetAmount(f: Factura): number {
+    return FacturaHelper.getNetAmount(f);
   }
 
-  public getIVA(f: Factura): number {
-    return f.getIVA();
+  // Obtiene el IVA del monto neto
+  getIVA(f: Factura): number {
+    return FacturaHelper.getIVA(f);
   }
 
-  public getTotalCost(f: Factura): number {
-    return f.getTotalCost();
+  // Suma del neto + IVA
+  getTotalCost(f: Factura): number {
+    return FacturaHelper.getTotalCost(f);
+  }
+
+  //Verifica si el rut ingresado existe
+  getPersona(): void {
+    const person = this.factura.persona;
+    const tipo = this.factura.tipo === TipoFactura.FacturaCompra ? TipoPersona.Proveedor : TipoPersona.Cliente;
+    this.persona$ = this.personaService.getPersona(person.rut, tipo);
+    this.persona$.subscribe(per => {
+      this.factura.persona = per;
+    });
+  }
+
+  enviar(f: Factura, doc: string) {
+    setTimeout(() => {
+      const user: User = {
+        name: f.persona.nombre,
+        email: f.persona.email,
+        idFactura: f.codFactura,
+        pdf: doc
+      };
+
+      this.facturaService.sendEmail(user).subscribe(data => {
+        console.log(data);
+      });
+    }, 10000);
+  }
+
+
+  // Genera el PDF de cotización
+  generarCotizacion() {
+    return this.businessService.generarCotizacion(this.factura, this.fecha);
+  }
+
+  // Genera el PDF de factura venta
+  generarFactura() {
+    return this.businessService.generarFactura(this.factura, this.fecha);
   }
 }

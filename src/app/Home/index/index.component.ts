@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Ilista } from 'src/app/Interfaces/ilista';
-import { BusinessService } from 'src/app/Servicios/business.service'; 
+import { BusinessService } from 'src/app/Servicios/business.service';
 
 @Component({
   selector: 'app-index',
@@ -9,7 +9,6 @@ import { BusinessService } from 'src/app/Servicios/business.service';
 })
 export class IndexComponent implements OnInit {
 
-  public inicio: string;
   public action: string;
   public acciones: Ilista[];
 
@@ -17,8 +16,8 @@ export class IndexComponent implements OnInit {
 
   public ngOnInit(): void {
     this.acciones = this.businessService.getMantenedores();
-    this.inicio = this.businessService.inicio;
     this.action = this.businessService.action; 
+    this.redirect('index');
   }
 
   public redirect(path: string): void {

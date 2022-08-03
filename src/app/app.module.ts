@@ -3,16 +3,16 @@ import { ProductosService } from './Servicios/productos.service';
 import { ServiciosService } from './Servicios/servicios.service';
 import { PersonaService } from './Servicios/persona.service';
 import { FacturaService } from './Servicios/factura.service';
-import { CategoriasService } from './Servicios/categorias.service'; 
+import { CategoriasService } from './Servicios/categorias.service';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DatePipe } from '@angular/common'; 
+import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -34,9 +34,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { AppComponent } from './app.component';
-import { FooterComponent } from './include/footer/footer.component'; 
+import { FooterComponent } from './include/footer/footer.component';
 import { IndexComponent } from './Home/index/index.component';
 import { FindComponent } from './Include/find/find.component';
 import { ListadoComponent } from './Include/listado/listado.component';
@@ -44,27 +45,30 @@ import { FormCategoriasComponent } from './Mantenedores/Categorias/form-categori
 import { WelcomeComponent } from './Home/welcome/welcome.component';
 import { IndexCategoriasComponent } from './Mantenedores/Categorias/index-categorias/index-categorias.component';
 import { IndexProductosComponent } from './Mantenedores/Productos/index-productos/index-productos.component';
-import { IndexServiciosComponent } from './Mantenedores/Servicios/index-servicios/index-servicios.component';
 import { IndexPersonComponent } from './Mantenedores/Personas/index-person/index-person.component';
 import { CreateServiceComponent } from './Mantenedores/Servicios/create-service/create-service.component';
 import { CreateProductComponent } from './Mantenedores/Productos/create-product/create-product.component';
-import { SearchServiceComponent } from './Mantenedores/Servicios/search-service/search-service.component';
+import { IndexServiceComponent } from './Mantenedores/Servicios/index-service/index-service.component';
 import { SearchProductComponent } from './Mantenedores/Productos/search-product/search-product.component';
 import { InfoProductosComponent } from './Include/info-productos/info-productos.component';
 import { InfoServiciosComponent } from './Include/info-servicios/info-servicios.component';
 import { ListaProductosComponent } from './Include/lista-productos/lista-productos.component';
 import { ListaCategoriasComponent } from './Include/lista-categorias/lista-categorias.component';
-import { ListaServiciosComponent } from './Include/lista-servicios/lista-servicios.component'; 
+import { ListaServiciosComponent } from './Include/lista-servicios/lista-servicios.component';
 
 import { DialogoColumnaComponent } from './Include/dialogo-columna/dialogo-columna.component';
 import { DialogoConfirmacionComponent } from './Include/dialogo-confirmacion/dialogo-confirmacion.component';
 import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-errores.component';
+import { CreatePersonComponent } from './Mantenedores/Personas/create-person/create-person.component';
+import { InfoPersonasComponent } from './Include/info-personas/info-personas.component';
+import { ListaPersonasComponent } from './include/lista-personas/lista-personas.component';
+import { RutPipe } from './Pipes/rut.pipe';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    FooterComponent, 
+    FooterComponent,
     IndexComponent,
     CreateProductComponent,
     SearchProductComponent,
@@ -75,19 +79,22 @@ import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-error
     FormCategoriasComponent,
     IndexCategoriasComponent,
     DialogoColumnaComponent,
-    DialogoConfirmacionComponent, 
+    DialogoConfirmacionComponent,
     DialogoErroresComponent,
-    IndexServiciosComponent,
     CreateServiceComponent,
-    SearchServiceComponent,
+    IndexServiceComponent,
     CreateProductComponent,
     SearchProductComponent,
     InfoProductosComponent,
     InfoServiciosComponent,
     ListaProductosComponent,
     ListaCategoriasComponent,
-    ListaServiciosComponent, 
-    IndexPersonComponent,
+    ListaServiciosComponent,
+    IndexPersonComponent, 
+    CreatePersonComponent, 
+    InfoPersonasComponent, 
+    ListaPersonasComponent,
+    RutPipe,
   ],
   entryComponents: [
     DialogoConfirmacionComponent,
@@ -102,8 +109,8 @@ import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-error
     ReactiveFormsModule,
     HttpClientModule,
     MatSnackBarModule,
-    MatDialogModule,
     BrowserAnimationsModule,
+    MatDialogModule,
     MatCheckboxModule,
     MatIconModule,
     MatButtonModule,
@@ -121,10 +128,11 @@ import { DialogoErroresComponent } from './Include/dialogo-errores/dialogo-error
     MatButtonToggleModule,
     MatGridListModule,
     MatCardModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatPaginatorModule
   ],
-  providers: [BusinessService, ProductosService, CategoriasService, 
-    FacturaService, ServiciosService, PersonaService, DatePipe],
+  providers: [BusinessService, ProductosService, CategoriasService,
+    FacturaService, ServiciosService, PersonaService, DatePipe, RutPipe, CurrencyPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

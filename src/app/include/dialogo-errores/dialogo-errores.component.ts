@@ -18,6 +18,7 @@ export class DialogoErroresComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public errores: string[]) { }
 
   ngOnInit(): void {
+    console.log('dialog');
   }
 
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { BusinessService } from '../../../Servicios/business.service';
+import { BusinessService } from 'src/app/Servicios/business.service';
 import { ServiciosService } from 'src/app/Servicios/servicios.service';
-import { Servicio } from 'src/app/Clases/servicio';
+import { Servicio } from 'src/app/Interfaces/servicio';
 
 @Component({
   selector: 'app-create-service',
@@ -16,41 +16,19 @@ export class CreateServiceComponent implements OnInit {
   @Input() isNew: boolean;
   @Input() iServicio: Servicio;
 
-  public servicioModel: Servicio = new Servicio('', '', 0, '');
-
-  public codigo: string;
-  public nombre: string;
-  public descripcion: string;
-  public precioVenta: string;
-
-  public aceptar: string;
-  public active: string;
+  public servicioModel: Servicio = {};
 
   public errorCodigo: boolean;
   public errorNombre: boolean;
   public errorDescripcion: boolean;
   public errorPrecioVenta: boolean;
 
-  public mensajeCodigo: string;
-  public mensajeNombre: string;
-  public mensajeDescripcion: string;
-  public mensajePrecio: string;
-
   constructor(private businessService: BusinessService,
     private serviciosService: ServiciosService,) { }
 
   public ngOnInit(): void {
-    this.codigo = this.serviciosService.codigo;
-    this.nombre = this.serviciosService.nombre;
-    this.descripcion = this.serviciosService.descripcion;
-    this.precioVenta = this.serviciosService.precioVenta;
-    this.aceptar = this.businessService.aceptar;
     this.errorCodigo = this.errorNombre = this.errorDescripcion =
       this.errorPrecioVenta = this.businessService.error;
-    this.mensajeCodigo = this.serviciosService.mensajeCodigo;
-    this.mensajeDescripcion = this.serviciosService.mensajeDescripcion;
-    this.mensajeNombre = this.businessService.mensajeNombre;
-    this.mensajePrecio = this.serviciosService.mensajePrecio;
   }
 
   public ngDoCheck(): void {
@@ -67,22 +45,22 @@ export class CreateServiceComponent implements OnInit {
       !this.errorDescripcion && !this.errorPrecioVenta) {
       if (this.isNew) {
         this.serviciosService.creaServicio(this.servicioModel).subscribe(() => {
-          this.businessService.getAlert(this.serviciosService.mensajeCreado);
-        })
+          this.businessService.getAlert('Servicio añadido');
+        });
       } else {
         this.serviciosService.actualizaServicio(this.servicioModel).subscribe(() => {
-          this.businessService.getAlert(this.serviciosService.mensajeActualizado);
-        })
+          this.businessService.getAlert('Servicio actualizado');
+        });
       }
-      this.servicioModel = new Servicio('', '', 0, '');
+      this.servicioModel = {};
     } else {
-      this.businessService.getAlert(this.businessService.mensajeError);
+      this.businessService.getAlert('Complete los campos faltantes');
     }
   }
 
   public nuevoServicio(){
     this.isNew = true;
-    this.servicioModel = new Servicio('', '', 0, '');
+    this.servicioModel = {};
   }
 
   public formControlCodigo() {

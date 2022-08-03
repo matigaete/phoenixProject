@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Categoria } from 'src/app/Clases/categoria';
+import { Categoria } from 'src/app/Interfaces/categoria';
 
 @Component({
   selector: 'app-index-categorias',
@@ -17,9 +17,9 @@ export class IndexCategoriasComponent implements OnInit {
 
   public categoria: Categoria;
   public actualiza: Categoria;
-  constructor() { }
 
   ngOnInit(): void {
+    console.log('index');
   }
 
   public enviaCategoria(categoria: Categoria) {

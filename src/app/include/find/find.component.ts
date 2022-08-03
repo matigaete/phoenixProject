@@ -1,22 +1,12 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Ilista } from '../../Interfaces/ilista';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { Subscription, Observable } from 'rxjs';
-import { Categoria } from 'src/app/Clases/categoria';
+import { Categoria } from 'src/app/Interfaces/categoria';
 
 @Component({
   selector: 'app-find',
-  template: `<form>
-                <div class="form-row align-items-center">
-                  <div class="col"> 
-                    <p>Ingrese una categoría:</p>
-                    <select name="select" [(ngModel)]="actual" class="custom-select" (ngModelChange)="actualizarLista($event)"> 
-                      <option [value]="c.codigo" *ngFor="let c of (categorias$ | async)">{{c.tipo}}</option>
-                    </select>
-                  </div> 
-                </div>
-              </form>`,
-  styles: []
+  templateUrl: './find.component.html',
+  styleUrls: ['./find.component.css']
 })
 export class FindComponent implements OnInit {
 

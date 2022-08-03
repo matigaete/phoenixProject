@@ -1,106 +1,80 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CategoriasService } from 'src/app/Servicios/categorias.service';
 import { BusinessService } from 'src/app/Servicios/business.service';
-import { Categoria } from 'src/app/Clases/categoria'; 
+import { Categoria } from 'src/app/Interfaces/categoria'; 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogoConfirmacionComponent } from 'src/app/Include/dialogo-confirmacion/dialogo-confirmacion.component';
 
 @Component({
   selector: 'app-form-categorias',
-  template: ` <form (ngSubmit)="OnSubmit()">
-                <div class="form-group">
-                  <label>{{nombre}}</label>
-                  <input type="text" [ngClass]="formControlNombre()"  
-                  [(ngModel)]="categoriaModel.tipo" (ngModelChange)="validaNombre($event)"
-                  [value]="categoriaModel.tipo" name="nombre">
-                  <div class="invalid-feedback">
-                    {{mensajeNombre}}
-                  </div>
-                </div> 
-                <div class="row justify-content-around">
-                  <div class="col-1">
-                  <button type="submit" class="btn btn-dark">{{aceptar}}</button>
-                  </div>
-                  <div class="col-11">
-                  <button type="button" class="btn btn-dark" (click)="nuevaCategoria()">{{nuevo}}</button>
-                  </div>
-                </div> 
-              </form>`,
+  templateUrl: './form-categorias.component.html',
   styles: []
 })
 export class FormCategoriasComponent implements OnInit {
   @Output() actualiza = new EventEmitter<Categoria>();
   @Input() iCategoria: Categoria;
-  public categoriaModel: Categoria = new Categoria('', 0);
-  public aceptar: string;
-  public nombre: string;
-  public nuevo: string;
-  public mensajeNombre: string;
-  public errorNombre: boolean;
-  public categoria: string = 'categorias';
+  categoriaModel: Categoria = { id: 0, nombre: '' };
+  errorNombre: boolean;
+  categoria = 'categorias';
 
   constructor(private businessService: BusinessService,
     private categoriasService: CategoriasService, 
     private dialogo: MatDialog) { }
 
-  public ngOnInit(): void {
-    this.nombre = this.categoriasService.nombre;
-    this.nuevo = this.categoriasService.nuevo;
-    this.aceptar = this.businessService.aceptar;
-    this.mensajeNombre = this.businessService.mensajeNombre;
+  ngOnInit(): void {
     this.errorNombre = this.businessService.error;
   }
 
-  public ngOnChanges() {
+  ngOnChanges() {
     if (this.iCategoria != undefined) {
-      this.categoriaModel.codigo = this.iCategoria.codigo;
-      const nombre = this.iCategoria.tipo;
-      this.categoriaModel.tipo = nombre;
+      this.categoriaModel = this.iCategoria[0];
       this.errorNombre = false;
     }
   }
 
-  public OnSubmit() {
+  OnSubmit() {
     if (!this.errorNombre) {
-      if (this.categoriaModel.codigo == 0) {
+      if (this.categoriaModel.id == 0) {
         this.dialogo.open(DialogoConfirmacionComponent, {
-          data: this.categoriasService.getMensajeCrear(this.categoriaModel.tipo)
+          data: this.categoriasService.getMensajeCrear(this.categoriaModel.nombre)
         })
           .afterClosed().
-          subscribe((confirmado: Boolean) => {
+          subscribe((confirmado: boolean) => {
             if (!confirmado) return;
             this.categoriasService.creaCategoria(this.categoriaModel).subscribe(() => {
-              this.businessService.getAlert(this.categoriasService.mensajeCreado);
-            })
-          })
+              this.businessService.getAlert('Categoría creada');
+            });
+          });
       } else {
         this.dialogo.open(DialogoConfirmacionComponent, {
-          data: this.categoriasService.getMensajeActualizar(this.iCategoria.tipo, this.categoriaModel.tipo)
+          data: this.categoriasService.getMensajeActualizar(this.categoriaModel.nombre)
         })
           .afterClosed().
-          subscribe((confirmado: Boolean) => {
+          subscribe((confirmado: boolean) => {
             if (!confirmado) return;
             this.categoriasService.actualizaCategoria(this.categoriaModel).subscribe(() => {
-              this.businessService.getAlert(this.categoriasService.mensajeActualizado);
-            })
-            this.actualiza.emit(this.categoriaModel);
-          })
+              this.businessService.getAlert('Categoría actualizada');
+            });
+          });
       }
     } else {
-      this.businessService.getAlert(this.businessService.mensajeError); 
+      this.businessService.getAlert('Complete los campos faltantes'); 
     }
   }
 
-  public nuevaCategoria() {
-    this.categoriaModel = new Categoria("", 0);
+  nuevaCategoria() {
+    this.categoriaModel = {
+      id: 0,
+      nombre: ''
+    };
     this.errorNombre = true;
   }
 
-  public formControlNombre() {
+  formControlNombre() {
     return this.businessService.getFormControl(this.errorNombre);
   }
 
-  public validaNombre(campo: any) {
+  validaNombre(campo: string) {
     this.errorNombre = this.businessService.validaCampo(campo, this.errorNombre);
   }
 }
