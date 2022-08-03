@@ -40,7 +40,7 @@ export class PersonaService {
   }
 
   public actualizaPersona(persona: Persona) {
-    return this.http.put(`${environment.baseUrl}updatePerson.php`, persona);
+    return this.http.put(`${environment.baseUrl}api/personas`, persona);
   }
 
   public bajarPersona(persona: Persona) {

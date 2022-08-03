@@ -68,11 +68,11 @@
     <section *ngIf="factura.tipo === 'CI' || factura.tipo === 'CS'">
       <mat-form-field>
         <mat-label>Forma de pago</mat-label>
-        <input type="text" placeholder="Ej: Contado" matInput />
+        <input [(ngModel)]="factura.tipoPago" type="text" placeholder="Ej: Contado" matInput />
       </mat-form-field>
       <mat-form-field>
         <mat-label>Nota</mat-label>
-        <textarea matInput maxlength="50"></textarea>
+        <textarea [(ngModel)]="factura.nota" matInput maxlength="50"></textarea>
       </mat-form-field>
     </section>
     <div class="col-7 alert-message">

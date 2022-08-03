@@ -9,6 +9,8 @@ export interface Factura {
     hora?: string,
     persona?: Persona,
     detalle?: DetalleFactura[],
+    nota?: string,
+    tipoPago?: string,
     neto?: number,
     iva?: number,
     total?: number,

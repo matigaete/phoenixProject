@@ -125,7 +125,7 @@ export class WelcomeComponent implements OnInit {
           this.enviar(fact, doc);
         }
       });
-    } else {                                                                // Cotizacion
+    } else {                                                          // Cotizacion
       this.facturaService.creaCotizacion(fact).subscribe((nroCotizacion: number) => {
         if (nroCotizacion) {
           this.businessService.getAlert('Cotización creada correctamente');
@@ -183,7 +183,17 @@ export class WelcomeComponent implements OnInit {
 
   // Se ejecuta al generarse la factura, limpia todos los campos
   reset() {
-    this.transactions = [{ tipo: TipoProducto.Insumo, producto: { id: '' }, servicio: { id: '' }, dcto: 0 }];
+    this.transactions = [{ 
+      tipo: TipoProducto.Insumo,
+      producto: { 
+        id: '' 
+      }, 
+      servicio: { 
+        id: '' 
+      }, 
+      dcto: 0,
+      posicion: 0 
+    }];
     this.dataSource.next(this.transactions);
     this.factura = {
       tipo: TipoFactura.FacturaVenta,

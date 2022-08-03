@@ -138,6 +138,8 @@ export class BusinessService {
     const direccion = f.persona.direccion;
     const contacto = f.persona.contacto;
     const email = f.persona.email;
+    const nota = f.nota;
+    const tipoPago = f.tipoPago;
     const neto = this.convierteCLP(f.neto);
     const iva = this.convierteCLP(f.iva);
     const total = this.convierteCLP(f.total);
@@ -217,7 +219,7 @@ export class BusinessService {
       doc.setFontSize(10);
       doc.line(10, 95, 355, 95);
       doc.line(10, 95, 10, 105);
-      doc.text('Código', 11, 100);
+      doc.text('Código', 13, 100);
       doc.line(35, 95, 35, 105);
       doc.text('Descripción', 55, 100);
       doc.line(100, 95, 100, 105);
@@ -246,9 +248,9 @@ export class BusinessService {
       //Detalle de servicio
       doc.setLineWidth(0.25);
       doc.setFontSize(10);
-      doc.line(10, 95, 355, 95);
+      doc.line(10, 95, 205, 95);
       doc.line(10, 95, 10, 105);
-      doc.text('Código', 11, 100);
+      doc.text('Código', 13, 100);
       doc.line(35, 95, 35, 105);
       doc.text('Descripción Servicio', 40, 100);
       doc.line(100, 95, 100, 105);
@@ -256,10 +258,11 @@ export class BusinessService {
       doc.line(125, 95, 125, 105);
       doc.text('Precio unitario', 130, 100);
       doc.line(165, 95, 165, 105);
-      doc.text('Precio final', 180, 100);
+      doc.text('Precio final', 175, 100);
       doc.line(10, 95, 10, 105);
       doc.setLineWidth(0.25);
-      doc.line(10, 105, 355, 105);
+      doc.line(10, 105, 205, 105);
+      doc.line(205, 95, 205, 105);
 
       //Lista de productos
       doc.setFontSize(7);
@@ -271,7 +274,7 @@ export class BusinessService {
           doc.text(pos.servicio.descripcion, 40, cord);  //Descripción
           doc.text(this.convierteCLP(pos.servicio.precioVenta), 143, cord);      //Precio 
           doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad 
-          doc.text(this.convierteCLP(pos.subtotal), 185, cord);       //Subtotal
+          doc.text(this.convierteCLP(pos.subtotal), 175, cord);       //Subtotal
           cord = cord + 5;
         }
       });
@@ -280,9 +283,9 @@ export class BusinessService {
       doc.setFont('Helvetica', 'bold'); //negrita
       doc.setLineWidth(0.25);
       doc.setFontSize(10);
-      doc.line(10, 155, 355, 155);
+      doc.line(10, 155, 205, 155);
       doc.line(10, 155, 10, 165);
-      doc.text('Código', 11, 160);
+      doc.text('Código', 13, 160);
       doc.line(35, 155, 35, 165);
       doc.text('Descripción Respuestos', 40, 160);
       doc.line(100, 155, 100, 165);
@@ -290,10 +293,11 @@ export class BusinessService {
       doc.line(125, 155, 125, 165);
       doc.text('Precio unitario', 130, 160);
       doc.line(165, 155, 165, 165);
-      doc.text('Precio final', 180, 160);
+      doc.text('Precio final', 175, 160);
       doc.line(10, 155, 10, 165);
       doc.setLineWidth(0.25);
-      doc.line(10, 165, 355, 165);
+      doc.line(10, 165, 205, 165);
+      doc.line(205, 155, 205, 165);
 
       //Lista de productos
       doc.setFontSize(7);
@@ -305,7 +309,7 @@ export class BusinessService {
           doc.text(pos.producto.descripcion, 40, cord);  //Descripción
           doc.text(this.convierteCLP(pos.producto.precioVenta), 143, cord);      //Precio 
           doc.text(pos.cantidad.toString(), 113, cord);    //Cantidad 
-          doc.text(this.convierteCLP(pos.subtotal), 185, cord);       //Subtotal
+          doc.text(this.convierteCLP(pos.subtotal), 175, cord);       //Subtotal
           cord = cord + 5;
         }
       });
@@ -314,7 +318,7 @@ export class BusinessService {
     //Pie de factura
     doc.setFontSize(7);
     doc.setLineWidth(0.25);
-    doc.rect(10, 230, 190, 60, 'S');
+    doc.rect(10, 230, 195, 60, 'S');
 
     //Condiciones comerciales
     doc.rect(15, 235, 100, 50, 'S');
@@ -322,11 +326,13 @@ export class BusinessService {
     doc.setFont('Helvetica', 'bold');
     doc.text('Condiciones Comerciales', 16, 239);
     doc.text('1. Validez: 15 días', 16, 245);
-    doc.text('2. Forma Pago: Contado/Transferencia bancaria', 16, 248);
+    doc.text('2. Forma Pago:', 16, 248);
+    doc.text(tipoPago, 36, 248);
     doc.text('3. Cuenta bancaria: Banco Estado', 16, 251);
     doc.text('Nro. cuenta vista : 36772379760', 16, 254);
     doc.text('A nombre de : Thecnical Service Spa', 16, 257);
     doc.text('Nota:', 16, 260);
+    doc.text(nota, 25, 260);
 
     doc.setFontSize(12);
     doc.rect(120, 235, 80, 20, 'S');
